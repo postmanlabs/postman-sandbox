@@ -1,5 +1,5 @@
 describe('sandbox', function () {
-    this.timeout(1000 * 60); // set 60s timeout
+    this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
     it('must create context', function (done) {
