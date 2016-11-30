@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "0.0.0",
+  "version": "0.0.1-beta.2",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -18,7 +18,8 @@
     "test-system": "node npm/test-system.js",
     "test-lint": "node npm/test-lint.js",
     "test-unit": "node npm/test-unit.js",
-    "test": "node npm/test.js"
+    "test": "node npm/test.js",
+    "prepublish": "node npm/prepublish.js"
   },
   "keywords": [
     "eval",
