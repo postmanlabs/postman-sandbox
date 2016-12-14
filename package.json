@@ -80,7 +80,7 @@
     "jquery": "3.1.1",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.1",
-    "postman-collection": "0.5.7",
+    "postman-collection": "0.5.8",
     "tv4": "1.2.7",
     "uniscope": "0.1.0-beta.2",
     "xml2js": "0.4.17"
