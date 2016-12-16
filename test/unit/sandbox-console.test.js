@@ -1,5 +1,5 @@
 // @todo use sinopia
-describe('console', function () {
+describe('console inside sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
