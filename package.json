@@ -39,7 +39,7 @@
     "browserify": "13.1.1",
     "colors": "1.1.2",
     "editorconfig": "0.13.2",
-    "eslint": "3.11.1",
+    "eslint": "3.12.1",
     "eslint-plugin-jsdoc": "2.4.0",
     "eslint-plugin-mocha": "4.7.0",
     "eslint-plugin-security": "1.2.0",
