@@ -30,7 +30,7 @@ describe('sandbox', function () {
         });
     });
 
-    it('must have (and not have) a few important globals', function (done) {
+    it('must have a few important globals', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
@@ -38,7 +38,6 @@ describe('sandbox', function () {
             ctx.execute(`
                 var assert = require('assert');
                 assert.equal(typeof _, 'function');
-                assert.equal(typeof window, 'undefined');
                 assert.equal(typeof Error, 'function');
                 assert.equal(typeof console, 'object');
             `, done);
