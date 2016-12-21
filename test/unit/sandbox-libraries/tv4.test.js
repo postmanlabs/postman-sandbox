@@ -37,7 +37,7 @@ describe('sandbox library - TV4', function () {
                     }
                 };
 
-            assert(tv4.validate({alpha: true}, schema).valid, 'TV4 schema validation must identify valid objects');
+            assert(tv4.validate({alpha: true}, schema), 'TV4 schema validation must identify valid objects');
         `, done);
     });
 });

@@ -29,8 +29,8 @@ describe('sandbox library - xml2Json', function () {
                 xml = '<food><key>Homestyle Breakfast</key><value>950</value></food>',
                 object = xml2Json(xml).food;
 
-            assert.strictEqual(food.key, 'Homestyle Breakfast', 'xml2Json converison must be valid');
-            assert.strictEqual(food.value, '950', 'xml2Json converison must be valid');
+            assert.strictEqual(object.key, 'Homestyle Breakfast', 'xml2Json conversion must be valid');
+            assert.strictEqual(object.value, '950', 'xml2Json conversion must be valid');
         `, done);
     });
 });

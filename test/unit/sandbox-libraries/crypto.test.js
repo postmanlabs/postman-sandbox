@@ -20,8 +20,8 @@ describe('sandbox library - CryptoJS', function () {
             var assert = require('assert');
 
             assert.strictEqual(typeof CryptoJS, 'object', 'typeof CryptoJS must be object');
-            assert.strictEqual(typeof CryptoJS.AWS.encrypt, 'function', 'typeof CryptoJS.AES.encrypt must be function');
-            assert.strictEqual(typeof CryptoJS.AWS.decrypt, 'function', 'typeof CryptoJS.AES.decrypt must be function');
+            assert.strictEqual(typeof CryptoJS.AES.encrypt, 'function', 'typeof CryptoJS.AES.encrypt must be function');
+            assert.strictEqual(typeof CryptoJS.AES.decrypt, 'function', 'typeof CryptoJS.AES.decrypt must be function');
         `, done);
     });
 

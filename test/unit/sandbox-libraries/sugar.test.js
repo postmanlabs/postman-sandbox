@@ -22,7 +22,7 @@ describe('sandbox library - sugarjs', function () {
             assert.strictEqual(typeof new Date().format, 'function', 'Extended Date prototype must exist');
             assert.strictEqual(typeof 'asdasd'.has, 'function', 'Extended String prototype must exist');
             assert.strictEqual(typeof Object.each, 'function', 'Extended Object prototype must exist');
-            assert.strictEqual(typeof Date.create === 'function', 'function', 'Extended Date prototype must exist');
+            assert.strictEqual(typeof Date.create, 'function', 'Extended Date prototype must exist');
         `, done);
     });
 
@@ -31,7 +31,7 @@ describe('sandbox library - sugarjs', function () {
             var assert = require('assert'),
                 d = new Date(1470659144696); // Monday, Aug 08, 2016
 
-            assert(('Monday' === d.format('{Weekday}')), 'Date.prototype.format must format dates correctly');
+            assert.strictEqual(d.format('{Weekday}'), 'Monday', 'Date.prototype.format must format dates correctly');
             assert('asdasd'.has('as'), 'String.prototype.has must detect sub strings correctly');
             assert(!!(1).daysAfter(new Date()).format('{yyyy}{MM}{dd}'), 'Date.prototype.format must be a function');
         `, done);
@@ -57,7 +57,7 @@ describe('sandbox library - sugarjs', function () {
                 assert(Date.create('2000').isLeapYear(), 'Date.prototype.isLeapYear must work correctly');
                 assert(Date.create('last week').isPast(), 'Date.prototype.isPast must work correctly');
                 assert(new Date().isValid(), 'Date.prototype.isValid must work correctly');
-                assert(!(new Date('random string').isValid(), 'Negated Date.prototype.isValid must work correctly');
+                assert(!(new Date('random string').isValid()), 'Negated Date.prototype.isValid must work correctly');
             `, done);
         });
 
@@ -91,7 +91,7 @@ describe('sandbox library - sugarjs', function () {
                 assert('jumpy'.endsWith('py'), 'String.prototype.endsWith must work correctly');
                 assert.strictEqual('abc'.shift(5), 'fgh', 'String.prototype.shift must work correctly');
                 assert.strictEqual('a'.repeat(5), 'aaaaa', 'String.prototype.repeat must work correctly');
-                assert(!('jumpy'.endsWith('MPY'), 'Negated String.prototype.endsWith must work correctly');
+                assert(!('jumpy'.endsWith('MPY')), 'Negated String.prototype.endsWith must work correctly');
                 assert.strictEqual('a-beta'.camelize(), 'ABeta', 'String.prototype.camelize must work correctly');
                 assert.strictEqual('a-b_cD'.spacify(), 'a b c d', 'String.prototype.spacify must work correctly');
             `, done);
