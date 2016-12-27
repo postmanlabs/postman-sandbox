@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "0.0.1-beta.9",
+  "version": "0.0.1-beta.10",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
