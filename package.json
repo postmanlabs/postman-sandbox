@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "0.0.0",
+  "version": "0.0.1-beta.10",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,6 @@
   },
   "browser": {
     "./lib/bundle/index.js": "./lib/bundle/index.browser.js",
-    "./lib/uvm/bridge.js": "./lib/uvm/bridge.browser.js",
     "./.cache/bootcode.js": "./.cache/bootcode.browser.js"
   },
   "scripts": {
@@ -18,7 +17,8 @@
     "test-system": "node npm/test-system.js",
     "test-lint": "node npm/test-lint.js",
     "test-unit": "node npm/test-unit.js",
-    "test": "node npm/test.js"
+    "test": "node npm/test.js",
+    "prepublish": "node npm/prepublish.js"
   },
   "keywords": [
     "eval",
@@ -30,16 +30,16 @@
   "dependencies": {
     "inherits": "2.0.3",
     "lodash": "4.17.2",
-    "uuid": "3.0.0",
-    "uvm": "1.2.0"
+    "uuid": "3.0.1",
+    "uvm": "1.4.0"
   },
   "devDependencies": {
-    "async": "2.1.2",
+    "async": "2.1.4",
     "browserify": "13.1.1",
     "colors": "1.1.2",
     "editorconfig": "0.13.2",
-    "eslint": "3.10.1",
-    "eslint-plugin-jsdoc": "2.3.1",
+    "eslint": "3.12.1",
+    "eslint-plugin-jsdoc": "2.4.0",
     "eslint-plugin-mocha": "4.7.0",
     "eslint-plugin-security": "1.2.0",
     "expect.js": "0.3.1",
@@ -51,8 +51,8 @@
     "karma-browserify": "5.1.0",
     "karma-chrome-launcher": "2.0.0",
     "karma-mocha": "1.3.0",
-    "karma-mocha-reporter": "2.2.0",
-    "mocha": "3.1.2",
+    "karma-mocha-reporter": "2.2.1",
+    "mocha": "3.2.0",
     "nsp": "2.6.2",
     "packity": "0.3.2",
     "parse-gitignore": "0.3.1",
@@ -73,15 +73,15 @@
     "atob": "2.0.3",
     "backbone": "1.3.3",
     "btoa": "1.1.2",
-    "buffer-browserify": "0.2.5",
+    "buffer": "5.0.2",
     "cheerio": "0.22.0",
-    "crypto-js": "3.1.8",
+    "crypto-js": "3.1.9-1",
     "jquery": "3.1.1",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.1",
-    "postman-collection": "0.5.7",
+    "postman-collection": "0.5.10",
     "tv4": "1.2.7",
-    "uniscope": "0.1.0-beta.2",
+    "uniscope": "1.1.0",
     "xml2js": "0.4.17"
   }
 }
