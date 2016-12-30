@@ -79,6 +79,7 @@
     "jquery": "3.1.1",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.1",
+    "moment-timezone": "0.5.11",
     "postman-collection": "0.5.10",
     "tv4": "1.2.7",
     "uniscope": "1.1.0",
