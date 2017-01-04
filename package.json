@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "async": "2.1.4",
-    "browserify": "13.1.1",
+    "browserify": "13.2.0",
     "colors": "1.1.2",
     "editorconfig": "0.13.2",
     "eslint": "3.12.1",
