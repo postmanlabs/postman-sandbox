@@ -9,6 +9,7 @@ require('shelljs/global');
 var _ = require('lodash'),
     async = require('async'),
     fs = require('fs'),
+    semver = require('semver'),
     colors = require('colors/safe'),
     Bundle = require('../lib/bundle'),
 
@@ -21,7 +22,10 @@ createBundle = function (options, file, done) {
         },
 
         function (buf, next) {
-            fs.writeFile(file, `module.exports=function(d){d(null, Buffer.from(${JSON.stringify(buf)}.data));};`, next);
+            var strBuf = JSON.stringify(buf),
+                methodCall = semver.lt(process.version, '6.0.0') ? 'new Buffer' : 'Buffer.from';
+
+            fs.writeFile(file, `module.exports=function(d){d(null, ${methodCall}(${strBuf}.data));};`, next);
         },
 
         function (next) {
