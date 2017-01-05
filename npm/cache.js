@@ -21,7 +21,7 @@ createBundle = function (options, file, done) {
         },
 
         function (buf, next) {
-            fs.writeFile(file, `module.exports=function(d){d(null, Buffer.from(${JSON.stringify(buf)}.data));};`, next);
+            fs.writeFile(file, `module.exports=function(d){d(null, new Buffer(${JSON.stringify(buf)}.data));};`, next);
         },
 
         function (next) {
