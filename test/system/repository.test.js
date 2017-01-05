@@ -84,19 +84,6 @@ describe('project repository', function () {
             });
         });
 
-        describe('optionalDependencies', function () {
-            it('should exist', function () {
-                expect(json.optionalDependencies).to.be.a('object');
-            });
-
-            it('should point to a valid semver', function () {
-                Object.keys(json.optionalDependencies).forEach(function (dependencyName) {
-                    expect(json.optionalDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
-                        '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
-                });
-            });
-        });
-
         describe('main entry script', function () {
             it('should point to a valid file', function (done) {
                 expect(json.main).to.equal('index.js');
