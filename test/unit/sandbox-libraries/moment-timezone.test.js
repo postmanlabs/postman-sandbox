@@ -53,15 +53,16 @@ describe('sandbox library - moment-timezone', function () {
 
     it('must format calendar time', function (done) {
         context.execute(`
-            var assert = require('assert');
+            var assert = require('assert'),
+                reference = '2017-01-01T10:10:10.000';
+                
+            assert.strictEqual(moment(reference).calendar(reference), 'Today at 10:10 AM');
 
-            assert.strictEqual(moment('2017-01-01T10:10:10.000').calendar(), 'Sunday at 10:10 AM');
+            assert.strictEqual(moment(reference).subtract(1, 'day').calendar(reference), 'Yesterday at 10:10 AM');
+            assert.strictEqual(moment(reference).subtract(10, 'days').calendar(reference), '12/22/2016');
 
-            assert.strictEqual(moment('2017-01-01T10:10:10.000').subtract(1, 'day').calendar(), 'Tomorrow at 10:10 AM');
-            assert.strictEqual(moment('2017-01-01T10:10:10.000').subtract(10, 'days').calendar(), '12/22/2016');
-
-            assert.strictEqual(moment('2017-01-01T10:10:10.000').add(1, 'day').calendar(), 'Monday at 10:10 AM');
-            assert.strictEqual(moment('2017-01-01T10:10:10.000').add(10, 'days').calendar(), '01/11/2017');
+            assert.strictEqual(moment(reference).add(1, 'day').calendar(reference), 'Tomorrow at 10:10 AM');
+            assert.strictEqual(moment(reference).add(10, 'days').calendar(reference), '01/11/2017');
         `, done);
     });
 
