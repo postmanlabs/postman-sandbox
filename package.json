@@ -63,6 +63,7 @@
     "liquid-json": "0.3.1",
     "lodash3": "3.10.1",
     "mocha": "3.2.0",
+    "moment-timezone": "0.5.11",
     "nsp": "2.6.2",
     "packity": "0.3.2",
     "parse-gitignore": "0.3.1",
