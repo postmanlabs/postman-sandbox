@@ -13,7 +13,7 @@ describe('legacy execute', function () {
                 tests['true'] = true;
                 tests['false'] = false;
             `, {
-                globals: { tests: {} }
+                globals: {tests: {}}
             }, function (err, result) {
                 if (err) { return done(err); }
 
