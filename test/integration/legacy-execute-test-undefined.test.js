@@ -9,9 +9,9 @@ describe('legacy execute', function () {
             ctx.on('error', done);
 
             ctx.execute(`
-                tests[\'undefined\'] = undefined;
-                tests[\'true\'] = true;
-                tests[\'false\'] = false;
+                tests['undefined'] = undefined;
+                tests['true'] = true;
+                tests['false'] = false;
             `, {
                 globals: { tests: {} }
             }, function (err, result) {
@@ -19,7 +19,7 @@ describe('legacy execute', function () {
 
                 expect(result).to.eql({
                     // ensure that tests.undefined is set to false, instead of "undefined".
-                    globals: { tests: { undefined: false, true: true, false: false } }, debug: false
+                    globals: {tests: {undefined: false, true: true, false: false}}, debug: false
                 });
                 done();
             });
