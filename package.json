@@ -31,7 +31,9 @@
     "inherits": "2.0.3",
     "lodash": "4.17.2",
     "uuid": "3.0.1",
-    "uvm": "1.4.0"
+    "uvm": "1.4.0",
+    "xmldom": "0.1.27",
+    "xpath": "0.0.23"
   },
   "devDependencies": {
     "assert": "1.4.1",
