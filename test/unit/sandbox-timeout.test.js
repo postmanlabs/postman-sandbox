@@ -51,4 +51,25 @@
             ctx.execute('var x = "i am doing nothing!";', done);
         });
     });
+
+    it('must clear timeout on bridge disconnect', function (done) {
+        Sandbox.createContext({
+            debug: true,
+            timeout: 500 // 500 ms
+        }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            // @todo once async execution comes into play, this should not even be triggered
+            ctx.on('error', function (err) {
+                expect(err).have.property('message', 'Script execution timed out.');
+            });
+
+            ctx.execute('while(1)', function (err) {
+                expect(err).be.ok();
+                expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
+                done();
+            });
+            ctx.dispose();
+        });
+    });
 });
