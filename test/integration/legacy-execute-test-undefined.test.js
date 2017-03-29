@@ -17,10 +17,10 @@ describe('legacy execute', function () {
             }, function (err, result) {
                 if (err) { return done(err); }
 
-                expect(result).to.eql({
-                    // ensure that tests.undefined is set to false, instead of "undefined".
-                    globals: {tests: {undefined: false, true: true, false: false}}, debug: false
-                });
+                expect(result).be.ok();
+                expect(result).have.property('globals');
+                expect(result.globals).have.property('tests');
+                expect(result.globals.tests).eql({undefined: false, true: true, false: false});
                 done();
             });
         });
