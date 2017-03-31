@@ -76,10 +76,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/postmanlabs/uvm.git"
+    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
   },
   "bugs": {
-    "url": "https://github.com/postmanlabs/uvm/issues"
+    "url": "https://github.com/postmanlabs/postman-sandbox/issues"
   },
-  "homepage": "https://github.com/postmanlabs/uvm#readme"
+  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme"
 }
