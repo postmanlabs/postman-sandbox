@@ -1,4 +1,4 @@
-(typeof window !== 'undefined' ? describe : describe.skip)('sandbox in browser', function () {
+describe.skip('sandbox in browser', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 

@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "1.0.2",
+  "version": "2.0.0-beta.2",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -66,7 +66,7 @@
     "nsp": "2.6.3",
     "packity": "0.3.2",
     "parse-gitignore": "0.3.1",
-    "postman-collection": "1.0.2",
+    "postman-collection": "1.1.0-beta.4",
     "recursive-readdir": "^2.1.0",
     "shelljs": "0.7.7",
     "tv4": "1.2.7",
@@ -76,10 +76,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/postmanlabs/uvm.git"
+    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
   },
   "bugs": {
-    "url": "https://github.com/postmanlabs/uvm/issues"
+    "url": "https://github.com/postmanlabs/postman-sandbox/issues"
   },
-  "homepage": "https://github.com/postmanlabs/uvm#readme"
+  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme"
 }
