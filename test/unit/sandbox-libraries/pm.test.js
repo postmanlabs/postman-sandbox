@@ -138,4 +138,48 @@ describe('sandbox library - pm api', function () {
             });
         });
     });
+
+    describe('request', function () {
+        it('must be defined as sdk Request object', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    Request = require('postman-collection').Request;
+                assert.strictEqual(Request.isRequest(pm.request), true);
+            `, {
+                context: {
+                    request: 'https://postman-echo.com/get?foo=bar'
+                }
+            }, done);
+        });
+
+        it('must not be defined if request is missing in generic script target', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    Request = require('postman-collection').Request;
+                assert.strictEqual(Request.isRequest(pm.request), undefined);
+            `, done);
+        });
+
+        it.skip('must be defined in prerequest script even if request is missing in context', function (done) {
+            context.execute({
+                listen: 'prerequest',
+                script: `
+                var assert = require('assert'),
+                    Request = require('postman-collection').Request;
+                assert.strictEqual(Request.isRequest(pm.request), true);
+            `
+            }, done);
+        });
+
+        it.skip('must be defined in test script even if request is missing in context', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                var assert = require('assert'),
+                    Request = require('postman-collection').Request;
+                assert.strictEqual(Request.isRequest(pm.request), true);
+            `
+            }, done);
+        });
+    });
 });
