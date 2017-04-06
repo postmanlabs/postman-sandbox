@@ -23,7 +23,7 @@ describe('sandbox library - pm api', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -179,6 +179,61 @@ describe('sandbox library - pm api', function () {
                     Request = require('postman-collection').Request;
                 assert.strictEqual(Request.isRequest(pm.request), true);
             `
+            }, done);
+        });
+    });
+
+    describe('response', function () {
+        it('must be defined as sdk Request object', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    Response = require('postman-collection').Response;
+                assert.strictEqual(Response.isResponse(pm.response), true);
+            `, {
+                context: {
+                    response: {
+                        code: 200
+                    }
+                }
+            }, done);
+        });
+
+        it('must not be defined for non test targets', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    Response = require('postman-collection').Response;
+                assert.strictEqual(Response.isResponse(pm.response), undefined);
+            `, done);
+        });
+
+        it.skip('must be defined in test target even when context is missing', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                    var assert = require('assert'),
+                        Response = require('postman-collection').Response;
+                    assert.strictEqual(Response.isResponse(pm.response), true);
+                `
+            }, done);
+        });
+
+        it('must parse response json body', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.equal(pm.response.body, undefined, 'body should not be defined as string');
+                assert.deepEqual(pm.response.json(), {
+                    foo: "bar"
+                });
+            `, {
+                context: {
+                    response: {
+                        code: 200,
+                        stream: {
+                            type: 'Buffer',
+                            data: [123, 34, 102, 111, 111, 34, 58, 32, 34, 98, 97, 114, 34, 125]
+                        }
+                    }
+                }
             }, done);
         });
     });
