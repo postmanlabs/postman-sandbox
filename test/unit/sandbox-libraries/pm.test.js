@@ -237,4 +237,23 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
     });
+
+    describe('chai', function () {
+        it('must be available as expect', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.expect, require('chai').expect);
+            `, done);
+        });
+
+        it('must work with common assertions', function (done) {
+            context.execute(`
+                pm.expect(new Error).not.to.be.an('error');
+            `, function (err) {
+                expect(err).be.ok();
+                expect(err).have.property('message', 'expected [Error] not to be an error');
+                done();
+            });
+        });
+    });
 });
