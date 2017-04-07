@@ -18,9 +18,8 @@ describe('legacy execute', function () {
                 if (err) { return done(err); }
 
                 expect(result).be.ok();
-                expect(result).have.property('globals');
-                expect(result.globals).have.property('tests');
-                expect(result.globals.tests).eql({undefined: false, true: true, false: false});
+                expect(result).have.property('tests');
+                expect(result.tests).eql({undefined: false, true: true, false: false});
                 done();
             });
         });

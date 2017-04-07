@@ -1,6 +1,11 @@
 # Postman Sandbox Changelog
 
-#### 1.0.1 (January 6, 2017)
+#### 2.0.0 (April 05, 2017)
+* Removed legacy handling of environment and collections (both are now `VariableScope`s
+* Introduced a standardized execution result object, `Execution`
+* Removed the `masked` options which were used by the sandbox
+
+#### 1.0.1 (January 06, 2017)
 * Shifted to deprecated `new Buffer()` function for full node v4 compatibility
 * Dependency shift from optional dependencies to dev dependencies
 * Shifted to deprecated `new Buffer()` function for full node v4 compatibility
