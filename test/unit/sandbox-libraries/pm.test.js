@@ -160,7 +160,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it.skip('must be defined in prerequest script even if request is missing in context', function (done) {
+        it('must be defined in prerequest script even if request is missing in context', function (done) {
             context.execute({
                 listen: 'prerequest',
                 script: `
@@ -171,7 +171,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it.skip('must be defined in test script even if request is missing in context', function (done) {
+        it('must be defined in test script even if request is missing in context', function (done) {
             context.execute({
                 listen: 'test',
                 script: `
@@ -206,7 +206,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it.skip('must be defined in test target even when context is missing', function (done) {
+        it('must be defined in test target even when context is missing', function (done) {
             context.execute({
                 listen: 'test',
                 script: `
