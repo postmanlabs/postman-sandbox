@@ -25,9 +25,9 @@ describe('console inside sandbox', function () {
             }, function (err) {
                 if (err) { return done(err); }
                 expect(consoleEventArgs).be.ok();
-                expect(consoleEventArgs[0]).be.eql({
-                    ref: 'cursor-identifier'
-                });
+                expect(consoleEventArgs[0]).be.an('object');
+                expect(consoleEventArgs[0]).have.property('ref', 'cursor-identifier');
+                expect(consoleEventArgs[0]).have.property('execution');
                 expect(consoleEventArgs[1]).be('log');
                 expect(consoleEventArgs[2]).be('hello console');
                 done();
