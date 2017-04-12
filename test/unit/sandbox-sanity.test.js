@@ -43,4 +43,25 @@ describe('sandbox', function () {
             `, done);
         });
     });
+
+    it('must accept an external execution id', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                var assert = require('assert');
+                assert.equal(typeof _, 'function');
+                assert.equal(typeof Error, 'function');
+                assert.equal(typeof console, 'object');
+            `, {
+                id: 'my-test-id'
+            }, function (err, execution) {
+                if (err) { return done(err); }
+
+                expect(execution).have.property('id', 'my-test-id');
+                done();
+            });
+        });
+    });
 });
