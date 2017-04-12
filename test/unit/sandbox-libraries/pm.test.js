@@ -156,7 +156,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert'),
                     Request = require('postman-collection').Request;
-                assert.strictEqual(Request.isRequest(pm.request), undefined);
+                assert.strictEqual(Request.isRequest(pm.request), false);
             `, done);
         });
 
@@ -202,7 +202,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert'),
                     Response = require('postman-collection').Response;
-                assert.strictEqual(Response.isResponse(pm.response), undefined);
+                assert.strictEqual(Response.isResponse(pm.response), false);
             `, done);
         });
 
