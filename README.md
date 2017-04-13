@@ -1,6 +1,8 @@
 # Postman Sandbox
 
-> This repository has not yet been updated with code and tests for production use.
+Module that unifies execution of third-party JavaScript within Node VM and Browser iFrame.
+
+> This module is part of Postman Runtime Core and is not intended for independent use.
 >
 > If you are looking to execute collections, you should bee using [Newman](https://github.com/postmanlabs/newman)
 
@@ -22,3 +24,21 @@ Sandbox.createContext(function (err, ctx) {
     });
 });
 ```
+
+## Sandbox Environment
+
+The following section outlines the API available inside sandbox scripts
+
+### pm
+
+- pm.globals
+- pm.environment
+
+#### pre-request script specials
+
+- pm.request
+
+#### test script specials
+
+- pm.request
+- pm.response
