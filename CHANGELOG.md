@@ -1,5 +1,11 @@
 # Postman Sandbox Changelog
 
+#### 2.1.0 (April 13, 2017)
+* Initial release of the `pm` API.
+* `pm.globals`, `pm.environment` - [VariableScope](http://www.postmanlabs.com/postman-collection/VariableScope.html)s
+* `pm.request` - [Request](http://www.postmanlabs.com/postman-collection/Request.html)
+* `pm.response` - [Response](http://www.postmanlabs.com/postman-collection/Response.html) (only available in test scripts)
+
 #### 2.0.0 (April 05, 2017)
 * Removed legacy handling of environment and collections (both are now `VariableScope`s
 * Introduced a standardized execution result object, `Execution`
