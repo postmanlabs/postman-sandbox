@@ -188,7 +188,9 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert'),
                     Response = require('postman-collection').Response;
-                assert.strictEqual(Response.isResponse(pm.response), true);
+
+                assert.strictEqual(Response.isResponse(pm.response), true, 'pm.response should be sdk');
+                assert.strictEqual(pm.response.code, 200, 'code should match');
             `, {
                 context: {
                     response: {
@@ -254,6 +256,31 @@ describe('sandbox library - pm api', function () {
                 expect(err).have.property('message', 'expected [Error] not to be an error');
                 done();
             });
+        });
+
+        it('must pre-assert response', function (done) {
+            context.execute(`
+                pm.expect(pm.response).to.have.property('to');
+                pm.expect(pm.response.to).be.an('object');
+
+                // run a test as well ;-)
+                pm.response.to.be.ok;
+            `, {
+                context: {
+                    response: {code: 200}
+                }
+            }, done);
+        });
+
+        it('must pre-assert request', function (done) {
+            context.execute(`
+                pm.expect(pm.request).to.have.property('to');
+                pm.expect(pm.request.to).be.an('object');
+            `, {
+                context: {
+                    request: 'https://postman-echo.com/'
+                }
+            }, done);
         });
     });
 });
