@@ -41,6 +41,33 @@ describe('sandbox library - pm api', function () {
         `, done);
     });
 
+    describe('info', function () {
+        it('must have relevant information', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                    var assert = require('assert');
+
+                    assert.strictEqual(pm.info.eventName, 'test', 'event name must be test');
+                    assert.strictEqual(pm.info.iteration, 2, 'iteration should be 2');
+                    assert.strictEqual(pm.info.iterationCount, 3, 'iteration total should be 3');
+                    assert.strictEqual(pm.info.requestName, 'request-name', 'requestName should be accurate');
+                    assert.strictEqual(pm.info.requestId, 'request-id', 'requestId should be accurate');
+                `
+            }, {
+                cursor: {
+                    iteration: 2,
+                    cycles: 3
+                },
+                legacy: {
+                    _itemName: 'request-name',
+                    _itemId: 'request-id'
+                }
+
+            }, done);
+        });
+    });
+
     describe('globals', function () {
         it('must be defined as VariableScope', function (done) {
             context.execute(`
