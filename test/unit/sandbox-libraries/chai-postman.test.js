@@ -4,7 +4,7 @@ describe('sandbox library - chai-postman', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext(function (err, ctx) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -13,6 +13,79 @@ describe('sandbox library - chai-postman', function () {
     afterEach(function () {
         context.dispose();
         context = null;
+    });
+
+    describe('sdk object verification', function () {
+        it('must have assertion failure when checking response to be request', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response;
+                pm.expect(new Response({code: 102})).to.be.postmanRequest;
+            `, function (err) {
+                expect(err).to.be.ok();
+                expect(err).to.have.property('name', 'AssertionError');
+                expect(err).to.have.property('message',
+                    'expecting a postman request object but got { Object (id, _details, ...) }');
+                done();
+            });
+        });
+
+        it('must have assertion to verify response instance', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response,
+                    Request = require('postman-collection').Request;
+
+                pm.expect(new Response({code: 102})).to.be.postmanResponse;
+                pm.expect(new Request({url: 'https://postman-echo.com'})).to.not.be.postmanResponse;
+            `, done);
+        });
+
+        it('must have assertion to verify request instance', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response,
+                    Request = require('postman-collection').Request;
+
+                pm.expect(new Request({url: 'https://postman-echo.com'})).to.be.postmanRequest;
+                pm.expect(new Response({code: 102})).to.not.be.postmanRequest;
+            `, done);
+        });
+
+        it('must have assertion failure when response object is passed to check request', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response;
+                pm.expect(new Response({code: 102})).to.be.postmanRequest;
+            `, function (err) {
+                expect(err).to.be.ok();
+                expect(err).to.have.property('name', 'AssertionError');
+                expect(err).to.have.property('message',
+                    'expecting a postman request object but got { Object (id, _details, ...) }');
+                done();
+            });
+        });
+
+        it('must have assertion to verify either request or response instance', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response,
+                    Request = require('postman-collection').Request,
+                    Header = require('postman-collection').Header;
+
+                pm.expect(new Request({url: 'https://postman-echo.com'})).to.be.postmanRequestOrResponse;
+                pm.expect(new Response({code: 102})).to.be.postmanRequestOrResponse;;
+                pm.expect(new Header('key:value')).to.not.be.postmanRequestOrResponse;;
+            `, done);
+        });
+
+        it('must have assertion assertion failure when header instance is sent instead of reqOrRes', function (done) {
+            context.execute(`
+                var Header = require('postman-collection').Header;
+                pm.expect(new Header('key:value')).to.be.postmanRequestOrResponse;;
+            `, function (err) {
+                expect(err).to.be.ok();
+                expect(err).to.have.property('name', 'AssertionError');
+                expect(err).to.have.property('message',
+                    'expecting a postman request or response object but got { Object (key, value) }');
+                done();
+            });
+        });
     });
 
     describe('response assertion', function () {
