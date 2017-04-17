@@ -284,7 +284,7 @@ describe('sandbox library - chai-postman', function () {
                         body: '{"hello": "world"}'
                     });
 
-                    pm.expect(response).to.be.jsonBody;
+                    pm.expect(response).to.be.json;
                 `, done);
             });
 
@@ -295,7 +295,7 @@ describe('sandbox library - chai-postman', function () {
                         body: 'undefined'
                     });
 
-                    pm.expect(response).to.be.jsonBody;
+                    pm.expect(response).to.be.json;
                 `, function (err) {
                     expect(err).be.ok();
                     expect(err).have.property('name', 'AssertionError');
