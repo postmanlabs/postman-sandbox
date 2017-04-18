@@ -23,7 +23,7 @@ describe('sandbox library - pm api', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext(function (err, ctx) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -262,6 +262,55 @@ describe('sandbox library - pm api', function () {
                             data: [123, 34, 102, 111, 111, 34, 58, 32, 34, 98, 97, 114, 34, 125]
                         }
                     }
+                }
+            }, done);
+        });
+    });
+
+    describe('cookies', function () {
+        it('must be available', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(typeof pm.cookies, 'object', 'cookies must be defined');
+            `, {
+                context: {
+                    cookies: []
+                }
+            }, done);
+        });
+
+        it('must convert context cookie array to list', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.cookies.count(), 2, 'two cookies must be present');
+            `, {
+                context: {
+                    cookies: [{
+                        name: 'cookie1',
+                        value: 'onevalue',
+                        httpOnly: true
+                    }, {
+                        name: 'cookie2',
+                        value: 'anothervalue'
+                    }]
+                }
+            }, done);
+        });
+
+        it('must return value of one cookie', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.cookies.one('cookie2').value, 'anothervalue', 'value must be defined');
+            `, {
+                context: {
+                    cookies: [{
+                        name: 'cookie1',
+                        value: 'onevalue',
+                        httpOnly: true
+                    }, {
+                        name: 'cookie2',
+                        value: 'anothervalue'
+                    }]
                 }
             }, done);
         });
