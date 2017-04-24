@@ -353,6 +353,73 @@ describe('sandbox library - chai-postman', function () {
                     done();
                 });
             });
+
+            it('must be able to ensure body contains json using .json', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: 'undefined'
+                    });
+
+                    pm.expect(response).to.have.jsonBody();
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message',
+                        'expected response body to be a valid json but got error Unexpected token \'u\' at 1:1');
+                    done();
+                });
+            });
+
+            it('must be able to ensure body does not contain json using .json negation', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: '{"prop":[{"value":{"oh":"wow"}}]}'
+                    });
+
+                    pm.expect(response).to.not.have.jsonBody();
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message', 'expected response body not to be a valid json');
+                    done();
+                });
+            });
+
+            it('must be able to ensure body contain json data in path', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: '{"prop":[{"value":{"oh":"wow"}}]}'
+                    });
+
+                    pm.expect(response).to.not.have.jsonBody('prop[0]');
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message',
+                        'expected { prop: [ { value: [Object] } ] } in response to not contain property \'prop[0]\'');
+                    done();
+                });
+            });
+
+            it('must be able to ensure body contain a particular json value in path', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: '{"prop":[{"value":{"oh":"wow"}}]}'
+                    });
+
+                    pm.expect(response).to.have.jsonBody('prop[0].value', {v:1});
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message',
+                        'expected response body json at "prop[0].value" to contain { v: 1 } but got { oh: \'wow\' }');
+                    done();
+                });
+            });
         });
     });
 });
