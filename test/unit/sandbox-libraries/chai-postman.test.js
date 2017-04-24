@@ -304,6 +304,55 @@ describe('sandbox library - chai-postman', function () {
                     done();
                 });
             });
+
+            it('must be able to ensure negation of body exists using .body function', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: 'undefined'
+                    });
+
+                    pm.expect(response).to.not.have.body();
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message', 'expected response to not have content in body');
+                    done();
+                });
+            });
+
+            it('must be able to ensure body matches a string negation', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: 'undefined'
+                    });
+
+                    pm.expect(response).to.not.have.body('undefined');
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message', 'expected response body to not equal \'undefined\'');
+                    done();
+                });
+            });
+
+            it('must be able to ensure body matches a regexp negation', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        body: 'undefined'
+                    });
+
+                    pm.expect(response).to.not.have.body(/def/);
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message',
+                        'expected response body text \'undefined\' to not match /def/');
+                    done();
+                });
+            });
         });
     });
 });
