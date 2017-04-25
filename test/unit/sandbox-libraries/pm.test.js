@@ -23,7 +23,7 @@ describe('sandbox library - pm api', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext(function (err, ctx) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -39,6 +39,33 @@ describe('sandbox library - pm api', function () {
             var assert = require('assert');
             assert.strictEqual(typeof pm, 'object');
         `, done);
+    });
+
+    describe('info', function () {
+        it('must have relevant information', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                    var assert = require('assert');
+
+                    assert.strictEqual(pm.info.eventName, 'test', 'event name must be test');
+                    assert.strictEqual(pm.info.iteration, 2, 'iteration should be 2');
+                    assert.strictEqual(pm.info.iterationCount, 3, 'iteration total should be 3');
+                    assert.strictEqual(pm.info.requestName, 'request-name', 'requestName should be accurate');
+                    assert.strictEqual(pm.info.requestId, 'request-id', 'requestId should be accurate');
+                `
+            }, {
+                cursor: {
+                    iteration: 2,
+                    cycles: 3
+                },
+                legacy: {
+                    _itemName: 'request-name',
+                    _itemId: 'request-id'
+                }
+
+            }, done);
+        });
     });
 
     describe('globals', function () {
@@ -188,7 +215,9 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert'),
                     Response = require('postman-collection').Response;
-                assert.strictEqual(Response.isResponse(pm.response), true);
+
+                assert.strictEqual(Response.isResponse(pm.response), true, 'pm.response should be sdk');
+                assert.strictEqual(pm.response.code, 200, 'code should match');
             `, {
                 context: {
                     response: {
@@ -238,6 +267,55 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('cookies', function () {
+        it('must be available', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(typeof pm.cookies, 'object', 'cookies must be defined');
+            `, {
+                context: {
+                    cookies: []
+                }
+            }, done);
+        });
+
+        it('must convert context cookie array to list', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.cookies.count(), 2, 'two cookies must be present');
+            `, {
+                context: {
+                    cookies: [{
+                        name: 'cookie1',
+                        value: 'onevalue',
+                        httpOnly: true
+                    }, {
+                        name: 'cookie2',
+                        value: 'anothervalue'
+                    }]
+                }
+            }, done);
+        });
+
+        it('must return value of one cookie', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.cookies.one('cookie2').value, 'anothervalue', 'value must be defined');
+            `, {
+                context: {
+                    cookies: [{
+                        name: 'cookie1',
+                        value: 'onevalue',
+                        httpOnly: true
+                    }, {
+                        name: 'cookie2',
+                        value: 'anothervalue'
+                    }]
+                }
+            }, done);
+        });
+    });
+
     describe('chai', function () {
         it('must be available as expect', function (done) {
             context.execute(`
@@ -254,6 +332,31 @@ describe('sandbox library - pm api', function () {
                 expect(err).have.property('message', 'expected [Error] not to be an error');
                 done();
             });
+        });
+
+        it('must pre-assert response', function (done) {
+            context.execute(`
+                pm.expect(pm.response).to.have.property('to');
+                pm.expect(pm.response.to).be.an('object');
+
+                // run a test as well ;-)
+                pm.response.to.be.ok;
+            `, {
+                context: {
+                    response: {code: 200}
+                }
+            }, done);
+        });
+
+        it('must pre-assert request', function (done) {
+            context.execute(`
+                pm.expect(pm.request).to.have.property('to');
+                pm.expect(pm.request.to).be.an('object');
+            `, {
+                context: {
+                    request: 'https://postman-echo.com/'
+                }
+            }, done);
         });
     });
 });
