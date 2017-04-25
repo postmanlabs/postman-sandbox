@@ -1,5 +1,9 @@
 # Postman Sandbox Changelog
 
+#### 2.1.1 (April 25, 2017)
+* Added request and response assertions in form of `pm.request.to` and `pm.response.to`
+* `pm.cookies` is now available.
+
 #### 2.1.0 (April 13, 2017)
 * Initial release of the `pm` API.
 * `pm.globals`, `pm.environment` - [VariableScope](http://www.postmanlabs.com/postman-collection/VariableScope.html)s
