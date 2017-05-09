@@ -359,4 +359,32 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
     });
+
+    describe('variables', function () {
+        it('environment variable resolution is given higher priority than globals', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.variables.get('var1'), 'one-env');
+            `, {context: sampleContextData}, done);
+        });
+        it('returns undefined if a variable is not found in any scope', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.variables.get('var1'), undefined);
+            `, done);
+        });
+        it('sets a variable in the local scope and does not mutate parent scopes', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.variables.set('var1', 'var1-value'));
+                assert.strictEqual(pm.variables.get('var1'), 'var1-value');
+
+                assert.strictEqual(pm.variables._layers[0].one('var1').value, 'one-env'); // environment scope
+                assert.strictEqual(pm.variables._layers[1].one('var1').value, 'one'); // global scope
+
+                assert.strictEqual(pm.variables.values.members[0].key, 'var1');
+            `, {context: sampleContextData}, done);
+        });
+    });
 });
