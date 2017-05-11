@@ -19,13 +19,9 @@ describe('sandbox library - pm api', function () {
                 value: 2.5,
                 type: 'number'
             }],
-            data: [{
-                key: 'var1',
-                value: 'one-data'
-            }, {
-                key: 'var2',
-                value: 'two-data'
-            }]
+            data: {
+                'var1': 'one-data'
+            }
         },
         context;
 
@@ -375,7 +371,7 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(VariableScope.isVariableScope(pm.variables), true);
             `, done);
         });
-        it('execution data is given highest priority for variable resolution', function (done) {
+        it('iteration data is given highest priority for variable resolution', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.variables.get('var1'), 'one-data');
@@ -427,11 +423,35 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.variables.set('var1', 'local-value'));
                 assert.strictEqual(pm.variables.get('var1'), 'local-value');
 
-                assert.strictEqual(pm.variables._layers[0].one('var1').value, 'one-data'); // execution.data scope
-                assert.strictEqual(pm.variables._layers[1].one('var1').value, 'one-env'); // execution.environment scope
-                assert.strictEqual(pm.variables._layers[2].one('var1').value, 'one'); // execution.global scope
+                assert.strictEqual(pm.iterationData.get('var1'), 'one-data'); // execution.iterationData scope
+                assert.strictEqual(pm.environment.get('var1'), 'one-env'); // execution.environment scope
+                assert.strictEqual(pm.globals.get('var1'), 'one'); // execution.global scope
 
                 assert.strictEqual(pm.variables.values.members[0].key, 'var1');
+            `, {context: sampleContextData}, done);
+        });
+    });
+
+    describe('iterationData', function () {
+        it('should be an instance of VariableScope', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    VariableScope = require('postman-collection').VariableScope;
+                assert.strictEqual(VariableScope.isVariableScope(pm.iterationData), true);
+            `, {context: sampleContextData}, done);
+        });
+        it('pm.data must not exist', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.data, undefined);
+            `, {context: sampleContextData}, done);
+        });
+        it('accesses the current iteration data via pm.iterationData', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.iterationData.get('var1'), 'one-data');
             `, {context: sampleContextData}, done);
         });
     });
