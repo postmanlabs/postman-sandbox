@@ -1,5 +1,11 @@
 # Postman Sandbox Changelog
 
+#### Unreleased
+* Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals
+
+#### 2.1.2 (May 8, 2017)
+* Assertion event indices now begin with `0` (#89)
+
 #### 2.1.1 (April 25, 2017)
 * Added request and response assertions in form of `pm.request.to` and `pm.response.to`
 * `pm.cookies` is now available.
