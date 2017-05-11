@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### Unreleased
+* Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals
+
 #### 2.1.2 (May 8, 2017)
 * Assertion event indices now begin with `0` (#89)
 
