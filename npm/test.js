@@ -11,7 +11,8 @@ async.series([
     require('./cache'),
     require('./test-unit'),
     require('./test-integration'),
-    require('./test-browser')
+    // run the browser tests locally and not on CI
+    process.env.CI ? async.constant() : require('./test-browser')
 ], function (code) {
     !code && console.log(colors.green('\n' + require('../package.json').name + ' tests: all ok!'));
     exit(code);
