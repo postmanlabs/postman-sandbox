@@ -439,13 +439,7 @@ describe('sandbox library - chai-postman', function () {
                         responseTime: NaN
                     });
                     pm.expect(response).to.have.responseTime();
-                `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected { Object (id, _details, ...) } to have a property \'responseTime\'');
-                    done();
-                });
+                `, done);
             });
 
             it('should allow numeric assertions to check less-than', function (done) {
