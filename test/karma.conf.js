@@ -2,7 +2,7 @@
 // Generated on Mon Nov 09 2015 18:53:12 GMT+0530 (IST)
 
 module.exports = function (config) {
-    config.set({
+    var configuration = {
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
@@ -68,5 +68,17 @@ module.exports = function (config) {
                 timeout: 10000 // 10 seconds
             }
         }
-    });
+    };
+
+    if (process.env.TRAVIS) {
+        configuration.customLaunchers = {
+            chromeTravis: {
+                base: 'Chrome',
+                flags: ['--no-sandbox']
+            }
+        };
+        configuration.browsers = ['chromeTravis'];
+    }
+
+    config.set(configuration);
 };
