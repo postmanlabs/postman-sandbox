@@ -421,5 +421,66 @@ describe('sandbox library - chai-postman', function () {
                 });
             });
         });
+
+        describe('response time', function () {
+            it('should have a way to be asserted for presence', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        responseTime: 200
+                    });
+
+                    pm.expect(response).to.have.responseTime();
+                `, done);
+            });
+
+            // TODO: Uniscope deep dive to fix test.
+            it.skip('should have a way to be asserted for absence', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        responseTime: NaN
+                    });
+                    pm.expect(response).to.have.responseTime();
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message',
+                        'expected { Object (id, _details, ...) } to have a property \'responseTime\'');
+                    done();
+                });
+            });
+
+            it('should allow numeric assertions to check less-than', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        responseTime: 200
+                    });
+                    pm.expect(response).to.have.responseTime.below(100);
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message', 'expected 200 to be below 100');
+                    done();
+                });
+            });
+        });
+
+        describe('response size', function () {
+            it('must be able assert below a figure', function (done) {
+                context.execute(`
+                    var response = new (require('postman-collection').Response)({
+                        code: 200,
+                        header: 'oneHeader:oneValue',
+                        stream: new Buffer('hello there')
+                    });
+
+                    pm.expect(response).to.have.responseSize.below(50);
+                `, function (err) {
+                    expect(err).be.ok();
+                    expect(err).have.property('name', 'AssertionError');
+                    expect(err).have.property('message', 'expected 51 to be below 50');
+                    done();
+                });
+            });
+        });
     });
 });

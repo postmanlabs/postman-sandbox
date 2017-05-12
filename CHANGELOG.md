@@ -1,5 +1,10 @@
 # Postman Sandbox Changelog
 
+#### 2.1.3 (May 12, 2017)
+* Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals
+* Introduced `pm.variables` as a unified interface for variable access
+* Renamed `pm.data` to `pm.iterationData`, exposed as a `VariableScope`
+
 #### 2.1.2 (May 8, 2017)
 * Assertion event indices now begin with `0` (#89)
 
