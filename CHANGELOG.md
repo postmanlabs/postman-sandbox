@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+## v2.1.4 (15 May 2017)
+* chore(package): update postman-collection to version 1.2.5
+
 #### 2.1.3 (May 12, 2017)
 * Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals
 * Introduced `pm.variables` as a unified interface for variable access
