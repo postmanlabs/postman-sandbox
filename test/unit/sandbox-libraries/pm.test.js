@@ -118,6 +118,17 @@ describe('sandbox library - pm api', function () {
                 done();
             });
         });
+
+        it('pm.globals.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.deepEqual(pm.globals.toObject(), {
+                    var1: 'one',
+                    var2: 2
+                });
+            `, {context: sampleContextData}, done);
+        });
     });
 
     describe('environment', function () {
@@ -166,6 +177,17 @@ describe('sandbox library - pm api', function () {
                 ]);
                 done();
             });
+        });
+
+        it('pm.environment.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.deepEqual(pm.environment.toObject(), {
+                    var1: 'one-env',
+                    var2: 2.5
+                });
+            `, {context: sampleContextData}, done);
         });
     });
 
@@ -452,6 +474,15 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert');
 
                 assert.strictEqual(pm.iterationData.get('var1'), 'one-data');
+            `, {context: sampleContextData}, done);
+        });
+        it('pm.iterationData.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.deepEqual(pm.iterationData.toObject(), {
+                    var1: 'one-data'
+                });
             `, {context: sampleContextData}, done);
         });
     });
