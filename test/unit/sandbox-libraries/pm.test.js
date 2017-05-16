@@ -118,6 +118,18 @@ describe('sandbox library - pm api', function () {
                 done();
             });
         });
+
+        it('pm.globals.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.globals.toObject()), true);
+                assert.deepEqual(pm.globals.toObject(), {
+                    var1: 'one',
+                    var2: 2
+                });
+            `, {context: sampleContextData}, done);
+        });
     });
 
     describe('environment', function () {
@@ -166,6 +178,18 @@ describe('sandbox library - pm api', function () {
                 ]);
                 done();
             });
+        });
+
+        it('pm.environment.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.environment.toObject()), true);
+                assert.deepEqual(pm.environment.toObject(), {
+                    var1: 'one-env',
+                    var2: 2.5
+                });
+            `, {context: sampleContextData}, done);
         });
     });
 
@@ -430,6 +454,18 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.variables.values.members[0].key, 'var1');
             `, {context: sampleContextData}, done);
         });
+        it('pm.variables.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                pm.variables.set('foo', 'bar');
+
+                assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
+                assert.deepEqual(pm.variables.toObject(), {
+                    foo: 'bar',
+                });
+            `, {context: sampleContextData}, done);
+        });
     });
 
     describe('iterationData', function () {
@@ -452,6 +488,16 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert');
 
                 assert.strictEqual(pm.iterationData.get('var1'), 'one-data');
+            `, {context: sampleContextData}, done);
+        });
+        it('pm.iterationData.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.iterationData.toObject()), true);
+                assert.deepEqual(pm.iterationData.toObject(), {
+                    var1: 'one-data'
+                });
             `, {context: sampleContextData}, done);
         });
     });

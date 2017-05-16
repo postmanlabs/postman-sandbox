@@ -3,6 +3,12 @@
 #### Unreleased
 * Added `pm.response.to.have.bodyWithJSONSchema()` assertion
 
+## 2.1.5 (May 16 2017)
+* Fixed bug that caused an invalid version of Collection SDK to be cached on prepublish
+
+## 2.1.4 (15 May 2017)
+* chore(package): update postman-collection to version 1.2.5
+
 #### 2.1.3 (May 12, 2017)
 * Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals
 * Introduced `pm.variables` as a unified interface for variable access
