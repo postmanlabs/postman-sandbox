@@ -483,4 +483,26 @@ describe('sandbox library - chai-postman', function () {
             });
         });
     });
+
+    describe('tv4 json schema assertions', function () {
+        it('must fail when response body does not match schema', function (done) {
+            context.execute(`
+                var Response = require('postman-collection').Response,
+                    res = new Response({
+                        body: '[true, 123]'
+                    });
+
+                pm.expect(res).to.have.bodyWithJSONSchema({
+                    "items": {
+                        "type": "boolean"
+                    }
+                });
+            `, function (err) {
+                expect(err).to.be.ok();
+                expect(err).to.have.property('name', 'AssertionError');
+                expect(err).to.have.property('message', 'expect response body json to match schema but got { Object (error, missing, ...) }');
+                done();
+            });
+        });
+    });
 });
