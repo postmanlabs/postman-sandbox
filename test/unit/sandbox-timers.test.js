@@ -88,6 +88,35 @@
         });
     });
 
+    it('must be able to clear immediates', function (done) {
+        var status = 'not executed';
+
+        ctx.on('console', function (cursor, level, message) { // keep track of executions passed
+            if (message === 'executed') { status = 'executed'; }
+        });
+
+        ctx.execute(`
+            var id = setImmediate(function () {
+                console.log('executed');
+            });
+            clearImmediate(id);
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
+
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(false);
+
+            // we wait for a while to ensure that the timeout was actually cleared.
+            setTimeout(function () {
+                expect(status).to.eql('not executed');
+                done();
+            }, 150);
+        });
+    });
+
     it('must time out if timers run beyond interval and stop the interval', function (done) {
         var count = {
             terminal: null,
@@ -118,6 +147,34 @@
                 expect(count).to.have.property('current', count.terminal);
                 done();
             }, 250);
+        });
+    });
+
+    it('must be able to clear intervals and exit', function (done) {
+        var status = 0;
+
+        ctx.on('console', function (cursor, level, message) { // keep track of executions passed
+            if (message === 'executed') { status += 1; }
+        });
+
+        ctx.execute(`
+            var id = setInterval(function () {
+                console.log('executed');
+            }, 25);
+            setTimeout(function() {
+                clearInterval(id);
+            }, 155);
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
+
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(true);
+
+            expect(status).to.eql(5);
+            done();
         });
     });
 });
