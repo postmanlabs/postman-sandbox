@@ -2,6 +2,7 @@
 
 #### Unreleased
 * Support for timers inside sandbox (not in browser)
+* Fixed bug where `pm.test` called without an assertion function would not trigger assertion event
 
 #### 2.1.5 (May 16 2017)
 * Fixed bug that caused an invalid version of Collection SDK to be cached on prepublish
