@@ -33,7 +33,7 @@
 
             expect(res).to.have.property('globals');
             expect(res.globals.values).to.be.an('array');
-            expect(res.globals.values[0].value).to.be.greaterThan(99);
+            expect(res.globals.values[0].value).to.be.greaterThan(95);
             done();
         });
     });
@@ -173,7 +173,7 @@
             expect(err).to.not.be.ok();
             expect(res.return.async).to.be(true);
 
-            expect(status).to.eql(5);
+            expect(status).to.be.above(4);
             done();
         });
     });
