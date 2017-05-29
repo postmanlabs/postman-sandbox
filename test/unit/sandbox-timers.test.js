@@ -139,7 +139,7 @@
             count.terminal = count.current;
 
             expect(err).to.have.property('name', 'Error');
-            expect(err).to.have.property('message', 'sandbox: asyncronous script execution timeout');
+            expect(err).to.have.property('message', 'sandbox: asynchronous script execution timeout');
             expect(res.return.async).to.be(true);
 
             // now wait for a while to ensure no extra interval timers were fired
@@ -169,12 +169,16 @@
             timeout: 200
         }, function (err, res) {
             if (err) { return done(err); }
+            var currentCount = status;
 
             expect(err).to.not.be.ok();
             expect(res.return.async).to.be(true);
+            expect(currentCount).to.be.above(0);
 
-            expect(status).to.be.above(4);
-            done();
+            setTimeout(function () {
+                expect(status).to.be(currentCount);
+                done();
+            }, 200);
         });
     });
 });
