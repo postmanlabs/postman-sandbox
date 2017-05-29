@@ -28,7 +28,7 @@
   "author": "Postman Labs <help@getpostman.com> (=)",
   "license": "Apache-2.0",
   "dependencies": {
-    "browserify": "14.2.0",
+    "browserify": "14.4.0",
     "inherits": "2.0.3",
     "lodash": "4.17.2",
     "uuid": "3.0.1",
