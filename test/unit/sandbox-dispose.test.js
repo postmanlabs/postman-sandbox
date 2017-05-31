@@ -51,4 +51,41 @@ describe('sandbox disposal', function () {
             });
         });
     });
+
+    it('must clear running intervals', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            expect(err).to.not.be.ok();
+
+            var intervals = {
+                terminal: -1,
+                current: 0
+            };
+
+            ctx.on('console', function (cursor, level, message) {
+                (message === 'tick') && (intervals.current += 1);
+                (message === 'timeout') && ctx.dispose();
+            });
+
+            ctx.on('error', done);
+
+            ctx.execute(`
+                setInterval(function () {
+                    console.log('tick');
+                }, 25);
+
+                setTimeout(function () {
+                    console.log('timeout');
+                }, 125);
+            `, function (err) {
+                expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
+                expect(intervals.current).to.be.above(0);
+                intervals.terminal = intervals.current;
+
+                setTimeout(function () {
+                    expect(intervals.current).to.be(intervals.terminal);
+                    done();
+                }, 100);
+            });
+        });
+    })
 });
