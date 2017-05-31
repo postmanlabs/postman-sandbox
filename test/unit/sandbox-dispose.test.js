@@ -87,5 +87,5 @@ describe('sandbox disposal', function () {
                 }, 100);
             });
         });
-    })
+    });
 });
