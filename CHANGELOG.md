@@ -1,9 +1,13 @@
 # Postman Sandbox Changelog
 
-## 2.1.5 (May 16 2017)
+#### 2.2.0 (June 14, 2017)
+* Updated dependencies
+* Added moment (without locales) to the Sandbox #122
+
+#### 2.1.5 (May 16, 2017)
 * Fixed bug that caused an invalid version of Collection SDK to be cached on prepublish
 
-## 2.1.4 (15 May 2017)
+#### 2.1.4 (May 15, 2017)
 * chore(package): update postman-collection to version 1.2.5
 
 #### 2.1.3 (May 12, 2017)
