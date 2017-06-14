@@ -88,51 +88,51 @@ describe('sandbox library - moment.min', function () {
             `, done);
         });
 
-        it('must work with the UK locale', function (done) {
+        it('must not work with the UK locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
 
                 moment.locale('en-gb');
-                assert(moment.locale(), 'en-gb');
+                assert.strictEqual(moment.locale(), 'en');
 
-                assert(moment.weekdays(3), 'Wednesday');
-                assert(moment.weekdaysShort(3), 'Wed');
+                assert.strictEqual(moment.weekdays(3), 'Wednesday');
+                assert.strictEqual(moment.weekdaysShort(3), 'Wed');
 
-                assert(moment.months(1), 'February');
-                assert(moment.monthsShort(1), 'Feb');
+                assert.strictEqual(moment.months(1), 'February');
+                assert.strictEqual(moment.monthsShort(1), 'Feb');
             `, done);
         });
 
-        it('must work with the Chinese locale', function (done) {
+        it('must not work with the Chinese locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
 
                 moment.locale('zh-cn');
-                assert(moment.locale(), 'zh-cn');
+                assert.strictEqual(moment.locale(), 'en');
 
-                assert(moment.weekdays(3), '星期三');
-                assert(moment.weekdaysShort(3), '周三');
+                assert.strictEqual(moment.weekdays(3), 'Wednesday');
+                assert.strictEqual(moment.weekdaysShort(3), 'Wed');
 
-                assert(moment.months(1), '二月');
-                assert(moment.monthsShort(1), '2月');
+                assert.strictEqual(moment.months(1), 'February');
+                assert.strictEqual(moment.monthsShort(1), 'Feb');
             `, done);
         });
 
-        it('must work with the pseudo-locale', function (done) {
+        it('must not work with the pseudo-locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
 
                 moment.locale('x-pseudo');
-                assert(moment.locale(), 'x-pseudo');
+                assert.strictEqual(moment.locale(), 'en');
 
-                assert(moment.weekdays(3), 'Wéd~ñésd~áý');
-                assert(moment.weekdaysShort(3), '~Wéd');
+                assert.strictEqual(moment.weekdays(3), 'Wednesday');
+                assert.strictEqual(moment.weekdaysShort(3), 'Wed');
 
-                assert(moment.months(1), 'F~ébrú~árý');
-                assert(moment.monthsShort(1), '~Féb');
+                assert.strictEqual(moment.months(1), 'February');
+                assert.strictEqual(moment.monthsShort(1), 'Feb');
             `, done);
         });
     });
