@@ -32,7 +32,7 @@
     "inherits": "2.0.3",
     "lodash": "4.17.2",
     "uuid": "3.0.1",
-    "uvm": "1.6.0"
+    "uvm": "1.7.0"
   },
   "devDependencies": {
     "assert": "1.4.1",
