@@ -1,4 +1,5 @@
 describe('timers module', function () {
+    this.timeout(1000 * 60);
     var Timers = require('../../lib/sandbox/timers');
 
     it('must be able to set an event', function (done) {

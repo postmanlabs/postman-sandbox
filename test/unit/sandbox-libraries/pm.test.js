@@ -501,4 +501,57 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, done);
         });
     });
+
+    describe('sendRequest', function () {
+        it('must be a function exposed', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual((typeof pm.sendRequest), 'function');
+            `, {context: sampleContextData}, done);
+        });
+
+        it('must dispatch an `execution.request` event when called', function (done) {
+            context.on('execution.request', function (cursor, id, requestId, req) {
+                expect(req).to.have.property('url', 'https://postman-echo.com/get');
+                done();
+            });
+
+            context.execute(`
+                pm.sendRequest('https://postman-echo.com/get');
+            `, {context: sampleContextData}, function () {}); // eslint-disable-line no-empty-function
+        });
+
+        it('must forward response to callback when sent from outside', function (done) {
+            context.on('error', done);
+
+            context.on('execution.error', function (cur, err) {
+                expect(err).to.not.be.ok();
+                done();
+            });
+
+            // @todo find the cause of the error where assertion is not being fired from inside a timer
+            context.on('execution.assertion', function (cursor, ass) {
+                expect(ass).to.have.property('passed', true);
+                expect(ass).to.have.property('error', null);
+                done();
+            });
+
+            context.on('execution.request', function (cursor, id, requestId, req) {
+                expect(req).to.have.property('url', 'https://postman-echo.com/get');
+                context.dispatch(`execution.response.${id}`, requestId, null, {
+                    code: 200,
+                    body: '{"i am": "a json"}'
+                });
+            });
+
+            context.execute(`
+                pm.sendRequest('https://postman-echo.com/get', function (err, res) {
+                    pm.test('response', function () {
+                        pm.expect(res).to.have.property('code', 200);
+                        pm.expect(res.json()).to.have.property('i am', 'a json');
+                    });
+                });
+            `, {context: sampleContextData}, function () {}); // eslint-disable-line no-empty-function
+        });
+    });
 });
