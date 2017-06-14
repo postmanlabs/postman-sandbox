@@ -59,7 +59,10 @@ module.exports = function (exit) {
             console.error(err);
         }
         else {
-            console.log(colors.green('bootcode ready for use!'));
+            console.log(colors.green('bootcode ready for use!\n' +
+                'Running diff .tmp/dependencies.txt dependencies.txt\n' +
+                'If this fails, please run it yourself (You can use any diff tool).'));
+            exec('diff .tmp/dependencies.txt dependencies.txt');
         }
         exit(err ? 1 : 0);
     });
