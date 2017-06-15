@@ -3,7 +3,7 @@ var expect = require('expect.js');
 
 describe('dependencies', function () {
     this.timeout(60 * 1000);
-    
+
     var env = require('../../lib/environment'),
         Bundle = require('../../lib/bundle'),
         currentDependencies;
