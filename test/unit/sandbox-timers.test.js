@@ -181,4 +181,116 @@
             }, 200);
         });
     });
+
+    it('should wait for the longest running timer if multiple ones are running', function (done) {
+        var order = [],
+            e1 = 'executed1',
+            e2 = 'executed2';
+
+        ctx.on('console', function (cursor, level, message) { // keep track of executions passed
+            if (message === e1) {
+                order.push(e1);
+            }
+            else if (message === e2) {
+                order.push(e2);
+            }
+            else {
+                order.push('error');  // this will ensure the test fails
+            }
+        });
+
+        ctx.execute(`
+            setTimeout(function () {
+                console.log('${e1}');
+            }, 25);
+
+            setTimeout(function(executed2) {
+                console.log('${e2}');
+            }, 100)
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
+            setTimeout(function () {
+                expect(res.return.async).to.be(true);
+                expect(order).to.eql([e1, e2]);
+                done();
+            }, 200);
+        });
+    });
+
+    it('should ensure that no timers are called after the timeout is reached', function (done) {
+        var order = [],
+            e1 = 'executed1',
+            e2 = 'executed2';
+
+        ctx.on('console', function (cursor, level, message) { // keep track of executions passed
+            if (message === e1) {
+                order.push(e1);
+            }
+            else if (message === e2) {
+                order.push(e2);
+            }
+            else {
+                order.push('error');  // this will ensure the test fails
+            }
+        });
+
+        ctx.execute(`
+            setTimeout(function () {
+                console.log('${e1}');
+            }, 25);
+
+            setTimeout(function(executed2) {
+                console.log('${e2}'); // this should never run.
+            }, 300)
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            setTimeout(function () {
+                expect(err).to.be.ok();
+                expect(err.message).to.match(/timeout/);
+
+                expect(res.return.async).to.be(true);
+                expect(order).to.eql([e1]);
+                done();
+            }, 500);
+        });
+    });
+
+    it('should allow setting timers inside timers', function (done) {
+        var msg = 'message-from-the-other-side',
+            status = false;
+
+        ctx.on('console', function (cursor, level, message) { // keep track of executions passed
+            if (message === msg && !status) {
+                // only do this if the status is not already true, to ensure a single call.
+                status = true;
+            }
+            else {
+                status = false;
+            }
+        });
+
+        ctx.execute(`
+            setTimeout(function () {
+                setTimeout(function() {
+                    console.log('${msg}');
+                }, 25);
+            }, 25);
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
+
+            setTimeout(function () {
+                expect(res.return.async).to.be(true);
+                expect(status).to.be(true);
+                done();
+            }, 500);
+        });
+    });
 });
