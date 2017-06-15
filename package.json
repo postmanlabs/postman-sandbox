@@ -48,7 +48,7 @@
     "editorconfig": "0.13.2",
     "eslint": "3.18.0",
     "eslint-plugin-jsdoc": "3.1.0",
-    "eslint-plugin-mocha": "4.9.0",
+    "eslint-plugin-mocha": "4.10.1",
     "eslint-plugin-security": "1.3.0",
     "expect.js": "0.3.1",
     "istanbul": "0.4.5",
