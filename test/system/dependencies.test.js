@@ -2,12 +2,13 @@
 var expect = require('expect.js');
 
 describe('dependencies', function () {
+    this.timeout(60 * 1000);
+    
     var env = require('../../lib/environment'),
         Bundle = require('../../lib/bundle'),
         currentDependencies;
 
     before(function (done) {
-        this.timeout(5000);
         Bundle.load(env).listDependencies(function (err, dependencies) {
             currentDependencies = dependencies;
             return done(err);
