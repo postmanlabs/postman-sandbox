@@ -293,4 +293,38 @@
             }, 500);
         });
     });
+
+    it('should allow async tests', function (done) {
+        var testName = 'postman-sb-test',
+            result;
+
+        ctx.on('execution.assertion', function (execution, test) {
+            result = test;
+        });
+
+        ctx.execute(`
+            setTimeout(function () {
+                pm.test('${testName}', function () {
+                    pm.expect(100).to.eql(100);
+                });
+            }, 25);
+        `, {
+            debug: false,
+            timeout: 200
+        }, function (err, execution) {
+            if (err) { return done(err); }
+
+            setTimeout(function () {
+                expect(execution.return.async).to.be(true);
+                expect(result).to.eql({
+                    name: 'postman-sb-test',
+                    skipped: false,
+                    passed: true,
+                    error: null,
+                    index: 0
+                });
+                done();
+            }, 500);
+        });
+    });
 });
