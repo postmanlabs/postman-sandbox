@@ -1,4 +1,4 @@
-describe('sandbox library - csv-parse', function () {
+describe('sandbox library - csv-parse/lib/sync', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
         context;
@@ -18,7 +18,7 @@ describe('sandbox library - csv-parse', function () {
     it('must exist', function (done) {
         context.execute(`
             var assert = require('assert'),
-                csvParse = require('csv-parse');
+                csvParse = require('csv-parse/lib/sync');
 
             assert.strictEqual(typeof csvParse, 'function', 'typeof csv-parse must be function');
         `, done);
@@ -28,7 +28,7 @@ describe('sandbox library - csv-parse', function () {
         it('must work correctly for rudimentary csv data', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse'),
+                    csvParse = require('csv-parse/lib/sync'),
 
                     data = csvParse('foo');
 
@@ -39,7 +39,7 @@ describe('sandbox library - csv-parse', function () {
         it('must work correctly for a singelton set', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse'),
+                    csvParse = require('csv-parse/lib/sync'),
 
                     data = csvParse('foo\\n123');
 
@@ -50,7 +50,7 @@ describe('sandbox library - csv-parse', function () {
         it('must correctly report parsing errors', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse');
+                    csvParse = require('csv-parse/lib/sync');
 
                 assert.throws(function () {
                     csvParse('foo,bar\\n123');
@@ -63,7 +63,7 @@ describe('sandbox library - csv-parse', function () {
         it('should correctly treat the first row as a header', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse'),
+                    csvParse = require('csv-parse/lib/sync'),
 
                     data = csvParse('foo\\n123', { columns: true });
 
@@ -74,7 +74,7 @@ describe('sandbox library - csv-parse', function () {
         it('should correctly handle custom escape sequences', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse'),
+                    csvParse = require('csv-parse/lib/sync'),
 
                     data = csvParse('foo,bar\\n"alpha","b/"et/"a"', { escape: '/' });
 
@@ -85,7 +85,7 @@ describe('sandbox library - csv-parse', function () {
         it('should correctly parse stringified numbers', function (done) {
             context.execute(`
                 var assert = require('assert'),
-                    csvParse = require('csv-parse'),
+                    csvParse = require('csv-parse/lib/sync'),
 
                     data = csvParse('foo\\n123', { auto_parse: true });
 
