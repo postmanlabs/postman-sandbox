@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "2.3.0-beta.1",
+  "version": "2.3.0-beta.2",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -45,10 +45,11 @@
     "cheerio": "0.22.0",
     "colors": "1.1.2",
     "crypto-js": "3.1.9-1",
+    "csv-parse": "1.2.0",
     "editorconfig": "0.13.2",
     "eslint": "3.18.0",
     "eslint-plugin-jsdoc": "3.1.0",
-    "eslint-plugin-mocha": "4.10.1",
+    "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-security": "1.4.0",
     "expect.js": "0.3.1",
     "istanbul": "0.4.5",
