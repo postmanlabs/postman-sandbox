@@ -17,6 +17,7 @@
     "test-system": "node npm/test-system.js",
     "test-lint": "node npm/test-lint.js",
     "test-unit": "node npm/test-unit.js",
+    "test-vm": "node npm/test-vm.js",
     "test": "node npm/test.js",
     "prepublish": "node npm/prepublish.js"
   },
