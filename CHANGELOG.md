@@ -1,5 +1,9 @@
 # Postman Sandbox Changelog
 
+#### 2.3.0 (June 27, 2017)
+* Updated dependencies
+* Added csv-parse (synchronous) to the sandbox #133
+
 #### 2.2.0 (June 14, 2017)
 * Updated dependencies
 * Added moment (without locales) to the Sandbox #122
