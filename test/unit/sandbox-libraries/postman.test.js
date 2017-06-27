@@ -22,14 +22,15 @@ describe('sandbox library - postman legacy', function () {
                 assert.strictEqual(environment.a, 'b', 'environment must be initially set');
                 postman.clearEnvironmentVariables();
                 assert.equal(Object.keys(environment).length, 0, 'environment must be cleared');
-            `, {
-                context: {
-                    environment: [{
-                        key: 'a',
-                        value: 'b'
-                    }]
-                }
-            }, done);
+            `,
+                {
+                    context: {
+                        environment: [{
+                            key: 'a',
+                            value: 'b'
+                        }]
+                    }
+                }, done);
         });
     });
 
@@ -40,13 +41,13 @@ describe('sandbox library - postman legacy', function () {
                 tests['true'] = true;
                 tests['false'] = false;
             `, {}, function (err, result) {
-                if (err) { return done(err); }
+                    if (err) { return done(err); }
 
-                expect(result).be.ok();
-                expect(result).have.property('tests');
-                expect(result.tests).eql({undefined: false, true: true, false: false});
-                done();
-            });
+                    expect(result).be.ok();
+                    expect(result).have.property('tests');
+                    expect(result.tests).eql({undefined: false, true: true, false: false});
+                    done();
+                });
         });
     });
 });

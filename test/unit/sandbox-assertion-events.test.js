@@ -20,15 +20,14 @@ describe('sandbox assertion events', function () {
                 pm.test("pass2", function () {
                     pm.expect(123).be.a(Number);
                 });
-            `, {
-                id: 'my-execution-id'
-            }, function (err) {
-                if (err) { return done(err); }
+            `, {id: 'my-execution-id'},
+                function (err) {
+                    if (err) { return done(err); }
 
-                expect(indices).to.eql([0, 1]);
+                    expect(indices).to.eql([0, 1]);
 
-                done();
-            });
+                    done();
+                });
         });
     });
 });
