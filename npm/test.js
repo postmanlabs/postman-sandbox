@@ -10,6 +10,7 @@ async.series([
     require('./test-system'),
     require('./cache'),
     require('./test-unit'),
+    require('./test-vm'),
     require('./test-integration'),
     require('./test-browser')
 ], function (code) {
