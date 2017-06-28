@@ -5,6 +5,10 @@
 * Fixed bug where `pm.test` called without an assertion function would not trigger assertion event
 * Added `pm.sendRequest` which dispatches event `execution.request` and expects `execution.response.id` sent to it
 
+#### 2.3.0 (June 27, 2017)
+* Updated dependencies
+* Added csv-parse (synchronous) to the sandbox #133
+
 #### 2.2.0 (June 14, 2017)
 * Updated dependencies
 * Added moment (without locales) to the Sandbox #122
