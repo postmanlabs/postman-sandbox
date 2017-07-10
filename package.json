@@ -56,7 +56,7 @@
     "istanbul": "0.4.5",
     "jquery": "3.1.1",
     "js-yaml": "3.9.0",
-    "jsdoc": "3.4.3",
+    "jsdoc": "3.5.0",
     "jsdoc-to-markdown": "3.0.0",
     "karma": "1.6.0",
     "karma-browserify": "5.1.1",
