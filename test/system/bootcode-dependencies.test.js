@@ -1,7 +1,7 @@
 /* global describe, it */
 var expect = require('expect.js');
 
-describe('dependencies', function () {
+describe('bootcode dependencies', function () {
     this.timeout(60 * 1000);
 
     var env = require('../../lib/environment'),
@@ -9,8 +9,10 @@ describe('dependencies', function () {
         currentDependencies;
 
     before(function (done) {
+        process && process.stdout.write('  -- building dependencies, please wait... ');
         Bundle.load(env).listDependencies(function (err, dependencies) {
             currentDependencies = dependencies;
+            console.log(err ? 'failed' : 'done');
             return done(err);
         });
     });
@@ -77,6 +79,7 @@ describe('dependencies', function () {
             'pathval',
             'postman-collection',
             'postman-sandbox',
+            'postman-url-encoder',
             'process',
             'process-nextick-args',
             'readable-stream',
