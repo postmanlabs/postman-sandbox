@@ -433,8 +433,7 @@ describe('sandbox library - chai-postman', function () {
                 `, done);
             });
 
-            // TODO: Uniscope deep dive to fix test.
-            it.skip('should have a way to be asserted for absence', function (done) {
+            it('should have a way to be asserted for absence', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         responseTime: NaN
@@ -444,7 +443,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).be.ok();
                     expect(err).have.property('name', 'AssertionError');
                     expect(err).have.property('message',
-                        'expected { Object (id, _details, ...) } to have a property \'responseTime\'');
+                        'expected { Object (id, _details, ...) } to have property \'responseTime\'');
                     done();
                 });
             });
