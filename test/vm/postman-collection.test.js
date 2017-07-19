@@ -23,12 +23,13 @@ describe('Collection SDK in Node VM', function () {
         assert.strictEqual(sdk.PropertyList.isPropertyList(collection.items), true, 'has an itemgroup');
         assert.strictEqual(collection.items.has('get-one'), true, 'items.has lookup get-one item');
 
-        assert.strictEqual(collection.items.one('get-one').request.url.toString(), 'http://postman-echo.com/get?test=123');
+        assert.strictEqual(collection.items.one('get-one').request.url.toString(),
+            'http://postman-echo.com/get?test=123');
     });
 
     it('should work correctly for responses', function () {
         var response = new sdk.Response({
-            stream: new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
+            stream: new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72]) // eslint-disable-line no-buffer-constructor
         });
 
         assert.strictEqual(response.text(), 'buffer', 'converts stream in response to text');
