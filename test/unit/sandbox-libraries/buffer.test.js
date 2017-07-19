@@ -96,12 +96,14 @@ describe('sandbox library - buffer', function () {
     });
 
     it('must base64 decode extended utf8 characters', function (done) {
+        /* eslint-disable max-len */
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.from('eyJuYW1lIjoi5b6Q5a6BIiwiZW1haWwiOiJ4dW5pbmdoc3VAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6Iueci+aIkeeahOWkp+eZveecvCJ9', 'base64');
 
             assert.strictEqual(buf.toString('ascii'), '{"name":"e>\\u0010e.\\u0001","email":"xuninghsu@example.com","username":"g\\u001c\\u000bf\\b\\u0011g\\u001a\\u0004e$\\'g\\u0019=g\\u001c<"}', 'converstion from utf8 base64');
         `, done);
+        /* eslint-enable max-len */
     });
 
     it('must allow to use deprecated new Buffer syntax', function (done) {
