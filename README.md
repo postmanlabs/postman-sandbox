@@ -42,3 +42,18 @@ The following section outlines the API available inside sandbox scripts
 
 - pm.request
 - pm.response
+
+## Events fired from Sandbox
+- pong
+- error
+- execution
+- execution.error
+- execution.error.*
+- execution.request.*
+- execution.result.*
+
+## Events responded to
+- ping
+- execute
+- execution.abort.*
+- execution.response.*

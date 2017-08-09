@@ -3,7 +3,7 @@
 #### Unreleased
 * Support for timers inside sandbox (not in browser)
 * Fixed bug where `pm.test` called without an assertion function would not trigger assertion event
-* Added `pm.sendRequest` which dispatches event `execution.request` and expects `execution.response.id` sent to it
+* Added `pm.sendRequest` which dispatches event `execution.request.${id}` and expects `execution.response.${id}`
 
 #### 2.3.0 (June 27, 2017)
 * Updated dependencies
