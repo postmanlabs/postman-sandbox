@@ -510,18 +510,24 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, done);
         });
 
-        it('must dispatch an `execution.request` event when called', function (done) {
-            context.on('execution.request', function (cursor, id, requestId, req) {
+        it('must dispatch an `execution.request.${id}` event when called', function (done) {
+            var executionId = '1';
+
+            context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
                 expect(req).to.have.property('url', 'https://postman-echo.com/get');
                 done();
             });
 
             context.execute(`
                 pm.sendRequest('https://postman-echo.com/get');
-            `, {context: sampleContextData}, function () {}); // eslint-disable-line no-empty-function
+            `, {
+                context: sampleContextData,
+                id: executionId
+            }, function () {}); // eslint-disable-line no-empty-function
         });
 
         it('must forward response to callback when sent from outside', function (done) {
+            var executionId = '2';
             context.on('error', done);
 
             context.on('execution.error', function (cur, err) {
@@ -536,7 +542,7 @@ describe('sandbox library - pm api', function () {
                 done();
             });
 
-            context.on('execution.request', function (cursor, id, requestId, req) {
+            context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
                 expect(req).to.have.property('url', 'https://postman-echo.com/get');
                 context.dispatch(`execution.response.${id}`, requestId, null, {
                     code: 200,
@@ -551,7 +557,10 @@ describe('sandbox library - pm api', function () {
                         pm.expect(res.json()).to.have.property('i am', 'a json');
                     });
                 });
-            `, {context: sampleContextData}, function () {}); // eslint-disable-line no-empty-function
+            `, {
+                context: sampleContextData,
+                id: executionId
+            }, function () {}); // eslint-disable-line no-empty-function
         });
     });
 });
