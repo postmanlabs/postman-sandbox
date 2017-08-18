@@ -462,6 +462,8 @@ describe('sandbox library - pm api', function () {
 
                 assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
                 assert.deepEqual(pm.variables.toObject(), {
+                    var1: 'one',
+                    var2: 2,
                     foo: 'bar',
                 });
             `, {context: sampleContextData}, done);
