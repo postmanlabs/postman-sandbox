@@ -510,7 +510,7 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, done);
         });
 
-        it('must dispatch an `execution.request.${id}` event when called', function (done) {
+        it('must dispatch an `execution.request.id` event when called', function (done) {
             var executionId = '1';
 
             context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
@@ -521,9 +521,9 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 pm.sendRequest('https://postman-echo.com/get');
             `, {
-                context: sampleContextData,
-                id: executionId
-            }, function () {}); // eslint-disable-line no-empty-function
+                    context: sampleContextData,
+                    id: executionId
+                }, function () {}); // eslint-disable-line no-empty-function
         });
 
         it('must forward response to callback when sent from outside', function (done) {
@@ -558,9 +558,9 @@ describe('sandbox library - pm api', function () {
                     });
                 });
             `, {
-                context: sampleContextData,
-                id: executionId
-            }, function () {}); // eslint-disable-line no-empty-function
+                    context: sampleContextData,
+                    id: executionId
+                }, function () {}); // eslint-disable-line no-empty-function
         });
     });
 });

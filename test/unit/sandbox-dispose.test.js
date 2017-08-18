@@ -44,11 +44,11 @@ describe('sandbox disposal', function () {
                     console.log('timeout');
                 }, 50);
             `, {
-                timeout: 1000
-            }, function (err) {
-                status.disconnected = true;
-                expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
-            });
+                    timeout: 1000
+                }, function (err) {
+                    status.disconnected = true;
+                    expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
+                });
         });
     });
 
@@ -77,15 +77,15 @@ describe('sandbox disposal', function () {
                     console.log('timeout');
                 }, 125);
             `, function (err) {
-                expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
-                expect(intervals.current).to.be.above(0);
-                intervals.terminal = intervals.current;
+                    expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
+                    expect(intervals.current).to.be.above(0);
+                    intervals.terminal = intervals.current;
 
-                setTimeout(function () {
-                    expect(intervals.current).to.be(intervals.terminal);
-                    done();
-                }, 100);
-            });
+                    setTimeout(function () {
+                        expect(intervals.current).to.be(intervals.terminal);
+                        done();
+                    }, 100);
+                });
         });
     });
 });
