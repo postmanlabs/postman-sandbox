@@ -95,6 +95,7 @@ describe('bootcode dependencies', function () {
             'type-detect',
             'underscore',
             'uniscope',
+            'url',
             'util',
             'util-deprecate',
             'uuid',
