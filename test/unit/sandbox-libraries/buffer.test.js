@@ -91,16 +91,21 @@ describe('sandbox library - buffer', function () {
             var assert = require('assert'),
                 buf = Buffer.from('hello world', 'ascii');
 
-            assert.strictEqual(buf.toString('base64'), 'aGVsbG8gd29ybGQ=', 'converstion of ascii to base64');
+            assert.strictEqual(buf.toString('base64'), 'aGVsbG8gd29ybGQ=', 'conversion of ascii to base64');
         `, done);
     });
 
     it('must base64 decode extended utf8 characters', function (done) {
+        // eslint-disable-next-line max-len
+        var fromValue = 'eyJuYW1lIjoi5b6Q5a6BIiwiZW1haWwiOiJ4dW5pbmdoc3VAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6Iueci+aIkeeahOWkp+eZveecvCJ9',
+            // eslint-disable-next-line max-len
+            strValue = '{"name":"e>\u0010e.\u0001","email":"xuninghsu@example.com","username":"g\u001c\u000bf\b\u0011g\u001a\u0004e$\'g\u0019=g\u001c<"}';
+
         context.execute(`
             var assert = require('assert'),
-                buf = Buffer.from('eyJuYW1lIjoi5b6Q5a6BIiwiZW1haWwiOiJ4dW5pbmdoc3VAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6Iueci+aIkeeahOWkp+eZveecvCJ9', 'base64');
+                buf = Buffer.from('${fromValue}', 'base64');
 
-            assert.strictEqual(buf.toString('ascii'), '{"name":"e>\\u0010e.\\u0001","email":"xuninghsu@example.com","username":"g\\u001c\\u000bf\\b\\u0011g\\u001a\\u0004e$\\'g\\u0019=g\\u001c<"}', 'converstion from utf8 base64');
+            assert.strictEqual(buf.toString('ascii'), '${strValue}', 'conversion from utf8 base64');
         `, done);
     });
 

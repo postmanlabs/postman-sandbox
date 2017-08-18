@@ -78,7 +78,8 @@ describe('sandbox library - csv-parse/lib/sync', function () {
 
                     data = csvParse('foo,bar\\n"alpha","b/"et/"a"', { escape: '/' });
 
-                assert.deepStrictEqual(data, [['foo','bar'],['alpha','b"et"a']], 'Custom escape sequences must be respected');
+                assert.deepStrictEqual(data, [['foo','bar'],['alpha','b"et"a']],
+                    'Custom escape sequences must be respected');
             `, done);
         });
 
