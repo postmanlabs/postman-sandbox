@@ -1,5 +1,13 @@
 # Postman Sandbox Changelog
 
+## v2.3.1 (August 18, 2017)
+* Updated dependencies.
+* Added `url`, `punycode`, and `querystring` to the Sandbox.
+* :clock1: Support for timers inside sandbox (not in browser) #106
+* Prevented disabled headers from showing up in `request.headers` in the sandbox. #169
+* Fixed bug where `pm.test` called without an assertion function would not trigger assertion event.
+* Added `pm.sendRequest` which dispatches event `execution.request.${id}` and expects `execution.response.${id}`
+
 #### 2.3.0 (June 27, 2017)
 * Updated dependencies
 * Added csv-parse (synchronous) to the sandbox #133
