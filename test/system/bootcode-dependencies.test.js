@@ -82,6 +82,8 @@ describe('bootcode dependencies', function () {
             'postman-url-encoder',
             'process',
             'process-nextick-args',
+            'punycode',
+            'querystring-es3',
             'readable-stream',
             'regexp-quote',
             'safe-buffer',
