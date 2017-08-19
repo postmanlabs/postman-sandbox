@@ -16,14 +16,14 @@ describe('script in sandbox', function () {
                 // set a global variable
                 oneGlobalVariable = 'test-global-variable';
             `, function (err) {
-                if (err) { return done(err); }
+                    if (err) { return done(err); }
 
-                ctx.execute(`
-                    var assert = require('assert');
-                    assert.notEqual(typeof oneGlobalVariable, 'undefined', 'oneGlobalVariable should be defined');
-                    assert.equal(oneGlobalVariable, 'test-global-variable', 'oneGlobalVariable should have value');
-                `, done);
-            });
+                    ctx.execute(`
+                        var assert = require('assert');
+                        assert.notEqual(typeof oneGlobalVariable, 'undefined', 'oneGlobalVariable should be defined');
+                        assert.equal(oneGlobalVariable, 'test-global-variable', 'oneGlobalVariable should have value');
+                    `, done);
+                });
         });
     });
 });

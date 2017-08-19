@@ -55,13 +55,13 @@ describe('sandbox', function () {
                 assert.equal(typeof Error, 'function');
                 assert.equal(typeof console, 'object');
             `, {
-                id: 'my-test-id'
-            }, function (err, execution) {
-                if (err) { return done(err); }
+                    id: 'my-test-id'
+                }, function (err, execution) {
+                    if (err) { return done(err); }
 
-                expect(execution).have.property('id', 'my-test-id');
-                done();
-            });
+                    expect(execution).have.property('id', 'my-test-id');
+                    done();
+                });
         });
     });
 });
