@@ -29,7 +29,7 @@
 
             ctx.execute('while(1)', function (err) {
                 expect(err).be.ok();
-                expect(err).have.property('message', 'sandbox: execution timeout');
+                expect(err).have.property('message', 'sandbox: synchronous script execution timeout');
                 done();
             });
         });
