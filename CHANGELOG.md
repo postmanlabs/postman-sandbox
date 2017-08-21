@@ -1,6 +1,10 @@
 # Postman Sandbox Changelog
 
-## v2.3.1 (August 18, 2017)
+#### v2.3.2 (August 21, 2017)
+* :bug: Fixed an issue that caused missing headers in assertions to crash test scripts. #176
+* :arrow_up: Updated `csv-parse` to v1.2.1 #156
+
+#### v2.3.1 (August 18, 2017)
 * Updated dependencies.
 * Added `url`, `punycode`, and `querystring` to the Sandbox.
 * :clock1: Support for timers inside sandbox (not in browser) #106
