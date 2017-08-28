@@ -1,5 +1,9 @@
 # Postman Sandbox Changelog
 
+#### v2.3.3 (August 28, 2017)
+* :arrow_up: Bumped `xml2js` to `v0.4.19`. #178
+* :arrow_up: Bumped `postman-collection` to `v2.1.3`. #180
+
 #### v2.3.2 (August 21, 2017)
 * :bug: Fixed an issue that caused missing headers in assertions to crash test scripts. #176
 * :arrow_up: Updated `csv-parse` to v1.2.1 #156
