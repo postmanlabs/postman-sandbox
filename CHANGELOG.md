@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### Unreleased\
+* :arrow_up: Bumped `postman-collection` to `v3.0.0` (consequently removed unwanted packages from bootcode)
+
 #### v2.3.3 (August 28, 2017)
 * :arrow_up: Bumped `xml2js` to `v0.4.19`. #178
 * :arrow_up: Bumped `postman-collection` to `v2.1.3`. #180
