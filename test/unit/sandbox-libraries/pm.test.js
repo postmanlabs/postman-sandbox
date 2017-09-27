@@ -206,6 +206,27 @@ describe('sandbox library - pm api', function () {
                 }, done);
         });
 
+        it('when serialized should not have assertion helpers added by sandbox', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    reqJSON;
+
+                try {
+                    reqJSON = pm.request.toJSON();
+                    assert.strictEqual(reqJSON.url, 'https://postman-echo.com/get?foo=bar');
+                    assert.strictEqual(reqJSON.method, 'GET');
+                    assert.equal(reqJSON.to, undefined);
+                }
+                catch (e) {
+                    assert.equal(e, null);
+                }
+            `, {
+                    context: {
+                        request: 'https://postman-echo.com/get?foo=bar'
+                    }
+                }, done);
+        });
+
         it('must not be defined if request is missing in generic script target', function (done) {
             context.execute(`
                 var assert = require('assert'),
@@ -245,6 +266,28 @@ describe('sandbox library - pm api', function () {
 
                 assert.strictEqual(Response.isResponse(pm.response), true, 'pm.response should be sdk');
                 assert.strictEqual(pm.response.code, 200, 'code should match');
+            `, {
+                    context: {
+                        response: {
+                            code: 200
+                        }
+                    }
+                }, done);
+        });
+
+        it('when serialized should not have assertion helpers added by sandbox', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    resJSON;
+
+                try {
+                    resJSON = pm.response.toJSON();
+                    assert.strictEqual(resJSON.code, 200);
+                    assert.equal(resJSON.to, undefined);
+                }
+                catch (e) {
+                    assert.equal(e, null);
+                }
             `, {
                     context: {
                         response: {
