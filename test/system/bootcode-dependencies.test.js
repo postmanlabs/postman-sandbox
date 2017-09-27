@@ -25,7 +25,6 @@ describe('bootcode dependencies', function () {
             'backbone',
             'base64-js',
             'boolbase',
-            'browserify',
             'btoa',
             'buffer',
             'chai',
