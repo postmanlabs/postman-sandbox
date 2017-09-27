@@ -1,5 +1,11 @@
 # Postman Sandbox Changelog
 
+#### v2.3.4 (September 27, 2017)
+* :bug: Fixed a bug that caused internal assertion helpers to be leaked #203
+* :bug: Shifted `browserify` to `devDependencies`, thereby reducing package size. #196
+* :bug: Fixed script timeout bug #193.
+* :bug: Added support for `console.error` #186.
+
 #### v2.3.3 (August 28, 2017)
 * :arrow_up: Bumped `xml2js` to `v0.4.19`. #178
 * :arrow_up: Bumped `postman-collection` to `v2.1.3`. #180
