@@ -28,6 +28,7 @@ describe('bootcode dependencies', function () {
             'btoa',
             'buffer',
             'chai',
+            'chai-postman',
             'charset',
             'check-error',
             'cheerio',

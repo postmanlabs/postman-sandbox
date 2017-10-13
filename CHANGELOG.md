@@ -1,5 +1,9 @@
 # Postman Sandbox Changelog
 
+#### v2.3.5 (October 13, 2017)
+* :arrow_up: Updated dependencies.
+* :tada: Replaced in-house chai assertion extensions with [chai-postman](https://github.com/postmanlabs/chai-postman) #212.
+
 #### v2.3.4 (September 27, 2017)
 * :bug: Fixed a bug that caused internal assertion helpers to be leaked #203
 * :bug: Shifted `browserify` to `devDependencies`, thereby reducing package size. #196
