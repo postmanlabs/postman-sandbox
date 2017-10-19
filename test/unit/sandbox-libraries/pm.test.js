@@ -515,6 +515,10 @@ describe('sandbox library - pm api', function () {
                 }, {
                     key: 'var2',
                     value: 'two'
+                }, {
+                    key: 'var3',
+                    value: 3,
+                    type: 'number'
                 }]
             };
 
@@ -525,7 +529,7 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.variables.get('var2'), 'two');
 
                 // can set variables with same keys as collectionVariables
-                assert.strictEqual(pm.variables.get('var3', undefined));
+                assert.strictEqual(pm.variables.get('var3'), 3);
                 assert.strictEqual(pm.variables.set('var3', 'hola'));
                 assert.strictEqual(pm.variables.get('var3'), 'hola');
             `, {context: contextData}, done);
