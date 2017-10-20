@@ -19,6 +19,14 @@ describe('sandbox library - pm api', function () {
                 value: 2.5,
                 type: 'number'
             }],
+            collectionVariables: [{
+                key: 'var1',
+                value: 'collection-var1',
+                type: 'string'
+            }, {
+                key: 'var3',
+                value: 'collection-var3'
+            }],
             data: {
                 'var1': 'one-data'
             }
@@ -497,6 +505,86 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.variables.values.members[0].key, 'var1');
             `, {context: sampleContextData}, done);
         });
+
+        it('should get from collectionVariables', function (done) {
+            var contextData = {
+                collectionVariables: [{
+                    key: 'var1',
+                    value: 1,
+                    type: 'number'
+                }, {
+                    key: 'var2',
+                    value: 'two'
+                }, {
+                    key: 'var3',
+                    value: 3,
+                    type: 'number'
+                }]
+            };
+
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.variables.get('var1'), 1);
+                assert.strictEqual(pm.variables.get('var2'), 'two');
+
+                // can set variables with same keys as collectionVariables
+                assert.strictEqual(pm.variables.get('var3'), 3);
+                pm.variables.set('var3', 'hola');
+                assert.strictEqual(pm.variables.get('var3'), 'hola');
+            `, {context: contextData}, done);
+        });
+
+        it('should maintain environment > collectionVariables > globals precedence', function (done) {
+            var contextData = {
+                environment: [{
+                    key: 'var1',
+                    value: 1,
+                    type: 'number'
+                }, {
+                    key: 'var2',
+                    value: 'two-env'
+                }],
+                collectionVariables: [{
+                    key: 'var1',
+                    value: 2,
+                    type: 'number'
+                }, {
+                    key: 'var3',
+                    value: 'three-collection'
+                }, {
+                    key: 'var4',
+                    value: 4,
+                    type: 'number'
+                }],
+                globals: [{
+                    key: 'var3',
+                    value: 'three-global'
+                }, {
+                    key: 'var5',
+                    value: 'five-global'
+                }]
+            };
+
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.variables.get('var1'), 1); // env overrides collection
+                assert.strictEqual(pm.variables.get('var2'), 'two-env'); // direct env
+                assert.strictEqual(pm.variables.get('var3'), 'three-collection'); // collection overrides global
+                assert.strictEqual(pm.variables.get('var4'), 4); // direct collection
+                assert.strictEqual(pm.variables.get('var5'), 'five-global'); // direct global
+                // @todo: unskip after VariableScope.prototype.toObject is fixed
+                // assert.deepEqual(pm.variables.toObject(), {
+                //     var1: 1,
+                //     var2: 'two-env',
+                //     var3: 'three-collection',
+                //     var4: 4,
+                //     var5: 'five-global'
+                // });
+            `, {context: contextData}, done);
+        });
+
         it('pm.variables.toObject must return a pojo', function (done) {
             context.execute(`
                 var assert = require('assert');
@@ -507,6 +595,7 @@ describe('sandbox library - pm api', function () {
                 assert.deepEqual(pm.variables.toObject(), {
                     var1: 'one',
                     var2: 2,
+                    var3: 'collection-var3',
                     foo: 'bar',
                 });
             `, {context: sampleContextData}, done);
