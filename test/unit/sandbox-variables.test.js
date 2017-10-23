@@ -1,4 +1,6 @@
-var Sandbox = require('../../lib'),
+var sdk = require('postman-collection'),
+
+    Sandbox = require('../../lib'),
     Execution = require('../../lib/sandbox/execution'),
 
     execution, // eslint-disable-line no-unused-vars
@@ -24,15 +26,21 @@ describe('pm.variables', function () {
         execution = new Execution('id', {listen: 'test'}, {}, {});
     });
 
-    it('set variables must be returned back in the result', function (done) {
-        ctx.execute('pm.variables.set("user", "postman");', {
-            debug: false,
-            timeout: 200
+    it('must return only the base definition variables in the result', function (done) {
+        var globalVarList = new sdk.VariableList(null, {key: 'key-1', value: 'value-1'}),
+            envVarList = new sdk.VariableList(null, {key: 'key-2', value: 'value-2'});
+
+        ctx.execute('pm.variables.set("key-3", "value-3");', {
+            timeout: 200,
+            context: {
+                globals: new sdk.VariableScope(globalVarList),
+                environment: new sdk.VariableScope(envVarList)
+            }
         }, function (err, execution) {
             if (err) { return done(err); }
 
-            expect(execution._variables).to.have.property('values');
-            expect(execution._variables.values).to.eql([{type: 'any', value: 'postman', key: 'user'}]);
+            expect(execution.variables).to.have.property('values');
+            expect(execution.variables.values).to.eql([{type: 'any', value: 'value-3', key: 'key-3'}]);
             return done();
         });
     });
