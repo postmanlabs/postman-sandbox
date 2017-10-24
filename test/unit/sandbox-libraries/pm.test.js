@@ -574,14 +574,13 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.variables.get('var3'), 'three-collection'); // collection overrides global
                 assert.strictEqual(pm.variables.get('var4'), 4); // direct collection
                 assert.strictEqual(pm.variables.get('var5'), 'five-global'); // direct global
-                // @todo: unskip after VariableScope.prototype.toObject is fixed
-                // assert.deepEqual(pm.variables.toObject(), {
-                //     var1: 1,
-                //     var2: 'two-env',
-                //     var3: 'three-collection',
-                //     var4: 4,
-                //     var5: 'five-global'
-                // });
+                assert.deepEqual(pm.variables.toObject(), {
+                    var1: 1,
+                    var2: 'two-env',
+                    var3: 'three-collection',
+                    var4: 4,
+                    var5: 'five-global'
+                });
             `, {context: contextData}, done);
         });
 
@@ -593,10 +592,10 @@ describe('sandbox library - pm api', function () {
 
                 assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
                 assert.deepEqual(pm.variables.toObject(), {
-                    var1: 'one',
-                    var2: 2,
-                    var3: 'collection-var3',
-                    foo: 'bar',
+                    var1: 'one-data', // from iteration data
+                    var2: 2.5, // from the environment
+                    var3: 'collection-var3', // not present anywhere else, fetch from collectionVariables
+                    foo: 'bar'
                 });
             `, {context: sampleContextData}, done);
         });
