@@ -26,6 +26,14 @@ describe('pm.variables', function () {
         ctx = null;
     });
 
+    it('should be an instance of VariableScope', function (done) {
+        ctx.execute(`
+            var assert = require('assert'),
+                VariableScope = require('postman-collection').VariableScope;
+            assert.strictEqual(VariableScope.isVariableScope(pm.variables), true);
+        `, done);
+    });
+
     describe('.set', function () {
         before(function (done) {
             ctx.execute(`
@@ -83,6 +91,63 @@ describe('pm.variables', function () {
     });
 
     describe('.get', function () {
+        it('should honour the precendence', function (done) {
+            var globalVarList = new sdk.VariableList(null,
+                    {key: 'key-1', value: 'value-1'},
+                    {key: 'key-2', value: 'value-1'},
+                    {key: 'key-3', value: 'value-1'},
+                    {key: 'key-4', value: 'value-1'},
+                    {key: 'key-5', value: 'value-1'}
+                ),
+                collectionVarList = new sdk.VariableList(null,
+                    {key: 'key-2', value: 'value-2'},
+                    {key: 'key-3', value: 'value-2'},
+                    {key: 'key-4', value: 'value-2'},
+                    {key: 'key-5', value: 'value-2'}
+                ),
+                envVarList = new sdk.VariableList(null,
+                    {key: 'key-3', value: 'value-3'},
+                    {key: 'key-4', value: 'value-3'},
+                    {key: 'key-5', value: 'value-3'}
+                ),
+                contextData = {
+                    'key-4': 'value-4',
+                    'key-5': 'value-4'
+                },
+                localVarList = new sdk.VariableList(null, {key: 'key-5', value: 'value-5'});
+
+            ctx.execute(`
+                var assert = require('assert');
+
+                assert.deepEqual(pm.variables.toObject(), {
+                    'key-1': 'value-1',
+                    'key-2': 'value-2',
+                    'key-3': 'value-3',
+                    'key-4': 'value-4',
+                    'key-5': 'value-5'
+                });
+                assert.strictEqual(pm.variables.get('key-1'), 'value-1');
+                assert.strictEqual(pm.variables.get('key-2'), 'value-2');
+                assert.strictEqual(pm.variables.get('key-3'), 'value-3');
+                assert.strictEqual(pm.variables.get('key-4'), 'value-4');
+                assert.strictEqual(pm.variables.get('key-5'), 'value-5');
+            `, {
+                    timeout: 200,
+                    context: {
+                        globals: new sdk.VariableScope(globalVarList),
+                        collectionVariables: new sdk.VariableScope(collectionVarList),
+                        environment: new sdk.VariableScope(envVarList),
+                        data: contextData,
+                        variables: new sdk.VariableScope(localVarList)
+                    }
+                }, function (err, execution) {
+                    if (err) { return done(err); }
+
+                    executionResults = execution;
+                    return done();
+                });
+        });
+
         it('must return appropriate variables', function (done) {
             ctx.execute(`
                 var assert = require('assert');
