@@ -92,24 +92,24 @@ describe('pm.variables', function () {
 
     describe('.get', function () {
         it('should honour the precendence', function (done) {
-            var globalVarList = new sdk.VariableList(null,
+            var globalVarList = new sdk.VariableList(null, [
                     {key: 'key-1', value: 'value-1'},
                     {key: 'key-2', value: 'value-1'},
                     {key: 'key-3', value: 'value-1'},
                     {key: 'key-4', value: 'value-1'},
                     {key: 'key-5', value: 'value-1'}
-                ),
-                collectionVarList = new sdk.VariableList(null,
+                ]),
+                collectionVarList = new sdk.VariableList(null, [
                     {key: 'key-2', value: 'value-2'},
                     {key: 'key-3', value: 'value-2'},
                     {key: 'key-4', value: 'value-2'},
                     {key: 'key-5', value: 'value-2'}
-                ),
-                envVarList = new sdk.VariableList(null,
+                ]),
+                envVarList = new sdk.VariableList(null, [
                     {key: 'key-3', value: 'value-3'},
                     {key: 'key-4', value: 'value-3'},
                     {key: 'key-5', value: 'value-3'}
-                ),
+                ]),
                 contextData = {
                     'key-4': 'value-4',
                     'key-5': 'value-4'
