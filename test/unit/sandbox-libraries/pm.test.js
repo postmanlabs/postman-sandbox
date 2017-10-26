@@ -585,7 +585,7 @@ describe('sandbox library - pm api', function () {
             `, {context: contextData}, done);
         });
 
-        it('pm.variables.toObject must return a pojo', function (done) {
+        it.skip('pm.variables.toObject must return a pojo', function (done) {
             context.execute(`
                 var assert = require('assert');
 
