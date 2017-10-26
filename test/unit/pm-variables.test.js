@@ -88,6 +88,25 @@ describe('pm.variables', function () {
             ]);
             expect(executionResults.data).to.eql({'key-4': 'value-4'});
         });
+
+        it('must be able to work with empty variables passed in context', function (done) {
+            ctx.execute(`
+                pm.variables.set("key-1", "modified");
+            `, {
+                    timeout: 200,
+                    context: {
+                        variables: undefined
+                    }
+                }, function (err, execution) {
+                    if (err) { return done(err); }
+
+                    expect(execution.variables).to.have.property('values');
+                    expect(execution.variables.values).to.eql([
+                        {type: 'any', value: 'modified', key: 'key-1'}
+                    ]);
+                    return done();
+                });
+        });
     });
 
     describe('.get', function () {
