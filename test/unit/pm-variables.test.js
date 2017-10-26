@@ -1,16 +1,11 @@
 var sdk = require('postman-collection'),
 
-    Sandbox = require('../../lib'),
-
-    globalVarList = new sdk.VariableList(null, {key: 'key-1', value: 'value-1'}),
-    collectionVarList = new sdk.VariableList(null, {key: 'key-2', value: 'value-2'}),
-    envVarList = new sdk.VariableList(null, {key: 'key-3', value: 'value-3'}),
-    contextData = {'key-4': 'value-4'},
-    localVarList = new sdk.VariableList(null, {key: 'key-5', value: 'value-5'}),
-    ctx,
-    executionResults;
+    Sandbox = require('../../lib');
 
 describe('pm.variables', function () {
+    var ctx,
+        executionResults;
+
     this.timeout(1000 * 60);
 
     before(function (done) {
@@ -36,6 +31,12 @@ describe('pm.variables', function () {
 
     describe('.set', function () {
         before(function (done) {
+            var globalVarList = new sdk.VariableList(null, {key: 'key-1', value: 'value-1'}),
+                collectionVarList = new sdk.VariableList(null, {key: 'key-2', value: 'value-2'}),
+                envVarList = new sdk.VariableList(null, {key: 'key-3', value: 'value-3'}),
+                contextData = {'key-4': 'value-4'},
+                localVarList = new sdk.VariableList(null, {key: 'key-5', value: 'value-5'});
+
             ctx.execute(`
                 pm.variables.set("key-1", "modified");
                 pm.variables.set("key-2", "modified");
@@ -168,6 +169,12 @@ describe('pm.variables', function () {
         });
 
         it('must return appropriate variables', function (done) {
+            var globalVarList = new sdk.VariableList(null, {key: 'key-1', value: 'value-1'}),
+                collectionVarList = new sdk.VariableList(null, {key: 'key-2', value: 'value-2'}),
+                envVarList = new sdk.VariableList(null, {key: 'key-3', value: 'value-3'}),
+                contextData = {'key-4': 'value-4'},
+                localVarList = new sdk.VariableList(null, {key: 'key-5', value: 'value-5'});
+
             ctx.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.variables.get('key-1'), 'value-1');
