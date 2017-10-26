@@ -50,7 +50,7 @@ describe('pm.variables', function () {
                         collectionVariables: new sdk.VariableScope(collectionVarList),
                         environment: new sdk.VariableScope(envVarList),
                         data: contextData,
-                        variables: new sdk.VariableScope(localVarList)
+                        _variables: new sdk.VariableScope(localVarList)
                     }
                 }, function (err, execution) {
                     if (err) { return done(err); }
@@ -61,8 +61,8 @@ describe('pm.variables', function () {
         });
 
         it('must return the modified variables in the result', function () {
-            expect(executionResults.variables).to.have.property('values');
-            expect(executionResults.variables.values).to.eql([
+            expect(executionResults._variables).to.have.property('values');
+            expect(executionResults._variables.values).to.eql([
                 {type: 'any', value: 'modified', key: 'key-5'},
                 {type: 'any', value: 'modified', key: 'key-1'},
                 {type: 'any', value: 'modified', key: 'key-2'},
@@ -100,8 +100,8 @@ describe('pm.variables', function () {
                 }, function (err, execution) {
                     if (err) { return done(err); }
 
-                    expect(execution.variables).to.have.property('values');
-                    expect(execution.variables.values).to.eql([
+                    expect(execution._variables).to.have.property('values');
+                    expect(execution._variables.values).to.eql([
                         {type: 'any', value: 'modified', key: 'key-1'}
                     ]);
                     return done();
@@ -138,6 +138,11 @@ describe('pm.variables', function () {
             ctx.execute(`
                 var assert = require('assert');
 
+                assert.strictEqual(pm.variables.get('key-1'), 'value-1');
+                assert.strictEqual(pm.variables.get('key-2'), 'value-2');
+                assert.strictEqual(pm.variables.get('key-3'), 'value-3');
+                assert.strictEqual(pm.variables.get('key-4'), 'value-4');
+                assert.strictEqual(pm.variables.get('key-5'), 'value-5');
                 assert.deepEqual(pm.variables.toObject(), {
                     'key-1': 'value-1',
                     'key-2': 'value-2',
@@ -145,11 +150,6 @@ describe('pm.variables', function () {
                     'key-4': 'value-4',
                     'key-5': 'value-5'
                 });
-                assert.strictEqual(pm.variables.get('key-1'), 'value-1');
-                assert.strictEqual(pm.variables.get('key-2'), 'value-2');
-                assert.strictEqual(pm.variables.get('key-3'), 'value-3');
-                assert.strictEqual(pm.variables.get('key-4'), 'value-4');
-                assert.strictEqual(pm.variables.get('key-5'), 'value-5');
             `, {
                     timeout: 200,
                     context: {
@@ -157,7 +157,7 @@ describe('pm.variables', function () {
                         collectionVariables: new sdk.VariableScope(collectionVarList),
                         environment: new sdk.VariableScope(envVarList),
                         data: contextData,
-                        variables: new sdk.VariableScope(localVarList)
+                        _variables: new sdk.VariableScope(localVarList)
                     }
                 }, function (err, execution) {
                     if (err) { return done(err); }
@@ -183,7 +183,7 @@ describe('pm.variables', function () {
                         collectionVariables: new sdk.VariableScope(collectionVarList),
                         environment: new sdk.VariableScope(envVarList),
                         data: contextData,
-                        variables: new sdk.VariableScope(localVarList)
+                        _variables: new sdk.VariableScope(localVarList)
                     }
                 }, function (err, execution) {
                     if (err) { return done(err); }
@@ -208,7 +208,7 @@ describe('pm.variables', function () {
                 }, function (err, execution) {
                     if (err) { return done(err); }
 
-                    expect(execution.variables.values).to.eql([]);
+                    expect(execution._variables.values).to.eql([]);
                     expect(execution.globals.values).to.eql([]);
                     expect(execution.collectionVariables.values).to.eql([]);
                     expect(execution.environment.values).to.eql([]);
