@@ -585,7 +585,7 @@ describe('sandbox library - pm api', function () {
             `, {context: contextData}, done);
         });
 
-        it.skip('pm.variables.toObject must return a pojo', function (done) {
+        it('pm.variables.toObject must return a pojo', function (done) {
             context.execute(`
                 var assert = require('assert');
 
@@ -593,8 +593,8 @@ describe('sandbox library - pm api', function () {
 
                 assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
                 assert.deepEqual(pm.variables.toObject(), {
-                    var1: 'one',
-                    var2: 2,
+                    var1: 'one-data',
+                    var2: 2.5,
                     var3: 'collection-var3',
                     foo: 'bar',
                 });
