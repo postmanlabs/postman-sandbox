@@ -64,4 +64,33 @@ describe('sandbox', function () {
                 });
         });
     });
+
+    it('must return result with whitelisted properties only', function (done) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.execute(`
+                tests['sample'] = true;
+            `, function (err, execution) {
+                    if (err) { return done(err); }
+
+                    expect(Object.keys(execution)).to.be.eql([
+                        'id',
+                        'target',
+                        'legacy',
+                        'cursor',
+                        'data',
+                        'cookies',
+                        'environment',
+                        '_variables',
+                        'globals',
+                        'collectionVariables',
+                        'return'
+                    ]);
+                    done();
+                });
+        });
+    });
 });
