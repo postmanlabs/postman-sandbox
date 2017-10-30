@@ -298,7 +298,7 @@
         var testName = 'postman-sb-test',
             result;
 
-        ctx.on('execution.assertions', function (execution, tests) {
+        ctx.on('execution.assertion', function (execution, tests) {
             result = tests[0];
         });
 

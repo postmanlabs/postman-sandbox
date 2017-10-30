@@ -10,7 +10,7 @@ describe('sandbox assertion events', function () {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
-            ctx.on('execution.assertions', function (cursor, results) {
+            ctx.on('execution.assertion', function (cursor, results) {
                 assestions = assestions.concat(results);
             });
 

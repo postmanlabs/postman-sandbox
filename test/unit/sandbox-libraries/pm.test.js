@@ -506,7 +506,7 @@ describe('sandbox library - pm api', function () {
             });
 
             // @todo find the cause of the error where assertions are not being fired from inside a timer
-            context.on('execution.assertions', function (cursor, assertions) {
+            context.on('execution.assertion', function (cursor, assertions) {
                 assertions.forEach(function (ass) {
                     expect(ass).to.have.property('passed', true);
                     expect(ass).to.have.property('error', null);
