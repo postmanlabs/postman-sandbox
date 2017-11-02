@@ -32,21 +32,4 @@ describe('sandbox library - postman legacy', function () {
                 }, done);
         });
     });
-
-    describe('assertion object manipulation', function () {
-        it('must replace `undefined` test values with `false`', function (done) {
-            context.execute(`
-                tests['undefined'] = undefined;
-                tests['true'] = true;
-                tests['false'] = false;
-            `, {}, function (err, result) {
-                    if (err) { return done(err); }
-
-                    expect(result).be.ok();
-                    expect(result).have.property('tests');
-                    expect(result.tests).eql({undefined: false, true: true, false: false});
-                    done();
-                });
-        });
-    });
 });
