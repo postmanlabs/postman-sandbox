@@ -9,7 +9,7 @@ require('shelljs/global');
 var _ = require('lodash'),
     async = require('async'),
     fs = require('fs'),
-    colors = require('colors/safe'),
+    chalk = require('chalk'),
     Bundle = require('../lib/bundle'),
 
     createBundle;
@@ -41,7 +41,7 @@ module.exports = function (exit) {
         exit();
     }
 
-    console.log(colors.yellow.bold('Generating bootcode in ".cache" directory...'));
+    console.log(chalk.yellow.bold('Generating bootcode in ".cache" directory...'));
 
     var options = require('../lib/environment');
 
@@ -59,7 +59,7 @@ module.exports = function (exit) {
             console.error(err);
         }
         else {
-            console.log(colors.green('bootcode ready for use!'));
+            console.log(chalk.green('bootcode ready for use!'));
         }
         exit(err ? 1 : 0);
     });

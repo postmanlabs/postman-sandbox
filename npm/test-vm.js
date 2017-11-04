@@ -5,18 +5,18 @@
 /* eslint-env node, es6 */
 
 require('shelljs/global');
-require('colors');
 
 // set directories and files for test and coverage report
 var vm = require('vm'),
 
+    chalk = require('chalk'),
     async = require('async'),
     browserify = require('browserify'),
     recursive = require('recursive-readdir');
 
 /* globals exit */
 module.exports = function (exit) {
-    console.info('Loading and running the sandbox bundle tests in the Node VM'.yellow.bold);
+    console.info(chalk.yellow.bold('Loading and running the sandbox bundle tests in the Node VM'));
 
     async.waterfall([
         // Enlist all unit test files
