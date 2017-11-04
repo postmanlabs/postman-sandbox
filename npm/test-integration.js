@@ -5,7 +5,6 @@
 /* eslint-env node, es6 */
 
 require('shelljs/global');
-require('colors');
 
 // set directories and files for test and coverage report
 var path = require('path'),
