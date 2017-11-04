@@ -29,7 +29,7 @@ describe('travis.yml', function () {
 
         it('should have the language set to node', function () {
             expect(travisYAML.language).to.be('node_js');
-            expect(travisYAML.node_js).to.eql(['6', '4']);
+            expect(travisYAML.node_js).to.eql(['4', '6', '8']);
         });
 
         it('should use the stable google chrome package', function () {
