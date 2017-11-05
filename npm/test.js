@@ -3,7 +3,7 @@
 require('shelljs/global');
 
 var async = require('async'),
-    colors = require('colors/safe');
+    chalk = require('chalk');
 
 async.series([
     require('./test-lint'),
@@ -14,6 +14,6 @@ async.series([
     require('./test-integration'),
     require('./test-browser')
 ], function (code) {
-    !code && console.log(colors.green('\n' + require('../package.json').name + ' tests: all ok!'));
+    !code && console.log(chalk.green('\n' + require('../package.json').name + ' tests: all ok!'));
     exit(code);
 });
