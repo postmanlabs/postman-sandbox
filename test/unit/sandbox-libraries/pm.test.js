@@ -19,6 +19,14 @@ describe('sandbox library - pm api', function () {
                 value: 2.5,
                 type: 'number'
             }],
+            collectionVariables: [{
+                key: 'var1',
+                value: 'collection-var1',
+                type: 'string'
+            }, {
+                key: 'var3',
+                value: 'collection-var3'
+            }],
             data: {
                 'var1': 'one-data'
             }
@@ -430,89 +438,6 @@ describe('sandbox library - pm api', function () {
         });
     });
 
-    describe('variables', function () {
-        it('should be an instance of VariableScope', function (done) {
-            context.execute(`
-                var assert = require('assert'),
-                    VariableScope = require('postman-collection').VariableScope;
-                assert.strictEqual(VariableScope.isVariableScope(pm.variables), true);
-            `, done);
-        });
-        it('iteration data is given highest priority for variable resolution', function (done) {
-            context.execute(`
-                var assert = require('assert');
-                assert.strictEqual(pm.variables.get('var1'), 'one-data');
-            `, {context: sampleContextData}, done);
-        });
-        it('returns undefined if a variable is not found in any scope', function (done) {
-            context.execute(`
-                var assert = require('assert');
-                assert.strictEqual(pm.variables.get('var1'), undefined);
-            `, done);
-        });
-        it('maintains references to environment and globals', function (done) {
-            var contextData = {
-                globals: [{
-                    key: 'var1',
-                    value: 'one'
-                }, {
-                    key: 'var2',
-                    value: 2,
-                    type: 'number'
-                }, {
-                    key: 'var3',
-                    value: 'global-three'
-                }],
-                environment: [{
-                    key: 'var1',
-                    value: 'one-env'
-                }, {
-                    key: 'var2',
-                    value: 2.5,
-                    type: 'number'
-                }]
-            };
-
-            context.execute(`
-                var assert = require('assert');
-
-                pm.environment.set('var1', 'one-env-changed');
-                pm.globals.set('var3', 'global-three-changed');
-
-                assert.strictEqual(pm.variables.get('var1'), 'one-env-changed');
-                assert.strictEqual(pm.variables.get('var3'), 'global-three-changed');
-            `, {context: contextData}, done);
-        });
-        it('sets a variable in the local scope and does not mutate parent scopes', function (done) {
-            context.execute(`
-                var assert = require('assert');
-
-                assert.strictEqual(pm.variables.set('var1', 'local-value'));
-                assert.strictEqual(pm.variables.get('var1'), 'local-value');
-
-                assert.strictEqual(pm.iterationData.get('var1'), 'one-data'); // execution.iterationData scope
-                assert.strictEqual(pm.environment.get('var1'), 'one-env'); // execution.environment scope
-                assert.strictEqual(pm.globals.get('var1'), 'one'); // execution.global scope
-
-                assert.strictEqual(pm.variables.values.members[0].key, 'var1');
-            `, {context: sampleContextData}, done);
-        });
-        it('pm.variables.toObject must return a pojo', function (done) {
-            context.execute(`
-                var assert = require('assert');
-
-                pm.variables.set('foo', 'bar');
-
-                assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
-                assert.deepEqual(pm.variables.toObject(), {
-                    var1: 'one',
-                    var2: 2,
-                    foo: 'bar',
-                });
-            `, {context: sampleContextData}, done);
-        });
-    });
-
     describe('iterationData', function () {
         it('should be an instance of VariableScope', function (done) {
             context.execute(`
@@ -580,10 +505,12 @@ describe('sandbox library - pm api', function () {
                 done();
             });
 
-            // @todo find the cause of the error where assertion is not being fired from inside a timer
-            context.on('execution.assertion', function (cursor, ass) {
-                expect(ass).to.have.property('passed', true);
-                expect(ass).to.have.property('error', null);
+            // @todo find the cause of the error where assertions are not being fired from inside a timer
+            context.on('execution.assertion', function (cursor, assertions) {
+                assertions.forEach(function (ass) {
+                    expect(ass).to.have.property('passed', true);
+                    expect(ass).to.have.property('error', null);
+                });
                 done();
             });
 

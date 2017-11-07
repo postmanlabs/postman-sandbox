@@ -31,6 +31,9 @@ module.exports = function (config) {
         // web server port
         port: 9876,
 
+        // the number of milliseconds to wait for an idle browser to come back up before bailing
+        browserNoActivityTimeout: 20000,
+
         // enable / disable colors in the output (reporters and logs)
         colors: true,
 
@@ -43,7 +46,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ['ChromeHeadless'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
@@ -73,7 +76,7 @@ module.exports = function (config) {
     if (process.env.TRAVIS) { // eslint-disable-line no-process-env
         configuration.customLaunchers = {
             chromeTravis: {
-                base: 'Chrome',
+                base: 'ChromeHeadless',
                 flags: ['--no-sandbox']
             }
         };

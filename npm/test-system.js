@@ -2,12 +2,12 @@
 /* eslint-env node, es6 */
 
 require('shelljs/global');
-require('colors');
 
 var fs = require('fs'),
     recursive = require('recursive-readdir'),
     path = require('path'),
 
+    chalk = require('chalk'),
     async = require('async'),
     _ = require('lodash'),
     Mocha = require('mocha'),
@@ -26,7 +26,7 @@ var fs = require('fs'),
 
 module.exports = function (exit) {
     // banner line
-    console.log('\nRunning system tests using mocha and nsp...'.yellow.bold);
+    console.log(chalk.yellow.bold('\nRunning system tests using mocha and nsp...'));
 
     async.series([
         // run test specs using mocha
@@ -61,14 +61,14 @@ module.exports = function (exit) {
         },
 
         // execute nsp
-        // programatically executing nsp is a bit tricky as we have to emulate the cli script's usage of internal
+        // programmatically executing nsp is a bit tricky as we have to emulate the cli script's usage of internal
         // nsp functions.
         function (next) {
             var nsp = require('nsp'),
                 pkg = loadJSON('../package.json'),
                 nsprc = loadJSON('../.nsprc');
 
-            console.log('processing nsp for security vulnerabilities...\n'.yellow);
+            console.log(chalk.yellow('processing nsp for security vulnerabilities...\n'));
 
             // we do not pass full package for privacy concerns and also to add the ability to ignore exclude packages,
             // hence we customise the package before we send it
@@ -81,18 +81,18 @@ module.exports = function (exit) {
             }, function (err, result) {
                 // if processing nsp had an error, simply print that and exit
                 if (err) {
-                    console.error('There was an error processing NSP!\n'.red + (err.message || err).gray + '\n\n' +
-                        'Since NSP server failure is not a blocker for tests, tests are not marked as failure!');
+                    console.error(chalk.red('There was an error processing NSP!\n') + chalk.gray(err.message || err) +
+                        '\n\nSince NSP server failure is not a blocker for tests, tests are not marked as failure!');
                     return next();
                 }
 
-                // in case an nsp vialation is found, we raise an error
+                // in case an nsp violation is found, we raise an error
                 if (result.length) {
                     console.error(nsp.formatters.default(err, result));
                     return next(1);
                 }
 
-                console.log('nsp ok!\n'.green);
+                console.log(chalk.green('nsp ok!\n'));
                 return next();
             });
         }
