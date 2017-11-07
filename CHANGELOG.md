@@ -1,5 +1,11 @@
 # Postman Sandbox Changelog
 
+#### v3.0.0 (November 7, 2017)
+* [BREAKING] `execution.assertion` and `execution.assertions.${id}` events are now passed with array of assertions
+* :tada: Added support for collection variables using `collectionVariables`
+* :tada: Variables set with `pm.variables` state are now bubbled with `execution.result.${id}` as `_variables`
+* :arrow_up: Updated dependencies.
+
 #### v2.3.5 (October 13, 2017)
 * :arrow_up: Updated dependencies.
 * :tada: Replaced in-house chai assertion extensions with [chai-postman](https://github.com/postmanlabs/chai-postman) #212.
