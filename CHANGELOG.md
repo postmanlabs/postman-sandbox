@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+### Unreleased
+* :bug: Fixed a bug where assertions for legacy test failures did not include the assertion `error`.
+
 #### v3.0.0 (November 7, 2017)
 * [BREAKING] `execution.assertion` and `execution.assertions.${id}` events are now passed with array of assertions
 * :tada: Added support for collection variables using `collectionVariables`
