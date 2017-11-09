@@ -1,6 +1,7 @@
 # Postman Sandbox Changelog
 
 ### Unreleased
+* Made error messages for legacy test failure assertions useful
 
 ### v3.0.1 (November 8, 2017)
 * :bug: Fixed a bug where assertions for legacy test failures did not include the assertion `error`.
