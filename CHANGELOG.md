@@ -1,6 +1,8 @@
 # Postman Sandbox Changelog
 
 ### Unreleased
+
+### v3.0.2 (November 9, 2017)
 * Made error messages for legacy test failure assertions useful
 
 ### v3.0.1 (November 8, 2017)
