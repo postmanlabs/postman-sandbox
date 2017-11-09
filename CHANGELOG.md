@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+### v3.0.2 (November 9, 2017)
+* Made error messages for legacy test failure assertions useful
+
 ### v3.0.1 (November 8, 2017)
 * :bug: Fixed a bug where assertions for legacy test failures did not include the assertion `error`.
 * :arrow_up: Updated dependencies.

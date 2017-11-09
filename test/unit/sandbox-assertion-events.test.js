@@ -48,6 +48,7 @@ describe('sandbox assertion events', function () {
                 });
 
                 tests['fail5'] = undefined;
+                tests['fail6'] = false;
 
                 pm.test("fail3", function () {
                     throw new Error('sample error 2');
@@ -63,11 +64,11 @@ describe('sandbox assertion events', function () {
     });
 
     it('must be indexed across parallel executions', function () {
-        expect(assestions.map(function (test) { return test.index; })).to.eql([0, 1, 2, 3, 0, 1, 2, 3, 4]);
+        expect(assestions.map(function (test) { return test.index; })).to.eql([0, 1, 2, 3, 0, 1, 2, 3, 4, 5]);
     });
 
     it('must be called for async and sync assertions', function () {
-        expect(assestions.length).to.be(9);
+        expect(assestions.length).to.be(10);
 
         // async tests assertions for 1st execution in order
         expect(assestions[0]).to.have.property('name', 'pass1');
@@ -84,7 +85,7 @@ describe('sandbox assertion events', function () {
         expect(assestions[2]).to.have.property('passed', false);
         expect(assestions[2]).to.have.property('error');
         expect(assestions[2].error).to.have.property('name', 'AssertionError');
-        expect(assestions[2].error).to.have.property('message', 'fail2');
+        expect(assestions[2].error).to.have.property('message', 'expected undefined to be truthy');
         expect(assestions[3]).to.have.property('name', 'pass2');
         expect(assestions[3]).to.have.property('passed', true);
         expect(assestions[3]).to.have.property('error', null);
@@ -109,9 +110,14 @@ describe('sandbox assertion events', function () {
         expect(assestions[7]).to.have.property('passed', false);
         expect(assestions[7]).to.have.property('error');
         expect(assestions[7].error).to.have.property('name', 'AssertionError');
-        expect(assestions[7].error).to.have.property('message', 'fail5');
-        expect(assestions[8]).to.have.property('name', 'pass4');
-        expect(assestions[8]).to.have.property('passed', true);
-        expect(assestions[8]).to.have.property('error', null);
+        expect(assestions[7].error).to.have.property('message', 'expected undefined to be truthy');
+        expect(assestions[8]).to.have.property('name', 'fail6');
+        expect(assestions[8]).to.have.property('passed', false);
+        expect(assestions[8]).to.have.property('error');
+        expect(assestions[8].error).to.have.property('name', 'AssertionError');
+        expect(assestions[8].error).to.have.property('message', 'expected false to be truthy');
+        expect(assestions[9]).to.have.property('name', 'pass4');
+        expect(assestions[9]).to.have.property('passed', true);
+        expect(assestions[9]).to.have.property('error', null);
     });
 });
