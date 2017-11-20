@@ -2,6 +2,17 @@
 
 ### Unreleased
 
+### v3.0.3 (November 20, 2017)
+* :tada: Get and set objects in variables with `json` type
+```js
+// set objects as values for `json types`
+pm.variables.set('myObject', { version: 'v1' }, 'json');
+
+// get object values
+console.log(pm.variables.get('myObject')); // { version: 'v1' }
+console.log(typeof pm.variables.get('myObject')); // object
+```
+
 ### v3.0.2 (November 9, 2017)
 * Made error messages for legacy test failure assertions useful
 
