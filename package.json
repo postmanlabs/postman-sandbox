@@ -76,7 +76,7 @@
     "recursive-readdir": "2.2.1",
     "shelljs": "0.7.8",
     "tv4": "1.2.7",
-    "uglifyify": "4.0.4",
+    "uglifyify": "4.0.5",
     "uniscope": "1.1.1",
     "xml2js": "0.4.19"
   },
