@@ -221,7 +221,13 @@ describe('sandbox library - pm api', function () {
 
                 try {
                     reqJSON = pm.request.toJSON();
-                    assert.strictEqual(reqJSON.url, 'https://postman-echo.com/get?foo=bar');
+                    assert.deepEqual(reqJSON.url, {
+                        protocol: 'https',
+                        path: ['get'],
+                        host: ['postman-echo', 'com'],
+                        query: [{ key: 'foo', value: 'bar' }],
+                        variable: []
+                    });
                     assert.strictEqual(reqJSON.method, 'GET');
                     assert.equal(reqJSON.to, undefined);
                 }
@@ -484,7 +490,13 @@ describe('sandbox library - pm api', function () {
             var executionId = '1';
 
             context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
-                expect(req).to.have.property('url', 'https://postman-echo.com/get');
+                expect(req.url).to.eql({
+                    protocol: 'https',
+                    path: ['get'],
+                    host: ['postman-echo', 'com'],
+                    query: [],
+                    variable: []
+                });
                 done();
             });
 
@@ -515,7 +527,13 @@ describe('sandbox library - pm api', function () {
             });
 
             context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
-                expect(req).to.have.property('url', 'https://postman-echo.com/get');
+                expect(req.url).to.eql({
+                    protocol: 'https',
+                    path: ['get'],
+                    host: ['postman-echo', 'com'],
+                    query: [],
+                    variable: []
+                });
                 context.dispatch(`execution.response.${id}`, requestId, null, {
                     code: 200,
                     body: '{"i am": "a json"}'
