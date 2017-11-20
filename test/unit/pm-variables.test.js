@@ -108,6 +108,25 @@ describe('pm.variables', function () {
                     return done();
                 });
         });
+
+        it('must be able to work with json variables', function (done) {
+            ctx.execute(`
+                pm.variables.set('myObject', { version: 'v1' }, 'json');
+            `, {
+                    timeout: 200,
+                    context: {
+                        variables: undefined
+                    }
+                }, function (err, execution) {
+                    if (err) { return done(err); }
+
+                    expect(execution._variables).to.have.property('values');
+                    expect(execution._variables.values).to.eql([
+                        {type: 'json', value: '{"version":"v1"}', key: 'myObject'}
+                    ]);
+                    return done();
+                });
+        });
     });
 
     describe('.get', function () {
