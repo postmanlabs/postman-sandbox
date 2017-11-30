@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+### v3.0.4 (November 30, 2017)
+* :arrow_up: Updated dependencies.
+
 ### v3.0.3 (November 20, 2017)
 * :tada: Get and set objects in variables with `json` type
 ```js
