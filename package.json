@@ -31,7 +31,7 @@
   "dependencies": {
     "inherits": "2.0.3",
     "lodash": "4.17.4",
-    "uuid": "3.1.0",
+    "uuid": "3.2.0",
     "uvm": "1.7.0"
   },
   "devDependencies": {
