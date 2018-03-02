@@ -15,9 +15,7 @@ describe('execution', function () {
         pm = new pmAPI({
             request: 'https://postman-echo.com/',
             response: {
-                body: {
-
-                }
+                body: {}
             },
             dispatch: _.noop
         }, execution, _.noop);
