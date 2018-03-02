@@ -51,7 +51,7 @@ describe('execution', function () {
         pm.request.to.be.an('object');
         pm.request.to.not.be.undefined;
         pm.request.to.not.be.a('string');
-        pm.request.to.be.an('object').to.have.property('url');
+        pm.request.to.be.an('object').that.has.property('url');
     });
 
     it('Negating a single assertion on pm.response should not negate the assertions following it.', function () {
@@ -59,6 +59,6 @@ describe('execution', function () {
         pm.response.to.be.an('object');
         pm.response.to.not.be.undefined;
         pm.response.to.not.be.a('string');
-        pm.response.to.be.an('object').to.have.property('headers');
+        pm.response.to.be.an('object').that.has.property('headers');
     });
 });
