@@ -12,7 +12,15 @@ var _ = require('lodash'),
 describe('execution', function () {
     before(function () {
         execution = new Execution('id', {listen: 'test'}, {}, {});
-        pm = new pmAPI({}, execution, _.noop);
+        pm = new pmAPI({
+            request: 'https://postman-echo.com/',
+            response: {
+                body: {
+
+                }
+            },
+            dispatch: _.noop
+        }, execution, _.noop);
     });
 
     it('can be serialized', function () {
@@ -38,5 +46,21 @@ describe('execution', function () {
         expect(json).to.have.property('response');
         expect(json.response).to.not.have.property('to');
         expect(execution.response).to.have.property('to');
+    });
+
+    it('Negating a single assertion on pm.request should not negate the assertions following it.', function () {
+        pm.request.to.not.be.null;
+        pm.request.to.be.an('object');
+        pm.request.to.not.be.undefined;
+        pm.request.to.not.be.a('string');
+        pm.request.to.be.an('object').to.have.property('url');
+    });
+
+    it('Negating a single assertion on pm.response should not negate the assertions following it.', function () {
+        pm.response.to.not.be.null;
+        pm.response.to.be.an('object');
+        pm.response.to.not.be.undefined;
+        pm.response.to.not.be.a('string');
+        pm.response.to.be.an('object').to.have.property('headers');
     });
 });
