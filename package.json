@@ -43,7 +43,7 @@
     "btoa": "1.1.2",
     "buffer": "5.0.8",
     "chai": "4.1.2",
-    "chai-postman": "1.0.1",
+    "chai-postman": "1.0.2",
     "chalk": "2.3.0",
     "cheerio": "0.22.0",
     "crypto-js": "3.1.9-1",
