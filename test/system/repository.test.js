@@ -91,6 +91,15 @@ describe('project repository', function () {
                 fs.stat(json.main, done);
             });
         });
+
+        describe('greenkeeper', function () {
+            it('should ignore mocha (v5.0.2 and beyond truncate browser tests)', function () {
+                expect(json.devDependencies).to.have.property('mocha', '5.0.1');
+                expect(json.greenkeeper).to.eql({
+                    ignore: ['mocha']
+                });
+            });
+        });
     });
 
     describe('README.md', function () {
