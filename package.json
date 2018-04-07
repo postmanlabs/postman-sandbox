@@ -47,7 +47,7 @@
     "chalk": "2.3.0",
     "cheerio": "0.22.0",
     "crypto-js": "3.1.9-1",
-    "csv-parse": "1.2.4",
+    "csv-parse": "2.0.2",
     "editorconfig": "0.15.0",
     "eslint": "4.12.0",
     "eslint-plugin-jsdoc": "3.2.0",
