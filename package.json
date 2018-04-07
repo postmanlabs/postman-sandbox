@@ -67,7 +67,7 @@
     "karma-mocha-reporter": "2.2.5",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.1",
-    "mocha": "4.0.1",
+    "mocha": "4.1.0",
     "moment": "2.19.3",
     "nsp": "2.8.1",
     "packity": "0.3.2",
