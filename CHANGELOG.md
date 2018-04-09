@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.0.6 (April 10, 2018)
+* Reverted #273: Chai assignment fix :bug:
+
 #### v3.0.5 (April 9, 2018)
 * Updated dependencies :arrow_up:
 * Fixed a bug that caused negated assertions to persist :bug:
