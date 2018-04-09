@@ -15,7 +15,7 @@ describe('execution', function () {
         pm = new pmAPI({
             request: 'https://postman-echo.com/',
             response: {
-                body: {}
+                body: {foo: 'bar'}
             },
             dispatch: _.noop
         }, execution, _.noop);
@@ -60,5 +60,6 @@ describe('execution', function () {
         pm.response.to.not.be.undefined;
         pm.response.to.not.be.a('string');
         pm.response.to.be.an('object').that.has.property('headers');
+        pm.response.to.have.jsonBody('foo', 'bar');
     });
 });
