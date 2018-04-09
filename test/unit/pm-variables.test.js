@@ -45,20 +45,20 @@ describe('pm.variables', function () {
                 pm.variables.set("key-5", "modified");
                 pm.variables.set("key-6", "new");
             `, {
-                    timeout: 200,
-                    context: {
-                        globals: new sdk.VariableScope(globalVarList),
-                        collectionVariables: new sdk.VariableScope(collectionVarList),
-                        environment: new sdk.VariableScope(envVarList),
-                        data: contextData,
-                        _variables: new sdk.VariableScope(localVarList)
-                    }
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {
+                    globals: new sdk.VariableScope(globalVarList),
+                    collectionVariables: new sdk.VariableScope(collectionVarList),
+                    environment: new sdk.VariableScope(envVarList),
+                    data: contextData,
+                    _variables: new sdk.VariableScope(localVarList)
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    executionResults = execution;
-                    return done();
-                });
+                executionResults = execution;
+                return done();
+            });
         });
 
         it('must return the modified variables in the result', function () {
@@ -94,38 +94,38 @@ describe('pm.variables', function () {
             ctx.execute(`
                 pm.variables.set("key-1", "modified");
             `, {
-                    timeout: 200,
-                    context: {
-                        variables: undefined
-                    }
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {
+                    variables: undefined
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    expect(execution._variables).to.have.property('values');
-                    expect(execution._variables.values).to.eql([
-                        {type: 'any', value: 'modified', key: 'key-1'}
-                    ]);
-                    return done();
-                });
+                expect(execution._variables).to.have.property('values');
+                expect(execution._variables.values).to.eql([
+                    {type: 'any', value: 'modified', key: 'key-1'}
+                ]);
+                return done();
+            });
         });
 
         it('must be able to work with json variables', function (done) {
             ctx.execute(`
                 pm.variables.set('myObject', { version: 'v1' }, 'json');
             `, {
-                    timeout: 200,
-                    context: {
-                        variables: undefined
-                    }
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {
+                    variables: undefined
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    expect(execution._variables).to.have.property('values');
-                    expect(execution._variables.values).to.eql([
-                        {type: 'json', value: '{"version":"v1"}', key: 'myObject'}
-                    ]);
-                    return done();
-                });
+                expect(execution._variables).to.have.property('values');
+                expect(execution._variables.values).to.eql([
+                    {type: 'json', value: '{"version":"v1"}', key: 'myObject'}
+                ]);
+                return done();
+            });
         });
     });
 
@@ -171,20 +171,20 @@ describe('pm.variables', function () {
                     'key-5': 'value-5'
                 });
             `, {
-                    timeout: 200,
-                    context: {
-                        globals: new sdk.VariableScope(globalVarList),
-                        collectionVariables: new sdk.VariableScope(collectionVarList),
-                        environment: new sdk.VariableScope(envVarList),
-                        data: contextData,
-                        _variables: new sdk.VariableScope(localVarList)
-                    }
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {
+                    globals: new sdk.VariableScope(globalVarList),
+                    collectionVariables: new sdk.VariableScope(collectionVarList),
+                    environment: new sdk.VariableScope(envVarList),
+                    data: contextData,
+                    _variables: new sdk.VariableScope(localVarList)
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    executionResults = execution;
-                    return done();
-                });
+                executionResults = execution;
+                return done();
+            });
         });
 
         it('must return appropriate variables', function (done) {
@@ -203,20 +203,20 @@ describe('pm.variables', function () {
                 assert.strictEqual(pm.variables.get('key-5'), 'value-5');
                 assert.strictEqual(pm.variables.get('key-6'), undefined);
             `, {
-                    timeout: 200,
-                    context: {
-                        globals: new sdk.VariableScope(globalVarList),
-                        collectionVariables: new sdk.VariableScope(collectionVarList),
-                        environment: new sdk.VariableScope(envVarList),
-                        data: contextData,
-                        _variables: new sdk.VariableScope(localVarList)
-                    }
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {
+                    globals: new sdk.VariableScope(globalVarList),
+                    collectionVariables: new sdk.VariableScope(collectionVarList),
+                    environment: new sdk.VariableScope(envVarList),
+                    data: contextData,
+                    _variables: new sdk.VariableScope(localVarList)
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    executionResults = execution;
-                    return done();
-                });
+                executionResults = execution;
+                return done();
+            });
         });
 
         it('must reinitialize the variables when same sandbox instance is used again', function (done) {
@@ -229,19 +229,19 @@ describe('pm.variables', function () {
                 assert.strictEqual(pm.variables.get('key-5'), undefined);
                 assert.strictEqual(pm.variables.get('key-6'), undefined);
             `, {
-                    timeout: 200,
-                    context: {}
-                }, function (err, execution) {
-                    if (err) { return done(err); }
+                timeout: 200,
+                context: {}
+            }, function (err, execution) {
+                if (err) { return done(err); }
 
-                    expect(execution._variables.values).to.eql([]);
-                    expect(execution.globals.values).to.eql([]);
-                    expect(execution.collectionVariables.values).to.eql([]);
-                    expect(execution.environment.values).to.eql([]);
-                    expect(execution.data).to.be.eql([]);
+                expect(execution._variables.values).to.eql([]);
+                expect(execution.globals.values).to.eql([]);
+                expect(execution.collectionVariables.values).to.eql([]);
+                expect(execution.environment.values).to.eql([]);
+                expect(execution.data).to.be.eql([]);
 
-                    return done();
-                });
+                return done();
+            });
         });
     });
 });

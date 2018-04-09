@@ -23,13 +23,13 @@ describe('sandbox library - postman legacy', function () {
                 postman.clearEnvironmentVariables();
                 assert.equal(Object.keys(environment).length, 0, 'environment must be cleared');
             `, {
-                    context: {
-                        environment: [{
-                            key: 'a',
-                            value: 'b'
-                        }]
-                    }
-                }, done);
+                context: {
+                    environment: [{
+                        key: 'a',
+                        value: 'b'
+                    }]
+                }
+            }, done);
         });
     });
 });

@@ -24,18 +24,18 @@
                 pm.globals.set('timeout', Date.now() - startTime, 'number');
             }, 100);
         `, {
-                timeout: 200
-            }, function (err, res) {
-                if (err) { return done(err); }
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
 
-                expect(err).to.not.be.ok();
-                expect(res.return.async).to.be(true);
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(true);
 
-                expect(res).to.have.property('globals');
-                expect(res.globals.values).to.be.an('array');
-                expect(res.globals.values[0].value).to.be.greaterThan(95);
-                done();
-            });
+            expect(res).to.have.property('globals');
+            expect(res.globals.values).to.be.an('array');
+            expect(res.globals.values[0].value).to.be.greaterThan(95);
+            done();
+        });
     });
 
     it('must be able to clear timeout', function (done) {
@@ -51,20 +51,20 @@
             }, 100);
             clearTimeout(id);
         `, {
-                // debug: false,
-                timeout: 200
-            }, function (err, res) {
-                if (err) { return done(err); }
+            // debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
 
-                expect(err).to.not.be.ok();
-                expect(res.return.async).to.be(false);
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(false);
 
-                // we wait for a while to ensure that the timeout was actually cleared.
-                setTimeout(function () {
-                    expect(timeoutExecuted).to.eql('timeout not executed');
-                    done();
-                }, 150);
-            });
+            // we wait for a while to ensure that the timeout was actually cleared.
+            setTimeout(function () {
+                expect(timeoutExecuted).to.eql('timeout not executed');
+                done();
+            }, 150);
+        });
     });
 
     it('must work with setImmediate inside sandbox', function (done) {
@@ -74,18 +74,18 @@
                 pm.globals.set('executed', 1, 'boolean');
             });
         `, {
-                timeout: 200
-            }, function (err, res) {
-                if (err) { return done(err); }
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
 
-                expect(err).to.not.be.ok();
-                expect(res.return.async).to.be(true);
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(true);
 
-                expect(res).to.have.property('globals');
-                expect(res.globals.values).to.be.an('array');
-                expect(res.globals.values[0].value).to.be(true);
-                done();
-            });
+            expect(res).to.have.property('globals');
+            expect(res.globals.values).to.be.an('array');
+            expect(res.globals.values[0].value).to.be(true);
+            done();
+        });
     });
 
     it('must be able to clear immediates', function (done) {
@@ -101,20 +101,20 @@
             });
             clearImmediate(id);
         `, {
-                debug: false,
-                timeout: 200
-            }, function (err, res) {
-                if (err) { return done(err); }
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
 
-                expect(err).to.not.be.ok();
-                expect(res.return.async).to.be(false);
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(false);
 
-                // we wait for a while to ensure that the timeout was actually cleared.
-                setTimeout(function () {
-                    expect(status).to.eql('not executed');
-                    done();
-                }, 150);
-            });
+            // we wait for a while to ensure that the timeout was actually cleared.
+            setTimeout(function () {
+                expect(status).to.eql('not executed');
+                done();
+            }, 150);
+        });
     });
 
     it('must time out if timers run beyond interval and stop the interval', function (done) {
@@ -133,21 +133,21 @@
                 console.log('interval')
             }, 50);
         `, {
-                debug: false,
-                timeout: 125
-            }, function (err, res) {
-                count.terminal = count.current;
+            debug: false,
+            timeout: 125
+        }, function (err, res) {
+            count.terminal = count.current;
 
-                expect(err).to.have.property('name', 'Error');
-                expect(err).to.have.property('message', 'sandbox: asynchronous script execution timeout');
-                expect(res.return.async).to.be(true);
+            expect(err).to.have.property('name', 'Error');
+            expect(err).to.have.property('message', 'sandbox: asynchronous script execution timeout');
+            expect(res.return.async).to.be(true);
 
-                // now wait for a while to ensure no extra interval timers were fired
-                setTimeout(function () {
-                    expect(count).to.have.property('current', count.terminal);
-                    done();
-                }, 250);
-            });
+            // now wait for a while to ensure no extra interval timers were fired
+            setTimeout(function () {
+                expect(count).to.have.property('current', count.terminal);
+                done();
+            }, 250);
+        });
     });
 
     it('must be able to clear intervals and exit', function (done) {
@@ -165,21 +165,21 @@
                 clearInterval(id);
             }, 155);
         `, {
-                debug: false,
-                timeout: 200
-            }, function (err, res) {
-                if (err) { return done(err); }
-                var currentCount = status;
+            debug: false,
+            timeout: 200
+        }, function (err, res) {
+            if (err) { return done(err); }
+            var currentCount = status;
 
-                expect(err).to.not.be.ok();
-                expect(res.return.async).to.be(true);
-                expect(currentCount).to.be.above(0);
+            expect(err).to.not.be.ok();
+            expect(res.return.async).to.be(true);
+            expect(currentCount).to.be.above(0);
 
-                setTimeout(function () {
-                    expect(status).to.be(currentCount);
-                    done();
-                }, 200);
-            });
+            setTimeout(function () {
+                expect(status).to.be(currentCount);
+                done();
+            }, 200);
+        });
     });
 
     it('should wait for the longest running timer if multiple ones are running', function (done) {
