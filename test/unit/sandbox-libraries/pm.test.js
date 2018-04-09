@@ -425,6 +425,7 @@ describe('sandbox library - pm api', function () {
 
                 // run a test as well ;-)
                 pm.response.to.be.ok;
+                pm.response.to.have.status(200);
             `, {
                 context: {
                     response: {code: 200}
