@@ -90,7 +90,8 @@
   "homepage": "https://github.com/postmanlabs/postman-sandbox#readme",
   "greenkeeper": {
     "ignore": [
-      "mocha"
+      "mocha",
+      "csv-parse"
     ]
   }
 }
