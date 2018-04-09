@@ -1,6 +1,10 @@
 # Postman Sandbox Changelog
 
-### Unreleased
+#### v3.0.5 (April 9, 2018)
+* Updated dependencies :arrow_up:
+* Fixed a bug that caused negated assertions to persist :bug:
+* Updated `uvm` to `v1.7.1`, which fixes iframe bootcode loading for large bundles :bug:
+* Updated `chai-postman` to `v1.0.2`, which fixes a response status assertion bug :bug:
 
 ### v3.0.4 (November 30, 2017)
 * :arrow_up: Updated dependencies.
