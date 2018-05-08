@@ -74,7 +74,7 @@
     "parse-gitignore": "0.4.0",
     "postman-collection": "3.0.8",
     "recursive-readdir": "2.2.2",
-    "shelljs": "0.8.1",
+    "shelljs": "0.8.2",
     "tv4": "1.3.0",
     "uglifyify": "4.0.5",
     "uniscope": "1.1.2",
