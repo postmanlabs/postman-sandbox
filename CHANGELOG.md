@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.0.7 (May 16, 2018)
+* Updated dependencies
+
 #### v3.0.6 (April 10, 2018)
 * Reverted #273: Chai assignment fix :bug:
 
