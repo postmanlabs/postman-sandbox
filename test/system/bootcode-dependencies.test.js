@@ -19,7 +19,6 @@ describe('bootcode dependencies', function () {
 
     it('should not change', function () {
         expect(currentDependencies).to.be.eql([
-            '8fold-marked',
             'array-uniq',
             'assert',
             'assertion-error',
@@ -72,6 +71,7 @@ describe('bootcode dependencies', function () {
             'lodash.reject',
             'lodash.some',
             'lodash3',
+            'marked',
             'mime-db',
             'mime-format',
             'mime-types',
