@@ -7,7 +7,7 @@ Module that unifies execution of third-party JavaScript within Node VM and Brows
 > If you are looking to execute collections, you should bee using [Newman](https://github.com/postmanlabs/newman)
 
 ## Usage
-```
+```js
 var Sandbox = require('postman-sandbox'),
     context;
 
