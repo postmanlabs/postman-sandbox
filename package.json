@@ -71,7 +71,7 @@
     "moment": "2.22.2",
     "nsp": "2.8.1",
     "packity": "0.3.2",
-    "parse-gitignore": "0.4.0",
+    "parse-gitignore": "0.5.1",
     "postman-collection": "3.0.10",
     "recursive-readdir": "2.2.2",
     "shelljs": "0.8.2",
