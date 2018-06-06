@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.0.9-beta.1 (June 6, 2018)
+* Enable tracking variable changes within sandbox execution
+
 #### v3.0.8 (May 24, 2018)
 * Updated dependencies
 
