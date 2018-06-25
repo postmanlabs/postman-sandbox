@@ -138,8 +138,8 @@ describe('project repository', function () {
             });
 
             it('must not ignore the .cache directory', function () {
-                expect(gitignore).to.contain('.cache');
-                expect(gitignore).to.contain('.cache/**');
+                expect(gitignore).to.contain('**/.cache');
+                expect(gitignore).to.contain('**/.cache/**');
             });
         });
 
@@ -153,13 +153,13 @@ describe('project repository', function () {
             });
 
             it('must not ignore the .cache directory', function () {
-                expect(npmignore).not.contain('.cache');
-                expect(npmignore).not.contain('.cache/**');
+                expect(npmignore).not.contain('**/.cache');
+                expect(npmignore).not.contain('**/.cache/**');
             });
         });
 
         it('.gitignore coverage must be a subset of .npmignore coverage (except .cache directory)', function () {
-            expect(_.intersection(gitignore, _.union(npmignore, ['.cache', '.cache/**']))).to.eql(gitignore);
+            expect(_.intersection(gitignore, _.union(npmignore, ['**/.cache', '**/.cache/**']))).to.eql(gitignore);
         });
     });
 });
