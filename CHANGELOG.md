@@ -1,6 +1,11 @@
 # Postman Sandbox Changelog
 
-#### v3.0.8 (May 16, 2018)
+#### v3.1.0 (June 28, 2018)
+* Added change tracking to sandbox variables. Now execution result has `mutations` which has recorded
+all the changes that were made during the script execution.
+* Updated dependencies
+
+#### v3.0.8 (May 24, 2018)
 * Updated dependencies
 
 #### v3.0.7 (May 16, 2018)
