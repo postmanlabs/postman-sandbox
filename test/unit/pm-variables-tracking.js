@@ -11,9 +11,15 @@ describe('pm api variables', function () {
 
             ctx.execute(`
                 var assert = require('assert');
-                assert.equal(pm.variables._postman_enableTracking, true);
-                assert.equal(pm.environment._postman_enableTracking, true);
-                assert.equal(pm.globals._postman_enableTracking, true);
+                assert.equal(pm.variables.mutations.count(), 0);
+                pm.variables.set('foo', 'foo');
+                assert.equal(pm.variables.mutations.count(), 1);
+                assert.equal(pm.environment.mutations.count(), 0);
+                pm.environment.set('foo', 'foo');
+                assert.equal(pm.environment.mutations.count(), 1);
+                assert.equal(pm.globals.mutations.count(), 0);
+                pm.globals.set('foo', 'foo');
+                assert.equal(pm.globals.mutations.count(), 1);
             `, done);
         });
     });
