@@ -49,4 +49,48 @@ describe('pm api variables', function () {
             });
         });
     });
+
+    it('should should drop initial mutations in context', function (done) {
+        var scopeDefinition = {
+            values: [
+                {key: 'bar', value: 'bar value'}
+            ],
+            mutations: {
+                autoCompact: true,
+                compacted: {
+                    bar: ['bar', 'bar value']
+                }
+            }
+        };
+
+        Sandbox.createContext({debug: false}, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.execute(`
+                var assert = require('assert');
+                pm.variables.set('foo', '_variable');
+                pm.environment.set('foo', 'environment');
+                pm.globals.set('foo', 'global');
+            `, {
+                context: {
+                    globals: scopeDefinition,
+                    _variables: scopeDefinition,
+                    environment: scopeDefinition
+                }
+            }, function (err, result) {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(result._variables.mutations).to.be.ok;
+                expect(new sdk.MutationTracker(result._variables.mutations).count()).to.equal(1);
+                expect(result.environment.mutations).to.be.ok;
+                expect(new sdk.MutationTracker(result.environment.mutations).count()).to.equal(1);
+                expect(result.globals.mutations).to.be.ok;
+                expect(new sdk.MutationTracker(result.globals.mutations).count()).to.equal(1);
+
+                done();
+            });
+        });
+    });
 });
