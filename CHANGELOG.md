@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.1.1 (June 30, 2018)
+* Fixed a bug that caused executions to crash when context variables have tracked mutations
+
 #### v3.1.0 (June 28, 2018)
 * Added change tracking to sandbox variables. Now execution result has `mutations` which has recorded
 all the changes that were made during the script execution.
