@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.1.2 (August 20, 2018)
+* Updated dependencies :arrow_up:
+
 #### v3.1.1 (June 30, 2018)
 * Fixed a bug that caused executions to crash when context variables have tracked mutations
 
