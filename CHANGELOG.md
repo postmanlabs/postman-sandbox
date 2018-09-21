@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.1.3 (September 21, 2018)
+* Updated dependencies
+
 #### v3.1.2 (August 20, 2018)
 * Updated dependencies :arrow_up:
 
