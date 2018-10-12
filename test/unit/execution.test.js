@@ -19,24 +19,21 @@ describe('execution', function () {
         var json;
         expect(function () {
             json = execution.toJSON();
-        }).to.not.throwError();
-        expect(json).to.have.property('request');
-        expect(json).to.have.property('response');
+        }).to.not.throw();
+        expect(json).to.include.keys(['request', 'response']);
     });
 
     it('does not leak sandbox helpers when serialized', function () {
         var json;
 
-        expect(execution.request).to.have.property('to');
-        expect(execution.response).to.have.property('to');
+        expect(execution).to.have.property('request').that.has.property('to');
+        expect(execution).to.have.property('response').that.has.property('to');
 
         json = execution.toJSON();
 
-        expect(json).to.have.property('request');
-        expect(json.request).to.not.have.property('to');
-        expect(execution.request).to.have.property('to');
-        expect(json).to.have.property('response');
-        expect(json.response).to.not.have.property('to');
-        expect(execution.response).to.have.property('to');
+        expect(json).to.have.property('request').that.not.have.property('to');
+        expect(execution).to.have.property('request').that.has.property('to');
+        expect(json).to.have.property('response').that.not.have.property('to');
+        expect(execution).to.have.property('response').that.has.property('to');
     });
 });
