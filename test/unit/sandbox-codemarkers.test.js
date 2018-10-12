@@ -2,7 +2,7 @@ describe('sandbox "sandbox2" code markers', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
-    it('must not expose legacy variables when "use sandbox2" is specified', function (done) {
+    it('should not expose legacy variables when "use sandbox2" is specified', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -14,7 +14,7 @@ describe('sandbox "sandbox2" code markers', function () {
         });
     });
 
-    it('must ensure that major generic globals is still available in sandbox2 mode', function (done) {
+    it('should ensure that major generic globals is still available in sandbox2 mode', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -26,7 +26,7 @@ describe('sandbox "sandbox2" code markers', function () {
         });
     });
 
-    it('must ensure that legacy test target globals are not present', function (done) {
+    it('should ensure that legacy test target globals are not present', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
