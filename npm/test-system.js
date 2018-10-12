@@ -3,26 +3,15 @@
 
 require('shelljs/global');
 
-var fs = require('fs'),
-    recursive = require('recursive-readdir'),
+var recursive = require('recursive-readdir'),
     path = require('path'),
 
     chalk = require('chalk'),
     async = require('async'),
-    _ = require('lodash'),
+    expect = require('chai').expect,
     Mocha = require('mocha'),
 
-    SPEC_SOURCE_DIR = path.join(__dirname, '..', 'test', 'system'),
-
-    /**
-     * Load a JSON from file synchronously
-     *
-     * @param {String} file
-     * @returns {String}
-     */
-    loadJSON = function (file) {
-        return JSON.parse(fs.readFileSync(path.join(__dirname, file)).toString());
-    };
+    SPEC_SOURCE_DIR = path.join(__dirname, '..', 'test', 'system');
 
 module.exports = function (exit) {
     // banner line
@@ -40,10 +29,18 @@ module.exports = function (exit) {
                     return (file.substr(-8) === '.test.js');
                 }).forEach(mocha.addFile.bind(mocha));
 
+                // start the mocha run
+                global.expect = expect; // for easy reference
+
                 mocha.run(function (err) {
+                    // clear references and overrides
+                    delete global.expect;
+
                     err && console.error(err.stack || err);
                     next(err ? 1 : 0);
                 });
+                // cleanup
+                mocha = null;
             });
         },
 
@@ -57,43 +54,6 @@ module.exports = function (exit) {
             packity(options, function (err, results) {
                 packity.cliReporter(options)(err, results);
                 next(err);
-            });
-        },
-
-        // execute nsp
-        // programmatically executing nsp is a bit tricky as we have to emulate the cli script's usage of internal
-        // nsp functions.
-        function (next) {
-            var nsp = require('nsp'),
-                pkg = loadJSON('../package.json'),
-                nsprc = loadJSON('../.nsprc');
-
-            console.log(chalk.yellow('processing nsp for security vulnerabilities...\n'));
-
-            // we do not pass full package for privacy concerns and also to add the ability to ignore exclude packages,
-            // hence we customise the package before we send it
-            nsp.check({
-                offline: false,
-                package: {
-                    name: pkg.name,
-                    dependencies: _.omit(pkg.dependencies, nsprc.exclusions || [])
-                }
-            }, function (err, result) {
-                // if processing nsp had an error, simply print that and exit
-                if (err) {
-                    console.error(chalk.red('There was an error processing NSP!\n') + chalk.gray(err.message || err) +
-                        '\n\nSince NSP server failure is not a blocker for tests, tests are not marked as failure!');
-                    return next();
-                }
-
-                // in case an nsp violation is found, we raise an error
-                if (result.length) {
-                    console.error(nsp.formatters.default(err, result));
-                    return next(1);
-                }
-
-                console.log(chalk.green('nsp ok!\n'));
-                return next();
             });
         }
     ], exit);

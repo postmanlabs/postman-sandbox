@@ -1,6 +1,3 @@
-/* global describe, it */
-var expect = require('expect.js');
-
 describe('bootcode dependencies', function () {
     this.timeout(60 * 1000);
 
@@ -18,7 +15,7 @@ describe('bootcode dependencies', function () {
     });
 
     it('should not change', function () {
-        expect(currentDependencies).to.be.eql([
+        expect(currentDependencies).to.eql([
             'ansi-styles',
             'array-uniq',
             'assert',
