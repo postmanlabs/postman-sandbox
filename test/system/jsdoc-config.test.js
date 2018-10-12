@@ -3,13 +3,10 @@
  * on the content of the file as well. Any change to .jsdoc-config.json must be accompanied by valid test case in this
  * spec-sheet.
  */
-/* global describe, it */
-describe('JSDoc configuration', function () {
-    var fs = require('fs'),
-        _ = require('lodash'),
-        expect = require('expect.js'),
+var fs = require('fs');
 
-        json,
+describe('JSDoc configuration', function () {
+    var json,
         content,
         jsdocConfigPath = './.jsdoc-config.json';
 
@@ -18,16 +15,16 @@ describe('JSDoc configuration', function () {
     });
 
     it('should have readable content', function () {
-        expect(content = fs.readFileSync(jsdocConfigPath).toString()).to.be.ok();
+        expect(content = fs.readFileSync(jsdocConfigPath).toString(), 'Should have readable content').to.be.ok;
     });
 
     it('should have valid JSON content', function () {
-        expect(json = JSON.parse(content)).to.be.ok();
+        expect(json = JSON.parse(content), 'Should have valid JSON content').to.be.ok;
     });
 
     describe('tags', function () {
-        it('should allow unkown tags', function () {
-            expect(json.tags.allowUnknownTags).to.be.ok();
+        it('should allow unknown tags', function () {
+            expect(json.tags.allowUnknownTags, 'Should allow unknown tags').to.be.ok;
         });
 
         it('should have jsdoc and closure dictionaries', function () {
@@ -37,63 +34,63 @@ describe('JSDoc configuration', function () {
 
     describe('source', function () {
         it('should have an include pattern', function () {
-            expect(json.source.includePattern).to.be('.+\\.js(doc)?$');
+            expect(json.source.includePattern).to.equal('.+\\.js(doc)?$');
         });
 
         it('should have an exclude pattern', function () {
-            expect(json.source.excludePattern).to.be('(^|\\/|\\\\)_');
+            expect(json.source.excludePattern).to.equal('(^|\\/|\\\\)_');
         });
     });
 
     describe('plugins', function () {
         it('should have the markdown plugin', function () {
-            expect(_.includes(json.plugins, 'plugins/markdown')).to.be.ok();
+            expect(json.plugins, 'Should use the markdown plugin').to.include('plugins/markdown');
         });
     });
 
     describe('templates', function () {
         it('should not have clever links', function () {
-            expect(json.templates.cleverLinks).to.not.be.ok();
+            expect(json.templates.cleverLinks).to.be.false;
         });
 
         it('should not have monospace links', function () {
-            expect(json.templates.monospaceLinks).to.not.be.ok();
+            expect(json.templates.monospaceLinks).to.be.false;
         });
 
         it('should highlight tutorial code', function () {
-            expect(json.templates.highlightTutorialCode).to.be.ok();
+            expect(json.templates.highlightTutorialCode).to.be.ok;
         });
     });
 
     describe('opts', function () {
         it('should use the Postman JSDoc theme', function () {
-            expect(json.opts.template).to.be('./node_modules/postman-jsdoc-theme');
+            expect(json.opts.template).to.equal('./node_modules/postman-jsdoc-theme');
         });
 
         it('should use UTF-8 encoding', function () {
-            expect(json.opts.encoding).to.be('utf8');
+            expect(json.opts.encoding).to.equal('utf8');
         });
 
         it('should create documentation in out/docs', function () {
-            expect(json.opts.destination).to.be('./out/docs');
+            expect(json.opts.destination).to.equal('./out/docs');
         });
 
         it('should recurse', function () {
-            expect(json.opts.recurse).to.be.ok();
+            expect(json.opts.recurse).to.be.ok;
         });
 
         it('should have a valid readme', function () {
-            expect(json.opts.readme).to.be('README.md');
+            expect(json.opts.readme, 'Should use a valid readme').to.equal('README.md');
         });
     });
 
     describe('markdown', function () {
         it('should have a gfm parser', function () {
-            expect(json.markdown.parser).to.be('gfm');
+            expect(json.markdown.parser, 'Should use the gfm markdown parser').to.equal('gfm');
         });
 
         it('should have jsdoc and closure dictionaries', function () {
-            expect(json.markdown.hardwrap).to.not.be.ok();
+            expect(json.markdown.hardwrap).to.be.false;
         });
     });
 });
