@@ -15,7 +15,7 @@ describe('sandbox library - xml2Json', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert');
 
@@ -23,7 +23,7 @@ describe('sandbox library - xml2Json', function () {
         `, done);
     });
 
-    it('must have basic functionality working', function (done) {
+    it('should have basic functionality working', function (done) {
         context.execute(`
             var assert = require('assert'),
                 xml = '<food><key>Homestyle Breakfast</key><value>950</value></food>',
