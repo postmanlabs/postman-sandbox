@@ -18,7 +18,7 @@ describe('sandbox library - Cheerio', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert');
 
@@ -28,7 +28,7 @@ describe('sandbox library - Cheerio', function () {
     });
 
     describe('basic functionality', function () {
-        it('must work with selectors', function (done) {
+        it('should work with selectors', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     $ = cheerio.load(\`${markup}\`);
@@ -39,7 +39,7 @@ describe('sandbox library - Cheerio', function () {
             `, done);
         });
 
-        it('must work with attributes', function (done) {
+        it('should work with attributes', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     $ = cheerio.load(\`${markup}\`);
@@ -52,7 +52,7 @@ describe('sandbox library - Cheerio', function () {
             `, done);
         });
 
-        it('must work with traversals', function (done) {
+        it('should work with traversals', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     $ = cheerio.load(\`${markup}\`);
@@ -66,7 +66,7 @@ describe('sandbox library - Cheerio', function () {
             `, done);
         });
 
-        it('must work with renders', function (done) {
+        it('should work with renders', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     $ = cheerio.load(\`${markup}\`);
