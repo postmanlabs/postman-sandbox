@@ -119,10 +119,10 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, function (err, exec) {
                 expect(err).to.be.null;
                 expect(exec).to.be.ok;
-                expect(exec.globals.values).eql([
+                expect(exec).to.deep.nested.include({'globals.values': [
                     {type: 'any', value: 'one-one', key: 'var1'},
                     {type: 'number', value: 2, key: 'var2'}
-                ]);
+                ]});
                 done();
             });
         });
@@ -180,10 +180,10 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, function (err, exec) {
                 expect(err).to.be.null;
                 expect(exec).to.be.ok;
-                expect(exec.environment.values).eql([
+                expect(exec).to.deep.nested.include({'environment.values': [
                     {type: 'any', value: 'one-one-env', key: 'var1'},
                     {type: 'number', value: 2.5, key: 'var2'}
-                ]);
+                ]});
                 done();
             });
         });
@@ -518,8 +518,8 @@ describe('sandbox library - pm api', function () {
             });
 
             // @todo find the cause of the error where assertions are not being fired from inside a timer
-            context.on('execution.assertion', function (cursor, assertions) {
-                assertions.forEach(function (ass) {
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
                     expect(ass).to.deep.include({
                         passed: true,
                         error: null
