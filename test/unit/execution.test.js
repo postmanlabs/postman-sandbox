@@ -26,14 +26,14 @@ describe('execution', function () {
     it('does not leak sandbox helpers when serialized', function () {
         var json;
 
-        expect(execution).to.have.property('request').that.has.property('to');
-        expect(execution).to.have.property('response').that.has.property('to');
+        expect(execution).to.have.nested.property('request.to');
+        expect(execution).to.have.nested.property('response.to');
 
         json = execution.toJSON();
 
-        expect(json).to.have.property('request').that.not.have.property('to');
-        expect(execution).to.have.property('request').that.has.property('to');
-        expect(json).to.have.property('response').that.not.have.property('to');
-        expect(execution).to.have.property('response').that.has.property('to');
+        expect(json).to.not.have.nested.property('request.to');
+        expect(execution).to.have.nested.property('request.to');
+        expect(json).to.not.have.nested.property('response.to');
+        expect(execution).to.have.nested.property('response.to');
     });
 });
