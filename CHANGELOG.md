@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### Unreleased
+- Migrated tests to chai expect assertions
+
 #### v3.1.3 (September 21, 2018)
 * Updated dependencies
 
