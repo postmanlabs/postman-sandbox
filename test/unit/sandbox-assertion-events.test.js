@@ -88,8 +88,8 @@ describe('sandbox assertion events', function () {
 
         // sync tests assestions for 1st execution in order
         expect(assestions[2]).to.deep.nested.include({
-            'name': 'fail2',
-            'passed': false,
+            name: 'fail2',
+            passed: false,
             'error.name': 'AssertionError',
             'error.message': 'expected undefined to be truthy'
         });
@@ -106,28 +106,28 @@ describe('sandbox assertion events', function () {
             error: null
         });
         expect(assestions[5]).to.deep.nested.include({
-            'name': 'fail3',
-            'passed': false,
+            name: 'fail3',
+            passed: false,
             'error.name': 'Error',
             'error.message': 'sample error 2'
         });
         expect(assestions[6]).to.deep.nested.include({
-            'name': 'fail4',
-            'passed': false,
+            name: 'fail4',
+            passed: false,
             'error.name': 'AssertionError',
             'error.message': 'expected \'a\' to equal \'b\''
         });
 
         // sync tests assestions for 2nd execution in order
         expect(assestions[7]).to.deep.nested.include({
-            'name': 'fail5',
-            'passed': false,
+            name: 'fail5',
+            passed: false,
             'error.name': 'AssertionError',
             'error.message': 'expected undefined to be truthy'
         });
         expect(assestions[8]).to.deep.nested.include({
-            'name': 'fail6',
-            'passed': false,
+            name: 'fail6',
+            passed: false,
             'error.name': 'AssertionError',
             'error.message': 'expected false to be truthy'
         });
