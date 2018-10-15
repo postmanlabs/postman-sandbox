@@ -29,7 +29,9 @@
             if (err) { return done(err); }
 
             expect(err).to.be.null;
-            expect(res.return.async).to.be.true;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
             expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
             expect(res.globals.values[0].value).to.be.greaterThan(95);
@@ -56,7 +58,9 @@
             if (err) { return done(err); }
 
             expect(err).to.be.null;
-            expect(res.return.async).to.be.false;
+            expect(res).to.nested.include({
+                'return.async': false
+            });
 
             // we wait for a while to ensure that the timeout was actually cleared.
             setTimeout(function () {
@@ -78,10 +82,14 @@
             if (err) { return done(err); }
 
             expect(err).to.be.null;
-            expect(res.return.async).to.be.true;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
             expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
-            expect(res.globals.values[0].value).to.be.true;
+            expect(res).to.nested.include({
+                'globals.values[0].value': true
+            });
             done();
         });
     });
@@ -105,7 +113,9 @@
             if (err) { return done(err); }
 
             expect(err).to.be.null;
-            expect(res.return.async).to.be.false;
+            expect(res).to.nested.include({
+                'return.async': false
+            });
 
             // we wait for a while to ensure that the timeout was actually cleared.
             setTimeout(function () {
@@ -140,7 +150,9 @@
                 name: 'Error',
                 message: 'sandbox: asynchronous script execution timeout'
             });
-            expect(res.return.async).to.be.true;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
             // now wait for a while to ensure no extra interval timers were fired
             setTimeout(function () {
@@ -172,7 +184,9 @@
             var currentCount = status;
 
             expect(err).to.be.null;
-            expect(res.return.async).to.be.true;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
             expect(currentCount).to.be.above(0);
 
             setTimeout(function () {
@@ -213,7 +227,9 @@
         }, function (err, res) {
             if (err) { return done(err); }
             setTimeout(function () {
-                expect(res.return.async).to.be.true;
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
                 expect(order).to.eql([e1, e2]);
                 done();
             }, 200);
@@ -253,7 +269,9 @@
                 expect(err).to.be.ok;
                 expect(err.message).to.match(/timeout/);
 
-                expect(res.return.async).to.be.true;
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
                 expect(order).to.eql([e1]);
                 done();
             }, 500);
@@ -287,7 +305,9 @@
             if (err) { return done(err); }
 
             setTimeout(function () {
-                expect(res.return.async).to.be.true;
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
                 expect(status).to.be.true;
                 done();
             }, 500);
@@ -315,7 +335,9 @@
             if (err) { return done(err); }
 
             setTimeout(function () {
-                expect(execution.return.async).to.be.true;
+                expect(execution).to.nested.include({
+                    'return.async': true
+                });
                 expect(result).to.eql({
                     name: 'postman-sb-test',
                     skipped: false,
