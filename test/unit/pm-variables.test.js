@@ -61,27 +61,29 @@ describe('pm.variables', function () {
         });
 
         it('should return the modified variables in the result', function () {
-            expect(executionResults._variables).to.have.property('values').that.eql([
+            expect(executionResults).to.deep.nested.include({'_variables.values': [
                 {type: 'any', value: 'modified', key: 'key-5'},
                 {type: 'any', value: 'modified', key: 'key-1'},
                 {type: 'any', value: 'modified', key: 'key-2'},
                 {type: 'any', value: 'modified', key: 'key-3'},
                 {type: 'any', value: 'modified', key: 'key-4'},
                 {type: 'any', value: 'new', key: 'key-6'}
-            ]);
+            ]});
         });
 
         it('should not modify the globals, envrironment, collection and data variables', function () {
-            expect(executionResults.globals).to.have.property('values').that.eql([
-                {type: 'any', value: 'value-1', key: 'key-1'}
-            ]);
-            expect(executionResults.collectionVariables).to.have.property('values').that.eql([
-                {type: 'any', value: 'value-2', key: 'key-2'}
-            ]);
-            expect(executionResults.environment).to.have.property('values').that.eql([
-                {type: 'any', value: 'value-3', key: 'key-3'}
-            ]);
-            expect(executionResults.data).to.eql({'key-4': 'value-4'});
+            expect(executionResults).to.deep.nested.include({
+                'globals.values': [
+                    {type: 'any', value: 'value-1', key: 'key-1'}
+                ],
+                'collectionVariables.values': [
+                    {type: 'any', value: 'value-2', key: 'key-2'}
+                ],
+                'environment.values': [
+                    {type: 'any', value: 'value-3', key: 'key-3'}
+                ],
+                'data': {'key-4': 'value-4'}
+            });
         });
 
         it('should be able to work with empty variables passed in context', function (done) {
@@ -95,9 +97,9 @@ describe('pm.variables', function () {
             }, function (err, execution) {
                 if (err) { return done(err); }
 
-                expect(execution._variables).to.have.property('values').that.eql([
+                expect(execution).to.deep.nested.include({'_variables.values': [
                     {type: 'any', value: 'modified', key: 'key-1'}
-                ]);
+                ]});
                 return done();
             });
         });
@@ -113,9 +115,9 @@ describe('pm.variables', function () {
             }, function (err, execution) {
                 if (err) { return done(err); }
 
-                expect(execution._variables).to.have.property('values').that.eql([
+                expect(execution).to.deep.nested.include({'_variables.values': [
                     {type: 'json', value: '{"version":"v1"}', key: 'myObject'}
-                ]);
+                ]});
                 return done();
             });
         });
@@ -226,11 +228,14 @@ describe('pm.variables', function () {
             }, function (err, execution) {
                 if (err) { return done(err); }
 
-                expect(execution._variables.values).to.eql([]);
-                expect(execution.globals.values).to.eql([]);
-                expect(execution.collectionVariables.values).to.eql([]);
-                expect(execution.environment.values).to.eql([]);
-                expect(execution.data).to.eql({});
+                expect(execution).to.deep.nested.include({
+                    'globals.values': [],
+                    '_variables.values': [],
+                    'collectionVariables.values': [],
+                    'environment.values': [],
+                    'data': {}
+                });
+
                 return done();
             });
         });
