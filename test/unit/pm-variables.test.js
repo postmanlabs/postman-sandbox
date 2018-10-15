@@ -82,7 +82,7 @@ describe('pm.variables', function () {
                 'environment.values': [
                     {type: 'any', value: 'value-3', key: 'key-3'}
                 ],
-                'data': {'key-4': 'value-4'}
+                data: {'key-4': 'value-4'}
             });
         });
 
@@ -233,7 +233,7 @@ describe('pm.variables', function () {
                     '_variables.values': [],
                     'collectionVariables.values': [],
                     'environment.values': [],
-                    'data': {}
+                    data: {}
                 });
 
                 return done();
