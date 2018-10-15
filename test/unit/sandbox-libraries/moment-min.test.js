@@ -15,7 +15,7 @@ describe('sandbox library - moment.min', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert'),
                 moment = require('moment');
@@ -24,7 +24,7 @@ describe('sandbox library - moment.min', function () {
         `, done);
     });
 
-    it('must format dates', function (done) {
+    it('should format dates', function (done) {
         context.execute(`
             var assert = require('assert'),
                 moment = require('moment');
@@ -37,7 +37,7 @@ describe('sandbox library - moment.min', function () {
         `, done);
     });
 
-    it('must format relative time', function (done) {
+    it('should format relative time', function (done) {
         context.execute(`
             var assert = require('assert'),
                 moment = require('moment'),
@@ -55,7 +55,7 @@ describe('sandbox library - moment.min', function () {
         `, done);
     });
 
-    it('must format calendar time', function (done) {
+    it('should format calendar time', function (done) {
         context.execute(`
             var assert = require('assert'),
                 moment = require('moment'),
@@ -72,7 +72,7 @@ describe('sandbox library - moment.min', function () {
     });
 
     describe('locales', function () {
-        it('must work with the US locale', function (done) {
+        it('should work with the US locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
@@ -88,7 +88,7 @@ describe('sandbox library - moment.min', function () {
             `, done);
         });
 
-        it('must not work with the UK locale', function (done) {
+        it('should not work with the UK locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
@@ -104,7 +104,7 @@ describe('sandbox library - moment.min', function () {
             `, done);
         });
 
-        it('must not work with the Chinese locale', function (done) {
+        it('should not work with the Chinese locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');
@@ -120,7 +120,7 @@ describe('sandbox library - moment.min', function () {
             `, done);
         });
 
-        it('must not work with the pseudo-locale', function (done) {
+        it('should not work with the pseudo-locale', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     moment = require('moment');

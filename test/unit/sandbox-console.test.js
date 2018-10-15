@@ -20,12 +20,11 @@ describe('console inside sandbox', function () {
 
                 ctx.execute(`console.${level}('hello console');`, {cursor: {ref: 'cursor-identifier'}}, function (err) {
                     if (err) { return done(err); }
-                    expect(consoleEventArgs).be.ok();
-                    expect(consoleEventArgs[0]).be.an('object');
-                    expect(consoleEventArgs[0]).have.property('ref', 'cursor-identifier');
-                    expect(consoleEventArgs[0]).have.property('execution');
-                    expect(consoleEventArgs[1]).be(level);
-                    expect(consoleEventArgs[2]).be('hello console');
+                    expect(consoleEventArgs).to.be.ok;
+                    expect(consoleEventArgs[0]).be.an('object').that.has.property('ref', 'cursor-identifier');
+                    expect(consoleEventArgs[0]).to.have.property('execution');
+                    expect(consoleEventArgs[1]).to.equal(level);
+                    expect(consoleEventArgs[2]).to.equal('hello console');
                     done();
                 });
             });

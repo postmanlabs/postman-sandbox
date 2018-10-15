@@ -17,7 +17,7 @@
     });
 
 
-    it('must work with setTimeout inside sandbox', function (done) {
+    it('should work with setTimeout inside sandbox', function (done) {
         ctx.execute(`
             var startTime = Date.now();
             setTimeout(function () {
@@ -28,17 +28,18 @@
         }, function (err, res) {
             if (err) { return done(err); }
 
-            expect(err).to.not.be.ok();
-            expect(res.return.async).to.be(true);
+            expect(err).to.be.null;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
-            expect(res).to.have.property('globals');
-            expect(res.globals.values).to.be.an('array');
+            expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
             expect(res.globals.values[0].value).to.be.greaterThan(95);
             done();
         });
     });
 
-    it('must be able to clear timeout', function (done) {
+    it('should be able to clear timeout', function (done) {
         var timeoutExecuted = 'timeout not executed';
 
         ctx.on('console', function (cursor, level, message) { // keep track of intervals passed
@@ -56,8 +57,10 @@
         }, function (err, res) {
             if (err) { return done(err); }
 
-            expect(err).to.not.be.ok();
-            expect(res.return.async).to.be(false);
+            expect(err).to.be.null;
+            expect(res).to.nested.include({
+                'return.async': false
+            });
 
             // we wait for a while to ensure that the timeout was actually cleared.
             setTimeout(function () {
@@ -67,7 +70,7 @@
         });
     });
 
-    it('must work with setImmediate inside sandbox', function (done) {
+    it('should work with setImmediate inside sandbox', function (done) {
         ctx.execute(`
             var startTime = Date.now();
             setImmediate(function () {
@@ -78,17 +81,20 @@
         }, function (err, res) {
             if (err) { return done(err); }
 
-            expect(err).to.not.be.ok();
-            expect(res.return.async).to.be(true);
+            expect(err).to.be.null;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
-            expect(res).to.have.property('globals');
-            expect(res.globals.values).to.be.an('array');
-            expect(res.globals.values[0].value).to.be(true);
+            expect(res).to.have.property('globals').that.has.property('values').that.is.an('array');
+            expect(res).to.nested.include({
+                'globals.values[0].value': true
+            });
             done();
         });
     });
 
-    it('must be able to clear immediates', function (done) {
+    it('should be able to clear immediates', function (done) {
         var status = 'not executed';
 
         ctx.on('console', function (cursor, level, message) { // keep track of executions passed
@@ -106,8 +112,10 @@
         }, function (err, res) {
             if (err) { return done(err); }
 
-            expect(err).to.not.be.ok();
-            expect(res.return.async).to.be(false);
+            expect(err).to.be.null;
+            expect(res).to.nested.include({
+                'return.async': false
+            });
 
             // we wait for a while to ensure that the timeout was actually cleared.
             setTimeout(function () {
@@ -117,7 +125,7 @@
         });
     });
 
-    it('must time out if timers run beyond interval and stop the interval', function (done) {
+    it('should time out if timers run beyond interval and stop the interval', function (done) {
         var count = {
             terminal: null,
             current: 0
@@ -138,9 +146,13 @@
         }, function (err, res) {
             count.terminal = count.current;
 
-            expect(err).to.have.property('name', 'Error');
-            expect(err).to.have.property('message', 'sandbox: asynchronous script execution timeout');
-            expect(res.return.async).to.be(true);
+            expect(err).to.deep.include({
+                name: 'Error',
+                message: 'sandbox: asynchronous script execution timeout'
+            });
+            expect(res).to.nested.include({
+                'return.async': true
+            });
 
             // now wait for a while to ensure no extra interval timers were fired
             setTimeout(function () {
@@ -150,7 +162,7 @@
         });
     });
 
-    it('must be able to clear intervals and exit', function (done) {
+    it('should be able to clear intervals and exit', function (done) {
         var status = 0;
 
         ctx.on('console', function (cursor, level, message) { // keep track of executions passed
@@ -171,12 +183,14 @@
             if (err) { return done(err); }
             var currentCount = status;
 
-            expect(err).to.not.be.ok();
-            expect(res.return.async).to.be(true);
+            expect(err).to.be.null;
+            expect(res).to.nested.include({
+                'return.async': true
+            });
             expect(currentCount).to.be.above(0);
 
             setTimeout(function () {
-                expect(status).to.be(currentCount);
+                expect(status).to.equal(currentCount);
                 done();
             }, 200);
         });
@@ -213,7 +227,9 @@
         }, function (err, res) {
             if (err) { return done(err); }
             setTimeout(function () {
-                expect(res.return.async).to.be(true);
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
                 expect(order).to.eql([e1, e2]);
                 done();
             }, 200);
@@ -250,10 +266,12 @@
             timeout: 200
         }, function (err, res) {
             setTimeout(function () {
-                expect(err).to.be.ok();
+                expect(err).to.be.ok;
                 expect(err.message).to.match(/timeout/);
 
-                expect(res.return.async).to.be(true);
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
                 expect(order).to.eql([e1]);
                 done();
             }, 500);
@@ -287,8 +305,10 @@
             if (err) { return done(err); }
 
             setTimeout(function () {
-                expect(res.return.async).to.be(true);
-                expect(status).to.be(true);
+                expect(res).to.nested.include({
+                    'return.async': true
+                });
+                expect(status).to.be.true;
                 done();
             }, 500);
         });
@@ -315,7 +335,9 @@
             if (err) { return done(err); }
 
             setTimeout(function () {
-                expect(execution.return.async).to.be(true);
+                expect(execution).to.nested.include({
+                    'return.async': true
+                });
                 expect(result).to.eql({
                     name: 'postman-sb-test',
                     skipped: false,

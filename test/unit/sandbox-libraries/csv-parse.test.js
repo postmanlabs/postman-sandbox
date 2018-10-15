@@ -15,7 +15,7 @@ describe('sandbox library - csv-parse/lib/sync', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert'),
                 csvParse = require('csv-parse/lib/sync');
@@ -25,7 +25,7 @@ describe('sandbox library - csv-parse/lib/sync', function () {
     });
 
     describe('basic functionality', function () {
-        it('must work correctly for rudimentary csv data', function (done) {
+        it('should work correctly for rudimentary csv data', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     csvParse = require('csv-parse/lib/sync'),
@@ -36,7 +36,7 @@ describe('sandbox library - csv-parse/lib/sync', function () {
             `, done);
         });
 
-        it('must work correctly for a singelton set', function (done) {
+        it('should work correctly for a singelton set', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     csvParse = require('csv-parse/lib/sync'),
@@ -47,7 +47,7 @@ describe('sandbox library - csv-parse/lib/sync', function () {
             `, done);
         });
 
-        it('must handle malformed input correctly', function (done) {
+        it('should handle malformed input correctly', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     csvParse = require('csv-parse/lib/sync');

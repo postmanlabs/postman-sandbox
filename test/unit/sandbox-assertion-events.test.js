@@ -30,7 +30,7 @@ describe('sandbox assertion events', function () {
 
             ctx.execute(`
                 pm.test("pass1", function () {
-                    pm.expect(123).be.a('number');
+                    pm.expect(123).to.be.a('number');
                 });
 
                 tests['fail2'] = undefined;
@@ -44,7 +44,7 @@ describe('sandbox assertion events', function () {
 
             ctx.execute(`
                 pm.test("pass3", function () {
-                    pm.expect(123).be.a('number');
+                    pm.expect(123).to.be.a('number');
                 });
 
                 tests['fail5'] = undefined;
@@ -63,61 +63,78 @@ describe('sandbox assertion events', function () {
         });
     });
 
-    it('must be indexed across parallel executions', function () {
+    it('should be indexed across parallel executions', function () {
         expect(assestions.map(function (test) { return test.index; })).to.eql([0, 1, 2, 3, 0, 1, 2, 3, 4, 5]);
     });
 
-    it('must be called for async and sync assertions', function () {
-        expect(assestions.length).to.be(10);
+    it('should be called for async and sync assertions', function () {
+        expect(assestions.length).to.equal(10);
 
         // async tests assertions for 1st execution in order
-        expect(assestions[0]).to.have.property('name', 'pass1');
-        expect(assestions[0]).to.have.property('passed', true);
-        expect(assestions[0]).to.have.property('error', null);
-        expect(assestions[1]).to.have.property('name', 'fail1');
-        expect(assestions[1]).to.have.property('passed', false);
-        expect(assestions[1]).to.have.property('error');
-        expect(assestions[1].error).to.have.property('name', 'Error');
-        expect(assestions[1].error).to.have.property('message', 'sample error 1');
+        expect(assestions[0]).to.deep.include({
+            name: 'pass1',
+            passed: true,
+            error: null
+        });
+        expect(assestions[1]).to.deep.include({
+            name: 'fail1',
+            passed: false,
+            error: {
+                type: 'Error',
+                name: 'Error',
+                message: 'sample error 1'
+            }
+        });
 
         // sync tests assestions for 1st execution in order
-        expect(assestions[2]).to.have.property('name', 'fail2');
-        expect(assestions[2]).to.have.property('passed', false);
-        expect(assestions[2]).to.have.property('error');
-        expect(assestions[2].error).to.have.property('name', 'AssertionError');
-        expect(assestions[2].error).to.have.property('message', 'expected undefined to be truthy');
-        expect(assestions[3]).to.have.property('name', 'pass2');
-        expect(assestions[3]).to.have.property('passed', true);
-        expect(assestions[3]).to.have.property('error', null);
+        expect(assestions[2]).to.deep.nested.include({
+            name: 'fail2',
+            passed: false,
+            'error.name': 'AssertionError',
+            'error.message': 'expected undefined to be truthy'
+        });
+        expect(assestions[3]).to.deep.include({
+            name: 'pass2',
+            passed: true,
+            error: null
+        });
 
         // async tests assertions for 2nd execution in order
-        expect(assestions[4]).to.have.property('name', 'pass3');
-        expect(assestions[4]).to.have.property('passed', true);
-        expect(assestions[4]).to.have.property('error', null);
-        expect(assestions[5]).to.have.property('name', 'fail3');
-        expect(assestions[5]).to.have.property('passed', false);
-        expect(assestions[5]).to.have.property('error');
-        expect(assestions[5].error).to.have.property('name', 'Error');
-        expect(assestions[5].error).to.have.property('message', 'sample error 2');
-        expect(assestions[6]).to.have.property('name', 'fail4');
-        expect(assestions[6]).to.have.property('passed', false);
-        expect(assestions[6]).to.have.property('error');
-        expect(assestions[6].error).to.have.property('name', 'AssertionError');
-        expect(assestions[6].error).to.have.property('message', 'expected \'a\' to equal \'b\'');
+        expect(assestions[4]).to.deep.include({
+            name: 'pass3',
+            passed: true,
+            error: null
+        });
+        expect(assestions[5]).to.deep.nested.include({
+            name: 'fail3',
+            passed: false,
+            'error.name': 'Error',
+            'error.message': 'sample error 2'
+        });
+        expect(assestions[6]).to.deep.nested.include({
+            name: 'fail4',
+            passed: false,
+            'error.name': 'AssertionError',
+            'error.message': 'expected \'a\' to equal \'b\''
+        });
 
         // sync tests assestions for 2nd execution in order
-        expect(assestions[7]).to.have.property('name', 'fail5');
-        expect(assestions[7]).to.have.property('passed', false);
-        expect(assestions[7]).to.have.property('error');
-        expect(assestions[7].error).to.have.property('name', 'AssertionError');
-        expect(assestions[7].error).to.have.property('message', 'expected undefined to be truthy');
-        expect(assestions[8]).to.have.property('name', 'fail6');
-        expect(assestions[8]).to.have.property('passed', false);
-        expect(assestions[8]).to.have.property('error');
-        expect(assestions[8].error).to.have.property('name', 'AssertionError');
-        expect(assestions[8].error).to.have.property('message', 'expected false to be truthy');
-        expect(assestions[9]).to.have.property('name', 'pass4');
-        expect(assestions[9]).to.have.property('passed', true);
-        expect(assestions[9]).to.have.property('error', null);
+        expect(assestions[7]).to.deep.nested.include({
+            name: 'fail5',
+            passed: false,
+            'error.name': 'AssertionError',
+            'error.message': 'expected undefined to be truthy'
+        });
+        expect(assestions[8]).to.deep.nested.include({
+            name: 'fail6',
+            passed: false,
+            'error.name': 'AssertionError',
+            'error.message': 'expected false to be truthy'
+        });
+        expect(assestions[9]).to.deep.include({
+            name: 'pass4',
+            passed: true,
+            error: null
+        });
     });
 });

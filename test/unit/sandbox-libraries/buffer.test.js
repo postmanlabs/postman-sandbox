@@ -15,14 +15,14 @@ describe('sandbox library - buffer', function () {
         context = null;
     });
 
-    it('must exist in global', function (done) {
+    it('should exist in global', function (done) {
         context.execute(`
             var assert = require('assert');
             assert.strictEqual(typeof Buffer, 'function', 'typeof Buffer must be function');
         `, done);
     });
 
-    it('must be able to load from string and export in hex', function (done) {
+    it('should be able to load from string and export in hex', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.from('postman-sandbox');
@@ -31,7 +31,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load zero-filled Buffer of length 10', function (done) {
+    it('should load zero-filled Buffer of length 10', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.alloc(10);
@@ -41,7 +41,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load Buffer of length 10, filled with 0x1', function (done) {
+    it('should load Buffer of length 10, filled with 0x1', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.alloc(10, 1);
@@ -50,7 +50,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load uninitialized buffer of length 10', function (done) {
+    it('should load uninitialized buffer of length 10', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.allocUnsafe(10);
@@ -59,7 +59,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load Buffer containing [0x1, 0x2, 0x3]', function (done) {
+    it('should load Buffer containing [0x1, 0x2, 0x3]', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.from([1, 2, 3]);
@@ -68,7 +68,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load ASCII bytes [0x74, 0x65, 0x73, 0x74]', function (done) {
+    it('should load ASCII bytes [0x74, 0x65, 0x73, 0x74]', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.from('test');
@@ -77,7 +77,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must load UTF-8 bytes [0x74, 0xc3, 0xa9, 0x73, 0x74]', function (done) {
+    it('should load UTF-8 bytes [0x74, 0xc3, 0xa9, 0x73, 0x74]', function (done) {
         context.execute(`
             var assert = require('assert')
                 buf = Buffer.from('tést', 'utf8');
@@ -86,7 +86,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must convert ascii to base64', function (done) {
+    it('should convert ascii to base64', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.from('hello world', 'ascii');
@@ -95,7 +95,7 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
-    it('must base64 decode extended utf8 characters', function (done) {
+    it('should base64 decode extended utf8 characters', function (done) {
         /* eslint-disable max-len */
         var fromValue = 'eyJuYW1lIjoi5b6Q5a6BIiwiZW1haWwiOiJ4dW5pbmdoc3VAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6Iueci+aIkeeahOWkp+eZveecvCJ9';
 
@@ -110,7 +110,7 @@ describe('sandbox library - buffer', function () {
         /* eslint-enable max-len */
     });
 
-    it('must allow to use deprecated new Buffer syntax', function (done) {
+    it('should allow to use deprecated new Buffer syntax', function (done) {
         context.execute(`
             var assert = require('assert'),
                 buf1 = new Buffer('buffer'),

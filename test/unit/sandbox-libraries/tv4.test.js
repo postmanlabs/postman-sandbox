@@ -15,7 +15,7 @@ describe('sandbox library - TV4', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert');
 
@@ -24,7 +24,7 @@ describe('sandbox library - TV4', function () {
         `, done);
     });
 
-    it('must have basic functionality working', function (done) {
+    it('should have basic functionality working', function (done) {
         context.execute(`
             var assert = require('assert'),
                 schema = {

@@ -2,35 +2,34 @@ describe('sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
-    it('must create context', function (done) {
+    it('should create context', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
             ctx.ping(function (err, ttl, packet) {
-                expect(err).to.not.be.ok();
-                expect(packet).to.be.ok();
-                expect(ttl).be.a('number');
-                expect(ttl >= 0).be.ok();
+                expect(err).to.be.null;
+                expect(packet).to.be.ok;
+                expect(ttl).to.be.a('number').that.is.above(-1);
                 done();
             });
         });
     });
 
-    it('must execute a piece of code', function (done) {
+    it('should execute a piece of code', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
             ctx.execute('throw new Error("this will regurgitate!")', function (err) {
-                expect(err).be.ok();
-                expect(err).have.property('message', 'this will regurgitate!');
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'this will regurgitate!');
                 done();
             });
         });
     });
 
-    it('must have a few important globals', function (done) {
+    it('should have a few important globals', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
@@ -44,7 +43,7 @@ describe('sandbox', function () {
         });
     });
 
-    it('must accept an external execution id', function (done) {
+    it('should accept an external execution id', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
@@ -59,7 +58,7 @@ describe('sandbox', function () {
             }, function (err, execution) {
                 if (err) { return done(err); }
 
-                expect(execution).have.property('id', 'my-test-id');
+                expect(execution).to.have.property('id', 'my-test-id');
                 done();
             });
         });

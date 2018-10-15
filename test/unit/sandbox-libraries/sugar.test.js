@@ -15,7 +15,7 @@ describe('sandbox library - sugarjs', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert');
 
@@ -26,7 +26,7 @@ describe('sandbox library - sugarjs', function () {
         `, done);
     });
 
-    it('must expose sugarjs functionality', function (done) {
+    it('should expose sugarjs functionality', function (done) {
         context.execute(`
             var assert = require('assert'),
                 d = new Date(1470659144696); // Monday, Aug 08, 2016

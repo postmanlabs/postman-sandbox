@@ -19,24 +19,21 @@ describe('execution', function () {
         var json;
         expect(function () {
             json = execution.toJSON();
-        }).to.not.throwError();
-        expect(json).to.have.property('request');
-        expect(json).to.have.property('response');
+        }).to.not.throw();
+        expect(json).to.include.keys(['request', 'response']);
     });
 
     it('does not leak sandbox helpers when serialized', function () {
         var json;
 
-        expect(execution.request).to.have.property('to');
-        expect(execution.response).to.have.property('to');
+        expect(execution).to.have.nested.property('request.to');
+        expect(execution).to.have.nested.property('response.to');
 
         json = execution.toJSON();
 
-        expect(json).to.have.property('request');
-        expect(json.request).to.not.have.property('to');
-        expect(execution.request).to.have.property('to');
-        expect(json).to.have.property('response');
-        expect(json.response).to.not.have.property('to');
-        expect(execution.response).to.have.property('to');
+        expect(json).to.not.have.nested.property('request.to');
+        expect(execution).to.have.nested.property('request.to');
+        expect(json).to.not.have.nested.property('response.to');
+        expect(execution).to.have.nested.property('response.to');
     });
 });
