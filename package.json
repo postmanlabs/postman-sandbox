@@ -19,7 +19,9 @@
     "test-unit": "node npm/test-unit.js",
     "test-vm": "node npm/test-vm.js",
     "test": "node npm/test.js",
-    "prepublish": "node npm/prepublish.js"
+    "prepublish": "node npm/prepublish.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [
     "eval",
@@ -32,7 +34,8 @@
     "inherits": "2.0.3",
     "lodash": "4.17.11",
     "uuid": "3.3.2",
-    "uvm": "1.7.4"
+    "uvm": "1.7.4",
+    "snyk": "^1.104.2"
   },
   "devDependencies": {
     "assert": "1.4.1",
@@ -91,5 +94,6 @@
       "mocha",
       "csv-parse"
     ]
-  }
+  },
+  "snyk": true
 }
