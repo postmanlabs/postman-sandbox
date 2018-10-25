@@ -2,7 +2,7 @@
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
-    it('must accept a timeout option', function (done) {
+    it('should accept a timeout option', function (done) {
         Sandbox.createContext({
             timeout: 10000 // 10 seconds
         }, function (err, ctx) {
@@ -10,16 +10,15 @@
             ctx.on('error', done);
 
             ctx.ping(function (err, ttl, packet) {
-                expect(err).to.not.be.ok();
-                expect(packet).to.be.ok();
-                expect(ttl).be.a('number');
-                expect(ttl >= 0).be.ok();
+                expect(err).to.be.null;
+                expect(packet).to.be.ok;
+                expect(ttl).be.a('number').that.is.above(-1);
                 done();
             });
         });
     });
 
-    it('must timeout on infinite loop', function (done) {
+    it('should timeout on infinite loop', function (done) {
         Sandbox.createContext({
             timeout: 500 // 500 ms
         }, function (err, ctx) {
@@ -28,14 +27,14 @@
             ctx.on('error', function () { }); // eslint-disable-line no-empty-function
 
             ctx.execute('while(1)', function (err) {
-                expect(err).be.ok();
-                expect(err).have.property('message', 'sandbox: synchronous script execution timeout');
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'sandbox: synchronous script execution timeout');
                 done();
             });
         });
     });
 
-    it('must not timeout if code is error-free', function (done) {
+    it('should not timeout if code is error-free', function (done) {
         Sandbox.createContext({
             timeout: 500 // 500 ms
         }, function (err, ctx) {
@@ -46,7 +45,7 @@
         });
     });
 
-    it('must clear timeout on bridge disconnect', function (done) {
+    it('should clear timeout on bridge disconnect', function (done) {
         Sandbox.createContext({
             debug: true,
             timeout: 500 // 500 ms
@@ -59,7 +58,7 @@
             ctx.on('error', function () { }); // eslint-disable-line no-empty-function
 
             ctx.execute('while(1)', function (err) {
-                expect(err).be.ok();
+                expect(err).to.be.ok;
                 expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
                 done();
             });

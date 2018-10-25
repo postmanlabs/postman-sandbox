@@ -1,6 +1,5 @@
 var sdk = require('postman-collection'),
-    Sandbox = require('../../lib'),
-    expect = require('chai').expect;
+    Sandbox = require('../../lib');
 
 describe('pm api variables', function () {
     this.timeout(1000 * 60);

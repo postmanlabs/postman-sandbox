@@ -2,7 +2,7 @@ describe('script in sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
-    it('must retain global variables in subsequent calls', function (done) {
+    it('should retain global variables in subsequent calls', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
