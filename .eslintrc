@@ -143,7 +143,7 @@
     "no-mixed-requires": "off",
     "no-new-require": "off",
     "no-path-concat": "error",
-    "no-process-env": "error",
+    "no-process-env": "off",
     "no-process-exit": "off",
     "no-restricted-modules": "error",
     "no-sync": "off",
