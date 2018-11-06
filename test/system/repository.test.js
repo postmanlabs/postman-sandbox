@@ -134,8 +134,8 @@ describe('project repository', function () {
     describe('.ignore files', function () {
         var gitignorePath = '.gitignore',
             npmignorePath = '.npmignore',
-            npmignore = parseIgnore(npmignorePath),
-            gitignore = parseIgnore(gitignorePath);
+            npmignore = parseIgnore(fs.readFileSync(npmignorePath)),
+            gitignore = parseIgnore(fs.readFileSync(gitignorePath));
 
         describe(gitignorePath, function () {
             it('should exist', function (done) {
@@ -147,7 +147,7 @@ describe('project repository', function () {
             });
 
             it('should not ignore the .cache directory', function () {
-                expect(gitignore).to.include.members(['**/.cache', '**/.cache/**']);
+                expect(gitignore).to.include.members(['.cache']);
             });
         });
 
@@ -167,7 +167,7 @@ describe('project repository', function () {
         });
 
         it('.gitignore coverage must be a subset of .npmignore coverage (except .cache directory)', function () {
-            expect(_.intersection(gitignore, _.union(npmignore, ['**/.cache', '**/.cache/**']))).to.eql(gitignore);
+            expect(_.intersection(gitignore, _.union(npmignore, ['.cache']))).to.eql(gitignore);
         });
     });
 });
