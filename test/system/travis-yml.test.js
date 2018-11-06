@@ -27,17 +27,7 @@ describe('travis.yml', function () {
 
         it('should have the language set to node', function () {
             expect(travisYAML.language).to.equal('node_js');
-            expect(travisYAML.node_js).to.eql(['4', '6', '8']);
-        });
-
-        it('should use Google Chrome as an added package', function () {
-            expect(travisYAML.addons).to.eql({apt: {packages: ['google-chrome-stable']}});
-        });
-
-        it('should have a valid before_install sequence', function () {
-            expect(travisYAML.before_install).to.eql([
-                'export CHROME_BIN=google-chrome', 'export DISPLAY=:99.0', 'sh -e /etc/init.d/xvfb start', 'sleep 3'
-            ]);
+            expect(travisYAML.node_js).to.eql(['6', '8', '10']);
         });
 
         it('should have a valid Slack notification token', function () {
