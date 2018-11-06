@@ -30,10 +30,6 @@ describe('travis.yml', function () {
             expect(travisYAML.node_js).to.eql(['6', '8', '10']);
         });
 
-        it('should use Google Chrome as an added package', function () {
-            expect(travisYAML.addons).to.eql({apt: {packages: ['google-chrome-stable']}});
-        });
-
         it('should have a valid Slack notification token', function () {
             expect(travisYAML.notifications.slack.secure,
                 '"secure" not configured in incoming_webhook').to.be.ok;
