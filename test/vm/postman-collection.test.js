@@ -17,7 +17,7 @@ describe('Collection SDK in Node VM', function () {
         assert.strictEqual(sdk.Collection.isCollection(collection),
             true, 'Collection.isCollection(collection) should be true');
 
-        assert.strictEqual(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+        assert.strictEqual((/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
             .test(collection.id), true, 'collection must have a valid id');
 
         assert.strictEqual(sdk.PropertyList.isPropertyList(collection.items), true, 'has an itemgroup');
