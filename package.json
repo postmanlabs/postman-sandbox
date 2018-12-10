@@ -50,7 +50,7 @@
     "csv-parse": "1.2.4",
     "editorconfig": "0.15.2",
     "eslint": "5.8.0",
-    "eslint-plugin-jsdoc": "3.12.1",
+    "eslint-plugin-jsdoc": "3.14.0",
     "eslint-plugin-lodash": "5.0.1",
     "eslint-plugin-mocha": "5.2.0",
     "eslint-plugin-security": "1.4.0",
