@@ -4,7 +4,7 @@ describe('sandbox library - AJV', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
             context = ctx;
             done(err);
         });
