@@ -1,8 +1,9 @@
 # Postman Sandbox Changelog
 
-#### v3.2.0 (Unreleased)
+#### v3.2.0 (December 24, 2018)
 * Added Ajv JSON schema validator
 * Deprecated tv4 in favor of Ajv
+* Fixed a bug that caused negated assertions to persist
 * Migrated tests to chai expect assertions
 * Updated dependencies
 
