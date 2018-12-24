@@ -15,7 +15,7 @@ describe('sandbox library - uuid~vendor', function () {
         context = null;
     });
 
-    it('must be exposed via require', function (done) {
+    it('should be exposed via require', function (done) {
         context.execute(`
             var assert = require('assert'),
                 uuid = require('uuid');

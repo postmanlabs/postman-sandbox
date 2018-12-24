@@ -1,6 +1,3 @@
-/* global describe, it */
-var expect = require('expect.js');
-
 describe('bootcode dependencies', function () {
     this.timeout(60 * 1000);
 
@@ -18,7 +15,8 @@ describe('bootcode dependencies', function () {
     });
 
     it('should not change', function () {
-        expect(currentDependencies).to.be.eql([
+        expect(currentDependencies).to.eql([
+            'ajv',
             'ansi-styles',
             'array-uniq',
             'assert',
@@ -52,6 +50,8 @@ describe('bootcode dependencies', function () {
             'escape-html',
             'escape-string-regexp',
             'events',
+            'fast-deep-equal',
+            'fast-json-stable-stringify',
             'file-type',
             'get-func-name',
             'has-flag',
@@ -62,6 +62,7 @@ describe('bootcode dependencies', function () {
             'inherits',
             'isarray',
             'jquery',
+            'json-schema-traverse',
             'liquid-json',
             'lodash',
             'lodash.assignin',
@@ -116,6 +117,7 @@ describe('bootcode dependencies', function () {
             'type-detect',
             'underscore',
             'uniscope',
+            'uri-js',
             'url',
             'util',
             'util-deprecate',

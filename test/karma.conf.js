@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Mon Nov 09 2015 18:53:12 GMT+0530 (IST)
+process.env.CHROME_BIN = require('puppeteer').executablePath(); // eslint-disable-line no-process-env
 
 module.exports = function (config) {
     var configuration = {

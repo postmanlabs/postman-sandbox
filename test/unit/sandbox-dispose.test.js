@@ -2,7 +2,7 @@ describe('sandbox disposal', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
-    it('must work', function (done) {
+    it('should work', function (done) {
         Sandbox.createContext({debug: false}, function (err, context) {
             if (err) { return done(err); }
             context.on('error', done);
@@ -20,9 +20,11 @@ describe('sandbox disposal', function () {
 
                         setTimeout(context.dispose.bind(context), 1);
                         setTimeout(function () {
-                            expect(status).to.have.property('started', true);
-                            expect(status).to.have.property('disconnected', true);
-                            expect(status).to.have.property('misfiredTimer', false);
+                            expect(status).to.deep.include({
+                                started: true,
+                                disconnected: true,
+                                misfiredTimer: false
+                            });
                             done();
                         }, 100);
                         break;
@@ -52,9 +54,9 @@ describe('sandbox disposal', function () {
         });
     });
 
-    it('must clear running intervals', function (done) {
+    it('should clear running intervals', function (done) {
         Sandbox.createContext(function (err, ctx) {
-            expect(err).to.not.be.ok();
+            expect(err).to.be.null;
 
             var intervals = {
                 terminal: -1,
@@ -82,7 +84,7 @@ describe('sandbox disposal', function () {
                 intervals.terminal = intervals.current;
 
                 setTimeout(function () {
-                    expect(intervals.current).to.be(intervals.terminal);
+                    expect(intervals.current).to.equal(intervals.terminal);
                     done();
                 }, 100);
             });

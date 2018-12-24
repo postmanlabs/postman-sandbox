@@ -2,7 +2,7 @@ var _expect;
 
 before(function () {
     global.expect && (_expect = global.expect);
-    global.expect = require('expect.js');
+    global.expect = require('chai').expect;
 });
 
 after(function () {

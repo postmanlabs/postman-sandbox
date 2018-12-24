@@ -3,12 +3,10 @@
  * content of the file as well. Any change to package.json must be accompanied by valid test case in this spec-sheet.
  */
 var _ = require('lodash'),
-    expect = require('expect.js'),
-    parseIgnore = require('parse-gitignore');
+    parseIgnore = require('parse-gitignore'),
+    fs = require('fs');
 
-/* global describe, it */
 describe('project repository', function () {
-    var fs = require('fs');
 
     describe('package.json', function () {
         var content,
@@ -25,20 +23,21 @@ describe('project repository', function () {
         });
 
         it('should have readable content', function () {
-            expect(content).to.be.a('string');
+            expect(content, 'Should have readable content').to.be.a('string');
         });
 
         it('should have valid JSON content', function () {
-            expect(json).to.be.an('object');
+            expect(json, 'Should have valid JSON content').to.be.an('object');
         });
 
         describe('package.json JSON data', function () {
-            it('should have valid name, description and author', function () {
-                expect(json.name).to.equal('postman-sandbox');
-                expect(json.description)
-                    .to.equal('Sandbox for Postman Scripts to run in NodeJS or Chrome');
-                expect(json.author).to.equal('Postman Labs <help@getpostman.com> (=)');
-                expect(json.license).to.equal('Apache-2.0');
+            it('should have valid name, description, author and license', function () {
+                expect(json).to.deep.include({
+                    name: 'postman-sandbox',
+                    description: 'Sandbox for Postman Scripts to run in NodeJS or Chrome',
+                    author: 'Postman Labs <help@getpostman.com> (=)',
+                    license: 'Apache-2.0'
+                });
             });
 
             it('should have a valid version string in form of <major>.<minor>.<revision>', function () {
@@ -50,7 +49,7 @@ describe('project repository', function () {
 
         describe('script definitions', function () {
             it('should be present', function () {
-                expect(json.scripts).to.be.ok();
+                expect(json.scripts).to.be.ok;
             });
 
             describe('element', function () {
@@ -58,7 +57,7 @@ describe('project repository', function () {
                     describe(scriptName, function () {
                         it('should point to a file', function () {
                             expect(json.scripts[scriptName]).to.match(/^node\snpm\/.+\.js(\s\$1)?$/);
-                            expect(fs.statSync('npm/' + scriptName + '.js')).to.be.ok();
+                            expect(fs.statSync('npm/' + scriptName + '.js')).to.be.ok;
                         });
                     });
                 });
@@ -67,14 +66,14 @@ describe('project repository', function () {
             it('should have the hashbang defined', function () {
                 json.scripts && Object.keys(json.scripts).forEach(function (scriptName) {
                     var fileContent = fs.readFileSync('npm/' + scriptName + '.js').toString();
-                    expect(/^#!\/(bin\/bash|usr\/bin\/env\snode)[\r\n][\W\w]*$/g.test(fileContent)).to.be.ok();
+                    expect(fileContent).to.match(/^#!\/(bin\/bash|usr\/bin\/env\snode)[\r\n][\W\w]*$/g);
                 });
             });
         });
 
         describe('devDependencies', function () {
             it('should exist', function () {
-                expect(json.devDependencies).to.be.a('object');
+                expect(json.devDependencies).to.be.an('object');
             });
 
             it('should point to a valid semver', function () {
@@ -108,7 +107,7 @@ describe('project repository', function () {
         });
 
         it('should have readable content', function () {
-            expect(fs.readFileSync('./README.md').toString()).to.be.ok();
+            expect(fs.readFileSync('./README.md').toString()).to.be.ok;
         });
     });
 
@@ -118,48 +117,57 @@ describe('project repository', function () {
         });
 
         it('should have readable content', function () {
-            expect(fs.readFileSync('./LICENSE.md').toString()).to.be.ok();
+            expect(fs.readFileSync('./LICENSE.md').toString()).to.be.ok;
+        });
+    });
+
+    describe('.gitattributes', function () {
+        it('should exist', function (done) {
+            fs.stat('./.gitattributes', done);
+        });
+
+        it('should have readable content', function () {
+            expect(fs.readFileSync('./.gitattributes').toString()).to.be.ok;
         });
     });
 
     describe('.ignore files', function () {
         var gitignorePath = '.gitignore',
             npmignorePath = '.npmignore',
-            npmignore = parseIgnore(npmignorePath),
-            gitignore = parseIgnore(gitignorePath);
+            npmignore = parseIgnore(fs.readFileSync(npmignorePath)),
+            gitignore = parseIgnore(fs.readFileSync(gitignorePath));
 
         describe(gitignorePath, function () {
-            it('must exist', function (done) {
+            it('should exist', function (done) {
                 fs.stat(gitignorePath, done);
             });
 
-            it('must have valid content', function () {
-                expect(_.isEmpty(gitignore)).to.not.be.ok();
+            it('should have valid content', function () {
+                expect(gitignore).to.not.be.empty;
             });
 
-            it('must not ignore the .cache directory', function () {
-                expect(gitignore).to.contain('**/.cache');
-                expect(gitignore).to.contain('**/.cache/**');
+            it('should not ignore the .cache directory', function () {
+                expect(gitignore).to.include.members(['.cache']);
             });
         });
 
         describe(npmignorePath, function () {
-            it('must exist', function (done) {
+            it('should exist', function (done) {
                 fs.stat(npmignorePath, done);
             });
 
-            it('must have valid content', function () {
-                expect(_.isEmpty(npmignore)).to.not.be.ok();
+            it('should have valid content', function () {
+                expect(gitignore).to.not.be.empty;
             });
 
-            it('must not ignore the .cache directory', function () {
-                expect(npmignore).not.contain('**/.cache');
-                expect(npmignore).not.contain('**/.cache/**');
+            it('should not ignore the .cache directory', function () {
+                expect(npmignore).to.not.include('**/.cache');
+                expect(npmignore).to.not.include('**/.cache/**');
             });
         });
 
         it('.gitignore coverage must be a subset of .npmignore coverage (except .cache directory)', function () {
-            expect(_.intersection(gitignore, _.union(npmignore, ['**/.cache', '**/.cache/**']))).to.eql(gitignore);
+            expect(_.intersection(gitignore, _.union(npmignore, ['.cache']))).to.eql(gitignore);
         });
     });
 });

@@ -16,20 +16,21 @@ describe('sandbox library - chai-postman', function () {
     });
 
     describe('sdk object verification', function () {
-        it('must have assertion failure when checking response to be request', function (done) {
+        it('should have assertion failure when checking response to be request', function (done) {
             context.execute(`
                 var Response = require('postman-collection').Response;
                 pm.expect(new Response({code: 102})).to.be.postmanRequest;
             `, function (err) {
-                expect(err).to.be.ok();
-                expect(err).to.have.property('name', 'AssertionError');
-                expect(err).to.have.property('message',
-                    'expecting a postman request object but got { Object (id, _details, ...) }');
+                expect(err).to.be.ok;
+                expect(err).to.deep.include({
+                    name: 'AssertionError',
+                    message: 'expecting a postman request object but got { Object (id, _details, ...) }'
+                });
                 done();
             });
         });
 
-        it('must have assertion to verify response instance', function (done) {
+        it('should have assertion to verify response instance', function (done) {
             context.execute(`
                 var Response = require('postman-collection').Response,
                     Request = require('postman-collection').Request;
@@ -39,7 +40,7 @@ describe('sandbox library - chai-postman', function () {
             `, done);
         });
 
-        it('must have assertion to verify request instance', function (done) {
+        it('should have assertion to verify request instance', function (done) {
             context.execute(`
                 var Response = require('postman-collection').Response,
                     Request = require('postman-collection').Request;
@@ -49,20 +50,21 @@ describe('sandbox library - chai-postman', function () {
             `, done);
         });
 
-        it('must have assertion failure when response object is passed to check request', function (done) {
+        it('should have assertion failure when response object is passed to check request', function (done) {
             context.execute(`
                 var Response = require('postman-collection').Response;
                 pm.expect(new Response({code: 102})).to.be.postmanRequest;
             `, function (err) {
-                expect(err).to.be.ok();
-                expect(err).to.have.property('name', 'AssertionError');
-                expect(err).to.have.property('message',
-                    'expecting a postman request object but got { Object (id, _details, ...) }');
+                expect(err).to.be.ok;
+                expect(err).to.deep.include({
+                    name: 'AssertionError',
+                    message: 'expecting a postman request object but got { Object (id, _details, ...) }'
+                });
                 done();
             });
         });
 
-        it('must have assertion to verify either request or response instance', function (done) {
+        it('should have assertion to verify either request or response instance', function (done) {
             context.execute(`
                 var Response = require('postman-collection').Response,
                     Request = require('postman-collection').Request,
@@ -74,15 +76,16 @@ describe('sandbox library - chai-postman', function () {
             `, done);
         });
 
-        it('must have assertion assertion failure when header instance is sent instead of reqOrRes', function (done) {
+        it('should have assertion assertion failure when header instance is sent instead of reqOrRes', function (done) {
             context.execute(`
                 var Header = require('postman-collection').Header;
                 pm.expect(new Header('key:value')).to.be.postmanRequestOrResponse;;
             `, function (err) {
-                expect(err).to.be.ok();
-                expect(err).to.have.property('name', 'AssertionError');
-                expect(err).to.have.property('message',
-                    'expecting a postman request or response object but got { Object (key, value) }');
+                expect(err).to.be.ok;
+                expect(err).to.deep.include({
+                    name: 'AssertionError',
+                    message: 'expecting a postman request or response object but got { Object (key, value) }'
+                });
                 done();
             });
         });
@@ -126,9 +129,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.statusCodeClass(1);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response code to be 1XX but found 200');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response code to be 1XX but found 200'
+                    });
                     done();
                 });
             });
@@ -143,9 +148,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.statusCode(404);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response to not have status code 404');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to not have status code 404'
+                    });
                     done();
                 });
             });
@@ -160,10 +167,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.statusReason('Not Found');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response to have status reason \'Not Found\' but got \'OK\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to have status reason \'Not Found\' but got \'OK\''
+                    });
                     done();
                 });
             });
@@ -178,10 +186,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.status('Not Found');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response to have status reason \'Not Found\' but got \'OK\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to have status reason \'Not Found\' but got \'OK\''
+                    });
                     done();
                 });
             });
@@ -194,9 +203,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.status(404);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response to not have status code 404');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to not have status code 404'
+                    });
                     done();
                 });
             });
@@ -224,10 +235,11 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).not.to.have.header('oneHeader');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response to not have header with key \'oneHeader\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to not have header with key \'oneHeader\''
+                    });
                     done();
                 });
             });
@@ -241,17 +253,18 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.header('oneHeader', 'noValue');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected \'oneHeader\' response header to be \'noValue\' but got \'oneValue\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected \'oneHeader\' response header to be \'noValue\' but got \'oneValue\''
+                    });
                     done();
                 });
             });
         });
 
         describe('body', function () {
-            it('must have a property to assert valid text body', function (done) {
+            it('should have a property to assert valid text body', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -262,7 +275,7 @@ describe('sandbox library - chai-postman', function () {
                 `, done);
             });
 
-            it('must be able to assert invalid text body', function (done) {
+            it('should be able to assert invalid text body', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200
@@ -270,14 +283,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.be.withBody;
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response to have content in body');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to have content in body'
+                    });
                     done();
                 });
             });
 
-            it('must have a property to assert valid json', function (done) {
+            it('should have a property to assert valid json', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -288,7 +303,7 @@ describe('sandbox library - chai-postman', function () {
                 `, done);
             });
 
-            it('must be able to assert invalid json', function (done) {
+            it('should be able to assert invalid json', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -297,15 +312,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.be.json;
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response body to be a valid json but got error Unexpected token \'u\' at 1:1');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response body to be a valid json but got error Unexpected token \'u\' at 1:1'
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure negation of body exists using .body function', function (done) {
+            it('should be able to ensure negation of body exists using .body function', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -314,14 +330,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.body();
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response to not have content in body');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response to not have content in body'
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body matches a string negation', function (done) {
+            it('should be able to ensure body matches a string negation', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -330,14 +348,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.body('undefined');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response body to not equal \'undefined\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response body to not equal \'undefined\''
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body matches a regexp negation', function (done) {
+            it('should be able to ensure body matches a regexp negation', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -346,15 +366,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.body(/def/);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response body text \'undefined\' to not match /def/');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response body text \'undefined\' to not match /def/'
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body contains json using .json', function (done) {
+            it('should be able to ensure body contains json using .json', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -363,15 +384,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.jsonBody();
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected response body to be a valid json but got error Unexpected token \'u\' at 1:1');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response body to be a valid json but got error Unexpected token \'u\' at 1:1'
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body does not contain json using .json negation', function (done) {
+            it('should be able to ensure body does not contain json using .json negation', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -380,14 +402,16 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.jsonBody();
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected response body not to be a valid json');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected response body not to be a valid json'
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body contain json data in path', function (done) {
+            it('should be able to ensure body contain json data in path', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -396,16 +420,17 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.not.have.jsonBody('prop[0]');
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
                         // eslint-disable-next-line max-len
-                        'expected { prop: [ { value: [Object] } ] } in response to not contain property \'prop[0]\'');
+                        message: 'expected { prop: [ { value: [Object] } ] } in response to not contain property \'prop[0]\''
+                    });
                     done();
                 });
             });
 
-            it('must be able to ensure body contain a particular json value in path', function (done) {
+            it('should be able to ensure body contain a particular json value in path', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -414,11 +439,12 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.jsonBody('prop[0].value', {v:1});
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
                         // eslint-disable-next-line max-len
-                        'expected response body json at "prop[0].value" to contain { v: 1 } but got { oh: \'wow\' }');
+                        message: 'expected response body json at "prop[0].value" to contain { v: 1 } but got { oh: \'wow\' }'
+                    });
                     done();
                 });
             });
@@ -443,10 +469,11 @@ describe('sandbox library - chai-postman', function () {
                     });
                     pm.expect(response).to.have.responseTime();
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message',
-                        'expected { Object (id, _details, ...) } to have property \'responseTime\'');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected { Object (id, _details, ...) } to have property \'responseTime\''
+                    });
                     done();
                 });
             });
@@ -458,16 +485,18 @@ describe('sandbox library - chai-postman', function () {
                     });
                     pm.expect(response).to.have.responseTime.below(100);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected 200 to be below 100');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected 200 to be below 100'
+                    });
                     done();
                 });
             });
         });
 
         describe('response size', function () {
-            it('must be able assert below a figure', function (done) {
+            it('should be able assert below a figure', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         code: 200,
@@ -477,9 +506,106 @@ describe('sandbox library - chai-postman', function () {
 
                     pm.expect(response).to.have.responseSize.below(50);
                 `, function (err) {
-                    expect(err).be.ok();
-                    expect(err).have.property('name', 'AssertionError');
-                    expect(err).have.property('message', 'expected 51 to be below 50');
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected 51 to be below 50'
+                    });
+                    done();
+                });
+            });
+        });
+
+        describe('json schema assertions', function () {
+            it('should assert the data with valid schema correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: true
+                    }).to.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, done);
+            });
+
+            it('should handle negated assertions correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: 123
+                    }).to.not.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, done);
+            });
+
+            it('should auto parse JSON for PostmanResponse instance', function (done) {
+                context.execute(`
+                    pm.response.to.have.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, {
+                    context: {
+                        response: {
+                            body: '{"alpha": true}'
+                        }
+                    }
+                }, done);
+            });
+
+            it('should handle incorrect negated assertions correctly', function (done) {
+                context.execute(`
+                    pm.response.to.not.have.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, {
+                    context: {
+                        response: {
+                            body: '{"alpha": true}'
+                        }
+                    }
+                }, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected data to not satisfy schema'
+                    });
+                    done();
+                });
+            });
+
+            it('should handle incorrect assertions correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: 123
+                    }).to.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        // eslint-disable-next-line max-len
+                        message: 'expected data to satisfy schema but found following errors: \ndata.alpha should be boolean'
+                    });
                     done();
                 });
             });

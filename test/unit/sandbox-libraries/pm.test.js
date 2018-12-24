@@ -53,7 +53,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('info', function () {
-        it('must have relevant information', function (done) {
+        it('should have relevant information', function (done) {
             context.execute({
                 listen: 'test',
                 script: `
@@ -80,7 +80,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('globals', function () {
-        it('must be defined as VariableScope', function (done) {
+        it('should be defined as VariableScope', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     VariableScope = require('postman-collection').VariableScope;
@@ -88,7 +88,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must be a readonly property', function (done) {
+        it('should be a readonly property', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     _globals;
@@ -100,7 +100,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must forward global variables forwarded during execution', function (done) {
+        it('should forward global variables forwarded during execution', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.globals.get('var1'), 'one');
@@ -108,7 +108,7 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, done);
         });
 
-        it('must propagate updated globals from inside sandbox', function (done) {
+        it('should propagate updated globals from inside sandbox', function (done) {
             context.execute(`
                 var assert = require('assert');
 
@@ -117,12 +117,12 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.globals.get('var1'), 'one-one');
 
             `, {context: sampleContextData}, function (err, exec) {
-                expect(err).not.be.ok();
-                expect(exec).be.ok();
-                expect(exec.globals.values).eql([
+                expect(err).to.be.null;
+                expect(exec).to.be.ok;
+                expect(exec).to.deep.nested.include({'globals.values': [
                     {type: 'any', value: 'one-one', key: 'var1'},
                     {type: 'number', value: 2, key: 'var2'}
-                ]);
+                ]});
                 done();
             });
         });
@@ -141,7 +141,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('environment', function () {
-        it('must be defined as VariableScope', function (done) {
+        it('should be defined as VariableScope', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     VariableScope = require('postman-collection').VariableScope;
@@ -149,7 +149,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must be a readonly property', function (done) {
+        it('should be a readonly property', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     _environment;
@@ -161,7 +161,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must forward environment variables forwarded during execution', function (done) {
+        it('should forward environment variables forwarded during execution', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.environment.get('var1'), 'one-env');
@@ -169,7 +169,7 @@ describe('sandbox library - pm api', function () {
             `, {context: sampleContextData}, done);
         });
 
-        it('must propagate updated environment from inside sandbox', function (done) {
+        it('should propagate updated environment from inside sandbox', function (done) {
             context.execute(`
                 var assert = require('assert');
 
@@ -178,12 +178,12 @@ describe('sandbox library - pm api', function () {
                 assert.strictEqual(pm.environment.get('var1'), 'one-one-env');
 
             `, {context: sampleContextData}, function (err, exec) {
-                expect(err).not.be.ok();
-                expect(exec).be.ok();
-                expect(exec.environment.values).eql([
+                expect(err).to.be.null;
+                expect(exec).to.be.ok;
+                expect(exec).to.deep.nested.include({'environment.values': [
                     {type: 'any', value: 'one-one-env', key: 'var1'},
                     {type: 'number', value: 2.5, key: 'var2'}
-                ]);
+                ]});
                 done();
             });
         });
@@ -202,7 +202,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('request', function () {
-        it('must be defined as sdk Request object', function (done) {
+        it('should be defined as sdk Request object', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     Request = require('postman-collection').Request;
@@ -241,7 +241,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must not be defined if request is missing in generic script target', function (done) {
+        it('should not be defined if request is missing in generic script target', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     Request = require('postman-collection').Request;
@@ -249,7 +249,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must be defined in prerequest script even if request is missing in context', function (done) {
+        it('should be defined in prerequest script even if request is missing in context', function (done) {
             context.execute({
                 listen: 'prerequest',
                 script: `
@@ -260,7 +260,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must be defined in test script even if request is missing in context', function (done) {
+        it('should be defined in test script even if request is missing in context', function (done) {
             context.execute({
                 listen: 'test',
                 script: `
@@ -273,7 +273,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('response', function () {
-        it('must be defined as sdk Request object', function (done) {
+        it('should be defined as sdk Request object', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     Response = require('postman-collection').Response;
@@ -311,7 +311,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must not be defined for non test targets', function (done) {
+        it('should not be defined for non test targets', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     Response = require('postman-collection').Response;
@@ -319,7 +319,7 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('must be defined in test target even when context is missing', function (done) {
+        it('should be defined in test target even when context is missing', function (done) {
             context.execute({
                 listen: 'test',
                 script: `
@@ -330,7 +330,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must parse response json body', function (done) {
+        it('should parse response json body', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.equal(pm.response.body, undefined, 'body should not be defined as string');
@@ -352,7 +352,7 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('cookies', function () {
-        it('must be available', function (done) {
+        it('should be available', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(typeof pm.cookies, 'object', 'cookies must be defined');
@@ -363,7 +363,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must convert context cookie array to list', function (done) {
+        it('should convert context cookie array to list', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.cookies.count(), 2, 'two cookies must be present');
@@ -381,7 +381,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must return value of one cookie', function (done) {
+        it('should return value of one cookie', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.cookies.one('cookie2').value, 'anothervalue', 'value must be defined');
@@ -401,30 +401,37 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('chai', function () {
-        it('must be available as expect', function (done) {
+        it('should be available as expect', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(pm.expect, require('chai').expect);
             `, done);
         });
 
-        it('must work with common assertions', function (done) {
+        it('should work with common assertions', function (done) {
             context.execute(`
-                pm.expect(new Error).not.to.be.an('error');
+                pm.expect(new Error).to.not.be.an('error');
             `, function (err) {
-                expect(err).be.ok();
+                expect(err).to.be.ok;
                 expect(err).have.property('message', 'expected [Error] not to be an error');
                 done();
             });
         });
 
-        it('must pre-assert response', function (done) {
+        it('should pre-assert response', function (done) {
             context.execute(`
                 pm.expect(pm.response).to.have.property('to');
-                pm.expect(pm.response.to).be.an('object');
+                pm.expect(pm.response.to).to.be.an('object');
 
                 // run a test as well ;-)
                 pm.response.to.be.ok;
+                pm.response.to.not.be.a.postmanRequest;
+
+                pm.response.to.not.be.serverError;
+                pm.response.to.not.have.statusCode(400);
+
+                pm.response.to.have.statusCode(200);
+                pm.response.to.have.statusReason('OK');
             `, {
                 context: {
                     response: {code: 200}
@@ -432,13 +439,28 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('must pre-assert request', function (done) {
+        it('should pre-assert request', function (done) {
             context.execute(`
                 pm.expect(pm.request).to.have.property('to');
-                pm.expect(pm.request.to).be.an('object');
+                pm.expect(pm.request.to).to.be.an('object');
+
+                pm.request.to.be.ok;
+
+                pm.request.to.not.be.a.postmanResponse;
+                pm.request.to.not.have.header('Foo-Bar');
+
+                pm.request.to.have.header('Content-Type');
+                pm.request.to.be.a.postmanRequestOrResponse;
+
             `, {
                 context: {
-                    request: 'https://postman-echo.com/'
+                    request: {
+                        url: 'https://postman-echo.com/',
+                        header: [{
+                            key: 'Content-Type',
+                            value: 'application/json; charset=utf-8'
+                        }]
+                    }
                 }
             }, done);
         });
@@ -479,14 +501,14 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('sendRequest', function () {
-        it('must be a function exposed', function (done) {
+        it('should be a function exposed', function (done) {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual((typeof pm.sendRequest), 'function');
             `, {context: sampleContextData}, done);
         });
 
-        it('must dispatch an `execution.request.id` event when called', function (done) {
+        it('should dispatch an `execution.request.id` event when called', function (done) {
             var executionId = '1';
 
             context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
@@ -508,20 +530,22 @@ describe('sandbox library - pm api', function () {
             }, function () {}); // eslint-disable-line no-empty-function
         });
 
-        it('must forward response to callback when sent from outside', function (done) {
+        it('should forward response to callback when sent from outside', function (done) {
             var executionId = '2';
             context.on('error', done);
 
             context.on('execution.error', function (cur, err) {
-                expect(err).to.not.be.ok();
+                expect(err).to.not.be.ok;
                 done();
             });
 
             // @todo find the cause of the error where assertions are not being fired from inside a timer
-            context.on('execution.assertion', function (cursor, assertions) {
-                assertions.forEach(function (ass) {
-                    expect(ass).to.have.property('passed', true);
-                    expect(ass).to.have.property('error', null);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
                 });
                 done();
             });

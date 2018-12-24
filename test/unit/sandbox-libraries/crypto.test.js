@@ -15,7 +15,7 @@ describe('sandbox library - CryptoJS', function () {
         context = null;
     });
 
-    it('must exist', function (done) {
+    it('should exist', function (done) {
         context.execute(`
             var assert = require('assert');
 
@@ -25,7 +25,7 @@ describe('sandbox library - CryptoJS', function () {
         `, done);
     });
 
-    it('must have basic functionality working', function (done) {
+    it('should have basic functionality working', function (done) {
         context.execute(`
             var assert = require('assert'),
                 ciphertext = CryptoJS.AES.encrypt('my message', 'secret key 123'),
@@ -38,7 +38,7 @@ describe('sandbox library - CryptoJS', function () {
     });
 
     describe('random generation', function () {
-        it('must work correctly for strings', function (done) {
+        it('should work correctly for strings', function (done) {
             context.execute(`
                 var assert = require('assert');
 
@@ -46,7 +46,7 @@ describe('sandbox library - CryptoJS', function () {
             `, done);
         });
 
-        it('must work correctly for bytes', function (done) {
+        it('should work correctly for bytes', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     rand = CryptoJS.lib.WordArray.random,
@@ -60,7 +60,7 @@ describe('sandbox library - CryptoJS', function () {
             `, done);
         });
 
-        it('must correctly concatenate sequences', function (done) {
+        it('should correctly concatenate sequences', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     wordArray = CryptoJS.lib.WordArray.create([0x12345678], 4);
@@ -71,7 +71,7 @@ describe('sandbox library - CryptoJS', function () {
             `, done);
         });
 
-        it('must correctly concatenate long sequences', function (done) {
+        it('should correctly concatenate long sequences', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     alpha = CryptoJS.lib.WordArray.create(),
@@ -86,7 +86,7 @@ describe('sandbox library - CryptoJS', function () {
             `, done);
         });
 
-        it('must correctly clamp random bytes', function (done) {
+        it('should correctly clamp random bytes', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     wordArray = CryptoJS.lib.WordArray.create([0x12345678, 0x12345678], 3);
@@ -96,7 +96,7 @@ describe('sandbox library - CryptoJS', function () {
             `, done);
         });
 
-        it('must correctly clone random bytes', function (done) {
+        it('should correctly clone random bytes', function (done) {
             context.execute(`
                 var assert = require('assert'),
                     wordArray = CryptoJS.lib.WordArray.create([0x12345678]),

@@ -1,4 +1,9 @@
 {
+  "globals": {
+    "describe": true,
+    "it": true,
+    "expect": true
+  },
   "plugins": [
     "mocha"
   ],
@@ -22,6 +27,6 @@
     "mocha/no-synchronous-tests": "off",
     "mocha/no-top-level-hooks": "off",
     "mocha/valid-suite-description": "error",
-    "mocha/valid-test-description": "off",
+    "mocha/valid-test-description": "off"
   }
 }

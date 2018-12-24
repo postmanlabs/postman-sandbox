@@ -15,7 +15,7 @@ describe('sandbox library - postman-collection', function () {
         context = null;
     });
 
-    it('must be exposed via require', function (done) {
+    it('should be exposed via require', function (done) {
         context.execute(`
             var assert = require('assert'),
                 sdk = require('postman-collection');
@@ -24,7 +24,7 @@ describe('sandbox library - postman-collection', function () {
         `, done);
     });
 
-    it('must construct a collection', function (done) {
+    it('should construct a collection', function (done) {
         context.execute(`
             var assert = require('assert'),
                 sdk = require('postman-collection'),
@@ -53,7 +53,7 @@ describe('sandbox library - postman-collection', function () {
         `, done);
     });
 
-    it('must construct a response', function (done) {
+    it('should construct a response', function (done) {
         context.execute(`
             var assert = require('assert'),
                 sdk = require('postman-collection'),
@@ -69,7 +69,7 @@ describe('sandbox library - postman-collection', function () {
         `, done);
     });
 
-    it('must construct a variable scope', function (done) {
+    it('should construct a variable scope', function (done) {
         context.execute(`
             var assert = require('assert'),
                 sdk = require('postman-collection'),
