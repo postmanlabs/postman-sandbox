@@ -1,7 +1,10 @@
 # Postman Sandbox Changelog
 
-#### Unreleased
-- Migrated tests to chai expect assertions
+#### v3.2.0 (Unreleased)
+* Added Ajv JSON schema validator
+* Deprecated tv4 in favor of Ajv
+* Migrated tests to chai expect assertions
+* Updated dependencies
 
 #### v3.1.3 (September 21, 2018)
 * Updated dependencies
