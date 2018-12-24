@@ -563,6 +563,31 @@ describe('sandbox library - chai-postman', function () {
                 }, done);
             });
 
+            it('should handle incorrect negated assertions correctly', function (done) {
+                context.execute(`
+                    pm.response.to.not.have.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, {
+                    context: {
+                        response: {
+                            body: '{"alpha": true}'
+                        }
+                    }
+                }, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        message: 'expected data to not satisfy schema'
+                    });
+                    done();
+                });
+            });
+
             it('should handle incorrect assertions correctly', function (done) {
                 context.execute(`
                     pm.expect({
