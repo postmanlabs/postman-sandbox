@@ -515,5 +515,75 @@ describe('sandbox library - chai-postman', function () {
                 });
             });
         });
+
+        describe('json schema assertions', function () {
+            it('should assert the data with valid schema correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: true
+                    }).to.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, done);
+            });
+
+            it('should handle negated assertions correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: 123
+                    }).to.not.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, done);
+            });
+
+            it('should auto parse JSON for PostmanResponse instance', function (done) {
+                context.execute(`
+                    pm.response.to.have.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, {
+                    context: {
+                        response: {
+                            body: '{"alpha": true}'
+                        }
+                    }
+                }, done);
+            });
+
+            it('should handle incorrect assertions correctly', function (done) {
+                context.execute(`
+                    pm.expect({
+                        alpha: 123
+                    }).to.be.jsonSchema({
+                        properties: {
+                            alpha: {
+                                type: 'boolean'
+                            }
+                        }
+                    });
+                `, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err).to.deep.include({
+                        name: 'AssertionError',
+                        // eslint-disable-next-line max-len
+                        message: 'expected data to satisfy schema but found following errors: \ndata.alpha should be boolean'
+                    });
+                    done();
+                });
+            });
+        });
     });
 });
