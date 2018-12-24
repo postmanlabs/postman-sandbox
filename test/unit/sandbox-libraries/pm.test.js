@@ -425,6 +425,13 @@ describe('sandbox library - pm api', function () {
 
                 // run a test as well ;-)
                 pm.response.to.be.ok;
+                pm.response.to.not.be.a.postmanRequest;
+
+                pm.response.to.not.be.serverError;
+                pm.response.to.not.have.statusCode(400);
+
+                pm.response.to.have.statusCode(200);
+                pm.response.to.have.statusReason('OK');
             `, {
                 context: {
                     response: {code: 200}
@@ -436,9 +443,24 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 pm.expect(pm.request).to.have.property('to');
                 pm.expect(pm.request.to).to.be.an('object');
+
+                pm.request.to.be.ok;
+
+                pm.request.to.not.be.a.postmanResponse;
+                pm.request.to.not.have.header('Foo-Bar');
+
+                pm.request.to.have.header('Content-Type');
+                pm.request.to.be.a.postmanRequestOrResponse;
+
             `, {
                 context: {
-                    request: 'https://postman-echo.com/'
+                    request: {
+                        url: 'https://postman-echo.com/',
+                        header: [{
+                            key: 'Content-Type',
+                            value: 'application/json; charset=utf-8'
+                        }]
+                    }
                 }
             }, done);
         });
