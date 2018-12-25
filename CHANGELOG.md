@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.2.1 (December 25, 2018)
+* Updated `chai-postman` to `v1.1.1`, which fixes a JSON schema assertion bug
+
 #### v3.2.0 (December 24, 2018)
 * Added Ajv JSON schema validator
 * Deprecated tv4 in favor of Ajv
