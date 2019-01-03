@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.2.2 (January 3, 2019)
+* Updated dependencies
+
 #### v3.2.1 (December 25, 2018)
 * Updated `chai-postman` to `v1.1.1`, which fixes a JSON schema assertion bug
 
