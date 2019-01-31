@@ -1,5 +1,8 @@
 # Postman Sandbox Changelog
 
+#### v3.2.3 (Unreleased)
+* Bumped `postman-collection` to `v3.4.2`
+
 #### v3.2.2 (January 3, 2019)
 * Updated dependencies
 
