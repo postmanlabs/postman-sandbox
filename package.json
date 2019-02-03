@@ -35,7 +35,7 @@
     "uvm": "1.7.4"
   },
   "devDependencies": {
-    "ajv": "6.7.0",
+    "ajv": "6.8.1",
     "assert": "1.4.1",
     "async": "2.6.1",
     "atob": "2.1.2",
