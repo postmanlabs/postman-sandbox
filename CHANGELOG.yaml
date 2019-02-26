@@ -1,0 +1,351 @@
+3.2.4:
+  date: 2019-02-20
+  chores:
+    - 'Bumped `postman-collection` to `v3.4.4`'
+
+
+3.2.3:
+  date: 2019-02-1
+  chores:
+    - 'Bumped `postman-collection` to `v3.4.2`'
+
+
+3.2.2:
+  date: 2019-01-3
+  chores:
+    - 'Updated dependencies'
+
+
+3.2.1:
+  date: 2018-12-25
+  fixed bugs:
+    - 'Updated `chai-postman` to `v1.1.1`, which fixes a JSON schema assertion bug'
+
+
+3.2.0:
+  date: 2018-12-24
+  new features:
+    - 'Added Ajv JSON schema validator'
+    - 'Deprecated tv4 in favor of Ajv'
+  fixed bugs:
+    - 'Fixed a bug that caused negated assertions to persist'
+  chores:
+    - 'Updated dependencies'
+    - 'Migrated tests to chai expect assertions'
+
+
+3.1.3:
+  date: 2018-09-21
+  chores:
+    - 'Updated dependencies'
+
+
+3.1.2:
+  date: 2018-08-20
+  chores:
+    - 'Updated dependencies'
+
+
+3.1.1:
+  date: 2018-06-30
+  fixed bugs:
+    - 'Fixed a bug that caused executions to crash when context variables have tracked mutations'
+
+
+3.1.0:
+  date: 2018-06-28
+  new features:
+    - 'Added change tracking to sandbox variables. Now execution result has `mutations` which has recorded all the changes that were made during the script execution.'
+  chores:
+    - 'Updated dependencies'
+
+
+3.0.8:
+  date: 2018-05-24
+  chores:
+    - 'Updated dependencies'
+
+
+3.0.7:
+  date: 2018-05-16
+  chores:
+    - 'Updated dependencies'
+
+
+3.0.6:
+  date: 2018-04-10
+  fixed bugs:
+    - 'Reverted GH-273: Chai assignment fix'
+
+
+3.0.5:
+  date: 2018-04-9
+  fixed bugs:
+    - 'Fixed a bug that caused negated assertions to persist'
+    - 'Updated `uvm` to `v1.7.1`, which fixes iframe bootcode loading for large bundles'
+    - 'Updated `chai-postman` to `v1.0.2`, which fixes a response status assertion bug'
+  chores:
+    - 'Updated dependencies'
+
+
+3.0.4:
+  date: 2017-11-30
+  chores:
+    - 'Updated dependencies.'
+
+
+3.0.3:
+  date: 2017-11-20
+  new features:
+    - |
+      Get and set objects in variables with `json` type
+      // set objects as values for `json types`
+      pm.variables.set('myObject', { version: 'v1' }, 'json');
+
+      // get object values
+      console.log(pm.variables.get('myObject')); // { version: 'v1' }
+      console.log(typeof pm.variables.get('myObject')); // object
+
+
+3.0.2:
+  date: 2017-11-9
+  chores:
+    - 'Made error messages for legacy test failure assertions useful'
+
+
+3.0.1:
+  date: 2017-11-8
+  fixed bugs:
+    - 'Fixed a bug where assertions for legacy test failures did not include the assertion `error`'
+  chores:
+    - 'Updated dependencies'
+
+
+3.0.0:
+  date: 2017-11-7
+  breaking changes:
+    - '`execution.assertion` and `execution.assertions.${id}` events are now passed with array of assertions'
+    - 'Added support for collection variables using `collectionVariables`'
+    - 'Variables set with `pm.variables` state are now bubbled with `execution.result.${id}` as `_variables`'
+  chores:
+    - 'Updated dependencies.'
+
+
+2.3.5:
+  date: 2017-10-13
+  new features:
+    - 'GH-212 Replaced in-house chai assertion extensions with chai-postman(https://github.com/postmanlabs/chai-postman)'
+  chores:
+    - 'Updated dependencies'
+
+
+2.3.4:
+  date: 2017-09-27
+  fixed bugs:
+    - 'GH-203 Fixed a bug that caused internal assertion helpers to be leaked'
+    - 'GH-196 Shifted `browserify` to `devDependencies`, thereby reducing package size'
+    - 'GH-193 Fixed script timeout bug'
+    - 'GH-186 Added support for `console.error`'
+
+
+2.3.3:
+  date: 2017-08-28
+  chores:
+    - 'GH-178 Bumped `xml2js` to `v0.4.19`'
+    - 'GH-180 Bumped `postman-collection` to `v2.1.3`'
+
+
+2.3.2:
+  date: 2017-08-21
+  fixed bugs:
+    - 'GH-176 Fixed an issue that caused missing headers in assertions to crash test scripts'
+  chores:
+    - 'GH-156 Updated `csv-parse` to v1.2.1'
+
+
+2.3.1:
+  date: 2017-08-18
+  new features:
+    - 'GH-106 Support for timers inside sandbox (not in browser)'
+    - 'Added `url`, `punycode`, and `querystring` to the Sandbox'
+    - 'Added `pm.sendRequest` which dispatches event `execution.request.${id}` and expects `execution.response.${id}`'
+  fixed bugs:
+    - 'GH-169 Prevented disabled headers from showing up in `request.headers` in the sandbox'
+    - 'Fixed bug where `pm.test` called without an assertion function would not trigger assertion event'
+  chores:
+    - 'Updated dependencies'
+
+
+2.3.0:
+  date: 2017-06-27
+  new features:
+    - 'GH-133 Added csv-parse (synchronous) to the sandbox'
+  chores:
+    - 'Updated dependencies'
+
+
+2.2.0:
+  date: 2017-06-14
+  new features:
+    - 'GH-122 Added moment (without locales) to the Sandbox'
+  chores:
+    - 'Updated dependencies'
+
+
+2.1.5:
+  date: 2017-05-16
+  fixed bugs:
+    - 'Fixed bug that caused an invalid version of Collection SDK to be cached on prepublish'
+
+
+2.1.4:
+  date: 2017-05-15
+  chores:
+    - 'update postman-collection to version 1.2.5'
+
+
+2.1.3:
+  date: 2017-05-12
+  new features:
+    - 'Introduced `pm.variables` as a unified interface for variable access'
+    - 'Renamed `pm.data` to `pm.iterationData`, exposed as a `VariableScope`'
+  fixed bugs:
+    - 'Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey globals'
+
+
+2.1.2:
+  date: 2017-05-8
+  fixed bugs:
+    - 'GH-89 Assertion event indices now begin with `0`'
+
+
+2.1.1:
+  date: 2017-04-25
+  new features:
+    - 'Added request and response assertions in form of `pm.request.to` and `pm.response.to`'
+    - '`pm.cookies` is now available'
+
+
+2.1.0:
+  date: 2017-04-13
+  new features:
+    - 'Initial release of the `pm` API'
+    - '`pm.globals`, `pm.environment` - VariableScope (http://www.postmanlabs.com/postman-collection/VariableScope.html)'
+    - '`pm.request` - Request (http://www.postmanlabs.com/postman-collection/Request.html)'
+    - '`pm.response` - Response (http://www.postmanlabs.com/postman-collection/Response.html) (only available in test scripts)'
+
+
+2.0.0:
+  date: 2017-04-05
+  breaking changes:
+    - 'Removed legacy handling of environment and collections (both are now `VariableScope`s'
+    - 'Introduced a standardized execution result object, `Execution`'
+    - 'Removed the `masked` options which were used by the sandbox'
+
+
+1.0.1:
+  date: 2017-01-06
+  new features:
+    - 'Shifted to deprecated `new Buffer()` function for full node v4 compatibility'
+    - 'Tests for BOM support in JSON.parse'
+  chores:
+    - 'Dependency shift from optional dependencies to dev dependencies'
+
+
+1.0.0:
+  date: 2016-12-29
+  fixed bugs:
+    - 'Fixed missing clear immediate'
+
+
+0.0.1-beta.11:
+  date: 2016-12-27
+  fixed bugs:
+    - 'Added the missing clearImmediate stub timer'
+
+
+0.0.1-beta.10:
+  date: 2016-12-27
+  new features:
+    - 'Sandbox library tests'
+    - 'Added stub timer functions that do nothing except trigger console message'
+    - 'Compatibility with Postman Legacy sandbox framework (and other improvements)'
+  fixed bugs:
+    - 'Fix binding issue of the stub timers'
+    - 'User error and informational console events'
+    - 'Replaced deprecated buffer-browserify with feross buffer and added tests'
+    - 'Fixed issue with XMLHttpRequest variable name being incorrect inside sandbox'
+
+
+0.0.1-beta.9:
+  date: 2016-12-21
+  new features:
+    - 'Added UVM with external iframe support for sandboxed chrome packaged apps'
+
+
+0.0.1-beta.8:
+  date: 2016-12-20
+  new features:
+    - 'Added additional relaxations of sandbox + jQuery for browser variant'
+    - 'Updated UVM to beta version which supports timeouts'
+    - 'Added tests to check state of optional dependencies'
+    - 'Update to accept parameter changes in UVM'
+
+
+0.0.1-beta.7:
+  date: 2016-12-16
+  fixed bugs:
+    - 'Made Postman execute use a common scope object'
+    - 'Fix crypto-js dependency release issue.'
+
+
+0.0.1-beta.6:
+  date: 2016-12-2
+  new features:
+    - 'Made all executions follow legacy IO structure'
+    - 'Added fully functional PostmanConsole inside library'
+  fixed bugs:
+    - 'Bugfix using loads merge instead of assign!'
+    - 'Updated uniscope to a non buggy unjailed mode version'
+    - 'Ensured that xml2js is exposed as xml2Json instead of original library inside sandbox'
+
+
+0.0.1-beta.5:
+  date: 2016-12-1
+  new features:
+    - 'Added test for loads library inside sandbox'
+    - 'Made default bundling option detect globals'
+    - 'Moved requirement of sandbox globals to inside scope execution and ran it in unjailed mode'
+  fixed bugs:
+    - 'Fixed bug with context.dispose trying to access undefined variable'
+
+
+0.0.1-beta.4:
+  date: 2016-11-30
+  new features:
+    - 'Added console support'
+    - 'Added polymorphism to the data argument of execution'
+    - 'Made execution debug options be inherited during construction'
+    - 'Made the sandbox execute event accept the current (legacy) data format'
+    - 'Made sandbox load files relative to itself'
+
+
+0.0.1-beta.3:
+  date: 2016-11-30
+  new features:
+    - 'Made the file loading of bundler use absolute path'
+    - 'Move vendor out one level'
+
+
+0.0.1-beta.2:
+  date: 2016-11-30
+  new features:
+    - 'Made the dependency on bundling not be needed if cache is present'
+    - 'Added pre-publish script for initial testing'
+
+
+0.0.1-beta.1:
+  date: 2016-11-xy
+  initial release:
+    - 'Added initial codebase'
+    - 'Added boilerplate configuration files.'
