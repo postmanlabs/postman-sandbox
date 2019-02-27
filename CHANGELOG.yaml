@@ -23,13 +23,13 @@
 3.2.0:
   date: 2018-12-24
   new features:
-    - Added Ajv JSON schema validator
+    - GH-373 Added Ajv JSON schema validator
     - Deprecated tv4 in favor of Ajv
   fixed bugs:
-    - Fixed a bug that caused negated assertions to persist
+    - GH-374 Fixed a bug that caused negated assertions to persist
   chores:
-    - Updated dependencies
     - Migrated tests to chai expect assertions
+    - Updated dependencies
 
 3.1.3:
   date: 2018-09-21
@@ -355,7 +355,7 @@
     - Added pre-publish script for initial testing
 
 0.0.1-beta.1:
-  date: 2016-11-xy
+  date: 2016-11-30
   initial release:
     - Added initial codebase
     - Added boilerplate configuration files.
