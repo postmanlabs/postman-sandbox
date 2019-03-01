@@ -1,3 +1,9 @@
+3.2.5:
+  date: 2019-03-01
+  chores:
+    - Bumped `postman-collection` to `v3.4.5`
+    - Bumped `uvm` to `v1.7.5`
+
 3.2.4:
   date: 2019-02-20
   chores:
@@ -134,8 +140,8 @@
   date: 2017-10-13
   new features:
     - >-
-      GH-212 Replaced in-house chai assertion extensions with
-      chai-postman (https://github.com/postmanlabs/chai-postman)
+      GH-212 Replaced in-house chai assertion extensions with chai-postman
+      (https://github.com/postmanlabs/chai-postman)
   chores:
     - Updated dependencies
 
