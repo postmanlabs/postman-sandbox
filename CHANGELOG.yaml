@@ -1,3 +1,8 @@
+3.2.6:
+  date: 2019-03-19
+  chores:
+    - Bumped `postman-collection` to `v3.4.6`
+
 3.2.5:
   date: 2019-03-01
   chores:
