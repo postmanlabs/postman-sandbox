@@ -1,3 +1,7 @@
+master:
+  new feature:
+    - added support for async pm.test
+
 3.2.6:
   date: 2019-03-19
   chores:
