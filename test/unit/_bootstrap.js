@@ -7,6 +7,10 @@ var chai = require('chai'),
 
 chai.use(sinonChai);
 
+global.nobrowser = function (it) {
+    return (typeof window === 'undefined' ? it : it.skip);
+};
+
 before(function () {
     global.expect && (_expect = global.expect);
     global.expect = chai.expect;
@@ -21,6 +25,8 @@ after(function () {
 
     _sinon ? (global.sinon = _sinon) : (delete global.sinon);
     _sinon = null;
+
+    delete global.nobrowser;
 });
 
 describe('_bootstrap', function () {

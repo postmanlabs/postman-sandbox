@@ -96,7 +96,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    it('should call the assertion event on async test', function (done) {
+    nobrowser(it)('should call the assertion event on async test', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -131,7 +131,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    it('should not wait if async done is not called', function (done) {
+    nobrowser(it)('should not wait if async done is not called', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -157,7 +157,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    it('should terminate script if async done is not called in an async script', function (done) {
+    nobrowser(it)('should terminate script if async done is not called in an async script', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -185,7 +185,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    it('should forward errors from asynchronous callback', function (done) {
+    nobrowser(it)('should forward errors from asynchronous callback', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -224,7 +224,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    it('should forward synchronous errors from asynchronous tests', function (done) {
+    nobrowser(it)('should forward synchronous errors from asynchronous tests', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 

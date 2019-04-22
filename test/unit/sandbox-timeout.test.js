@@ -1,4 +1,4 @@
-(typeof window === 'undefined' ? describe : describe.skip)('sandbox timeout', function () {
+nobrowser(describe)('sandbox timeout', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
