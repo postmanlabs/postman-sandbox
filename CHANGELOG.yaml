@@ -1,3 +1,14 @@
+master:
+  new features:
+    - |
+      Added `history` argument to callback of pm.sendRequest() which contains
+      received cookies in response
+
+      // use of `history` argument
+      pm.sendRequest(url, function(err, res, history) {
+        console.log(history.cookies.all());
+      });
+
 3.2.6:
   date: 2019-03-19
   chores:
