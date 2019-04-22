@@ -1,6 +1,26 @@
 master:
-  new feature:
-    - added support for async pm.test
+  new features:
+    - |
+      Added support for adding asynchronous tests when using `pm.test` uby
+      passing `done` callback
+
+      ```
+      // example of asynchronous test
+      pm.test('this is a test name', function (done) {
+          // do some async stuff here and call `done`
+          pm.sendRequest(done);
+      });
+      ```
+    - |
+      Added `history` argument to callback of pm.sendRequest() which contains
+      received cookies in response
+
+      ```
+      // use of `history` argument
+      pm.sendRequest(url, function(err, res, history) {
+        console.log(history.cookies.all());
+      });
+      ```
 
 3.2.6:
   date: 2019-03-19

@@ -576,5 +576,60 @@ describe('sandbox library - pm api', function () {
                 id: executionId
             }, function () {}); // eslint-disable-line no-empty-function
         });
+
+        it('should forward history object to callback when sent from outside', function (done) {
+            var executionId = '3';
+            context.on('error', done);
+
+            context.on('execution.error', function (cur, err) {
+                expect(err).to.not.be.ok;
+                done();
+            });
+
+            // @todo find the cause of the error where assertions are not being fired from inside a timer
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+
+            context.on('execution.request.' + executionId, function (cursor, id, requestId) {
+                context.dispatch(`execution.response.${id}`, requestId, null, {
+                    code: 200
+                }, {
+                    cookies: [
+                        {
+                            domain: 'postman-echo.com',
+                            hostOnly: false,
+                            httpOnly: true,
+                            name: 'foo',
+                            path: '/',
+                            secure: false,
+                            value: 'bar'
+                        }
+                    ]
+                });
+            });
+
+            context.execute(`
+                var CookieList = require('postman-collection').CookieList;
+                pm.sendRequest('https://postman-echo.com/cookies/set?foo=bar', function (err, res, history) {
+                    pm.test('history', function () {
+                        pm.expect(history).to.be.an('object');
+                        pm.expect(history).to.have.property('cookies');
+                        pm.expect(CookieList.isCookieList(history.cookies)).to.equal(true);
+                        pm.expect(history.cookies.count()).to.equal(1);
+                        pm.expect(history.cookies.get('foo')).to.equal('bar');
+                    });
+                });
+            `, {
+                context: sampleContextData,
+                id: executionId
+            }, function () {}); // eslint-disable-line no-empty-function
+        });
     });
 });
