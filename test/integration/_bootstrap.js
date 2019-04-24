@@ -6,6 +6,6 @@ before(function () {
 });
 
 after(function () {
-    _expect ? (global.expect = _expect) : (delete global._expect);
+    _expect ? (global.expect = _expect) : (delete global.expect);
     _expect = null;
 });
