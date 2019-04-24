@@ -462,7 +462,7 @@ describe('sandbox library - chai-postman', function () {
             });
 
             // eslint-disable-next-line max-len
-            nobrowser(it)('should have a way to be asserted for absence', function (done) {
+            (typeof window === 'undefined' ? it : it.skip)('should have a way to be asserted for absence', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
                         responseTime: NaN

@@ -70,7 +70,7 @@ describe('sandbox library - AJV', function () {
             `, done);
         });
 
-        nobrowser(it)('compileAsync', function (done) {
+        (typeof window === 'undefined' ? it : it.skip)('compileAsync', function (done) {
             context.execute(`
                 var Ajv = require('ajv'),
 

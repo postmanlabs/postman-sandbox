@@ -7,11 +7,6 @@ var chai = require('chai'),
 
 chai.use(sinonChai);
 
-// make implicit global because of an issue with running this on travis Windows
-nobrowser = function (it) { // eslint-disable-line no-implicit-globals
-    return (typeof window === 'undefined' ? it : it.skip);
-};
-
 before(function () {
     global.expect && (_expect = global.expect);
     global.expect = chai.expect;
@@ -26,8 +21,6 @@ after(function () {
 
     _sinon ? (global.sinon = _sinon) : (delete global.sinon);
     _sinon = null;
-
-    delete global.nobrowser;
 });
 
 describe('_bootstrap', function () {

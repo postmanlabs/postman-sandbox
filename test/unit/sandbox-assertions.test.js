@@ -96,7 +96,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    nobrowser(it)('should call the assertion event on async test', function (done) {
+    (typeof window === 'undefined' ? it : it.skip)('should call the assertion event on async test', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -131,7 +131,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    nobrowser(it)('should not wait if async done is not called', function (done) {
+    (typeof window === 'undefined' ? it : it.skip)('should not wait if async done is not called', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -157,7 +157,8 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    nobrowser(it)('should terminate script if async done is not called in an async script', function (done) {
+    (typeof window === 'undefined' ? it : it.skip)('should terminate script ' +
+        'if async done is not called in an async script', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -185,7 +186,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    nobrowser(it)('should forward errors from asynchronous callback', function (done) {
+    (typeof window === 'undefined' ? it : it.skip)('should forward errors from asynchronous callback', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -224,7 +225,8 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    nobrowser(it)('should forward synchronous errors from asynchronous tests', function (done) {
+    (typeof window === 'undefined' ? it : it.skip)('should forward synchronous' +
+        'errors from asynchronous tests', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
