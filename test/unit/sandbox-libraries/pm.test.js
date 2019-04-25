@@ -405,23 +405,31 @@ describe('sandbox library - pm api', function () {
     describe('cookies.jar', function () {
         // @note don't strictly assert (calledWithExactly) on store method args
         var getStoreEventHandler = function (executionId) {
-            return function (eventId, action, fnName) {
-                var output;
+                return function (eventId, action, fnName) {
+                    var output;
 
-                if (action !== 'store') {
-                    return;
-                }
+                    if (action !== 'store') {
+                        return;
+                    }
 
-                if (fnName === 'findCookie') {
-                    output = {};
-                }
-                else if (['getAllCookies', 'findCookies'].includes(fnName)) {
-                    output = [];
-                }
+                    if (fnName === 'findCookie') {
+                        output = {};
+                    }
+                    else if (['getAllCookies', 'findCookies'].includes(fnName)) {
+                        output = [];
+                    }
 
-                context.dispatch(`execution.cookies.${executionId}`, eventId, null, output);
+                    context.dispatch(`execution.cookies.${executionId}`, eventId, null, output);
+                };
+            },
+            getErrorEventHandler = function (callback) {
+                // errors from the execute callback are catched here as well
+                // so, call mocha `done` callback with an error
+                // @todo this is not supposed to happen, fix this
+                return function () {
+                    callback(new Error('Assertion Error'));
+                };
             };
-        };
 
         it('should be a function exposed', function (done) {
             context.execute(`
@@ -435,7 +443,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `setCookie` is called', function (done) {
             var executionId = '1',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -443,7 +451,8 @@ describe('sandbox library - pm api', function () {
 
             context.execute(`
                 var jar = pm.cookies.jar();
-                jar.setCookie("a=b; Domain=example.com; Path=/", "http://example.com/", function () {})
+
+                jar.setCookie("a=b; Domain=example.com; Path=/", "http://example.com/", function () {});
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -483,7 +492,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `getCookies` is called', function (done) {
             var executionId = '2',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -520,7 +529,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `getSetCookieStrings` is called', function (done) {
             var executionId = '3',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -557,7 +566,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `getCookieString` is called', function (done) {
             var executionId = '4',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -594,7 +603,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `serialize` is called', function (done) {
             var executionId = '5',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -631,7 +640,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `clone` is called', function (done) {
             var executionId = '6',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
@@ -668,7 +677,7 @@ describe('sandbox library - pm api', function () {
 
         it('should dispatch store events when `removeAllCookies` is called', function (done) {
             var executionId = '7',
-                executionError = sinon.spy(),
+                executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
             context.on('execution.error', executionError);
