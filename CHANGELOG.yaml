@@ -1,4 +1,5 @@
-master:
+3.2.7:
+  date: 2019-04-26
   new features:
     - |
       Added support for adding asynchronous tests when using `pm.test` by
