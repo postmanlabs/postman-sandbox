@@ -24,6 +24,8 @@ master:
     - >-
       Added CookieJar to pm.cookies which dispatches CookieStore event
       `execution.cookies.${id}` and expects `execution.cookies.${id}`
+  chores:
+    - Updated dependencies
 
 3.2.6:
   date: 2019-03-19
