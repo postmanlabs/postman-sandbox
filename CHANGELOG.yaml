@@ -1,7 +1,7 @@
 master:
   new features:
     - |
-      Added support for adding asynchronous tests when using `pm.test` uby
+      Added support for adding asynchronous tests when using `pm.test` by
       passing `done` callback
 
       ```
@@ -21,6 +21,9 @@ master:
         console.log(history.cookies.all());
       });
       ```
+    - >-
+      Added CookieJar to pm.cookies which dispatches CookieStore event
+      `execution.cookies.${id}` and expects `execution.cookies.${id}`
 
 3.2.6:
   date: 2019-03-19
