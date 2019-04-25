@@ -33,6 +33,7 @@ The following section outlines the API available inside sandbox scripts
 
 - pm.globals
 - pm.environment
+- pm.test
 
 #### pre-request script specials
 
@@ -51,9 +52,11 @@ The following section outlines the API available inside sandbox scripts
 - execution.error.*
 - execution.request.*
 - execution.result.*
+- execution.cookies.*
 
 ## Events responded to
 - ping
 - execute
 - execution.abort.*
 - execution.response.*
+- execution.cookies.*

@@ -1,3 +1,5 @@
+const CookieStore = require('tough-cookie').Store;
+
 describe('sandbox library - pm api', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
@@ -400,6 +402,317 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('cookies.jar', function () {
+        // @note don't strictly assert (calledWithExactly) on store method args
+        var getStoreEventHandler = function (executionId) {
+                return function (eventId, action, fnName) {
+                    var output;
+
+                    if (action !== 'store') {
+                        return;
+                    }
+
+                    if (fnName === 'findCookie') {
+                        output = {};
+                    }
+                    else if (['getAllCookies', 'findCookies'].includes(fnName)) {
+                        output = [];
+                    }
+
+                    context.dispatch(`execution.cookies.${executionId}`, eventId, null, output);
+                };
+            },
+            getErrorEventHandler = function (callback) {
+                // errors from the execute callback are catched here as well
+                // so, call mocha `done` callback with an error
+                // @todo this is not supposed to happen, fix this
+                return function () {
+                    callback(new Error('Assertion Error'));
+                };
+            };
+
+        it('should be a function exposed', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(typeof pm.cookies.jar, 'function');
+                assert.strictEqual(pm.cookies.jar().constructor.name, 'CookieJar');
+            `, {
+                context: {cookies: []}
+            }, done);
+        });
+
+        it('should dispatch store events when `setCookie` is called', function (done) {
+            var executionId = '1',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+
+                jar.setCookie("a=b; Domain=example.com; Path=/", "http://example.com/", function () {});
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledTwice;
+
+                // assert for findCookie event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'findCookie');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('findCookie');
+                expect(CookieStore.prototype.findCookie).to.have.lengthOf(methodArgs.length + 1);
+
+                // assert for updateCookie event
+                expect(executionCookies.getCall(1).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(1)).to.have.been
+                    .calledWith(2, 'store', 'updateCookie');
+
+                methodArgs = executionCookies.getCall(1).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('updateCookie');
+                expect(CookieStore.prototype.updateCookie).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `getCookies` is called', function (done) {
+            var executionId = '2',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.getCookies("http://example.com/", function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for findCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'findCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('findCookies');
+                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `getSetCookieStrings` is called', function (done) {
+            var executionId = '3',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.getSetCookieStrings("http://example.com/", function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for findCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'findCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('findCookies');
+                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `getCookieString` is called', function (done) {
+            var executionId = '4',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.getCookieString("http://example.com/", function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for findCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'findCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('findCookies');
+                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `serialize` is called', function (done) {
+            var executionId = '5',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.serialize(function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for getAllCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'getAllCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
+                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `clone` is called', function (done) {
+            var executionId = '6',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.clone(function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for getAllCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'getAllCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
+                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `removeAllCookies` is called', function (done) {
+            var executionId = '7',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.removeAllCookies(function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for removeAllCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'removeAllCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('removeAllCookies');
+                expect(CookieStore.prototype.removeAllCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+    });
+
     describe('chai', function () {
         it('should be available as expect', function (done) {
             context.execute(`
@@ -569,6 +882,61 @@ describe('sandbox library - pm api', function () {
                     pm.test('response', function () {
                         pm.expect(res).to.have.property('code', 200);
                         pm.expect(res.json()).to.have.property('i am', 'a json');
+                    });
+                });
+            `, {
+                context: sampleContextData,
+                id: executionId
+            }, function () {}); // eslint-disable-line no-empty-function
+        });
+
+        it('should forward history object to callback when sent from outside', function (done) {
+            var executionId = '3';
+            context.on('error', done);
+
+            context.on('execution.error', function (cur, err) {
+                expect(err).to.not.be.ok;
+                done();
+            });
+
+            // @todo find the cause of the error where assertions are not being fired from inside a timer
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+
+            context.on('execution.request.' + executionId, function (cursor, id, requestId) {
+                context.dispatch(`execution.response.${id}`, requestId, null, {
+                    code: 200
+                }, {
+                    cookies: [
+                        {
+                            domain: 'postman-echo.com',
+                            hostOnly: false,
+                            httpOnly: true,
+                            name: 'foo',
+                            path: '/',
+                            secure: false,
+                            value: 'bar'
+                        }
+                    ]
+                });
+            });
+
+            context.execute(`
+                var CookieList = require('postman-collection').CookieList;
+                pm.sendRequest('https://postman-echo.com/cookies/set?foo=bar', function (err, res, history) {
+                    pm.test('history', function () {
+                        pm.expect(history).to.be.an('object');
+                        pm.expect(history).to.have.property('cookies');
+                        pm.expect(CookieList.isCookieList(history.cookies)).to.equal(true);
+                        pm.expect(history.cookies.count()).to.equal(1);
+                        pm.expect(history.cookies.get('foo')).to.equal('bar');
                     });
                 });
             `, {

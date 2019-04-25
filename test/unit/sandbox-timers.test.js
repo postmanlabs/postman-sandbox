@@ -338,7 +338,7 @@
                 expect(execution).to.nested.include({
                     'return.async': true
                 });
-                expect(result).to.eql({
+                expect(result).to.include({
                     name: 'postman-sb-test',
                     skipped: false,
                     passed: true,

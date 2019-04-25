@@ -1,13 +1,26 @@
-var _expect;
+var chai = require('chai'),
+    sinon = require('sinon'),
+    sinonChai = require('sinon-chai'),
+
+    _expect,
+    _sinon;
+
+chai.use(sinonChai);
 
 before(function () {
     global.expect && (_expect = global.expect);
-    global.expect = require('chai').expect;
+    global.expect = chai.expect;
+
+    global.sinon && (_sinon = global.sinon);
+    global.sinon = sinon;
 });
 
 after(function () {
-    _expect ? (global.expect = _expect) : (delete global._expect);
+    _expect ? (global.expect = _expect) : (delete global.expect);
     _expect = null;
+
+    _sinon ? (global.sinon = _sinon) : (delete global.sinon);
+    _sinon = null;
 });
 
 describe('_bootstrap', function () {

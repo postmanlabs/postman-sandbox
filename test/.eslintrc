@@ -2,7 +2,8 @@
   "globals": {
     "describe": true,
     "it": true,
-    "expect": true
+    "expect": true,
+    "sinon": true
   },
   "plugins": [
     "mocha"
