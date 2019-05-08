@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "ajv": "6.10.0",
-    "assert": "1.4.1",
+    "assert": "1.5.0",
     "async": "2.6.2",
     "atob": "2.1.2",
     "backbone": "1.4.0",
