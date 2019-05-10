@@ -72,7 +72,7 @@
     "moment": "2.24.0",
     "packity": "0.3.2",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.4.7",
+    "postman-collection": "3.4.8",
     "puppeteer": "1.14.0",
     "recursive-readdir": "2.2.2",
     "shelljs": "0.8.3",
