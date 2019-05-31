@@ -38,7 +38,7 @@
   "devDependencies": {
     "ajv": "6.10.0",
     "assert": "1.4.1",
-    "async": "3.0.1",
+    "async": "2.6.2",
     "atob": "2.1.2",
     "backbone": "1.4.0",
     "browserify": "16.2.3",
