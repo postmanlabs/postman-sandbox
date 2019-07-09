@@ -435,7 +435,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(typeof pm.cookies.jar, 'function');
-                assert.strictEqual(pm.cookies.jar().constructor.name, 'CookieJar');
+                assert.strictEqual(pm.cookies.jar().constructor.name, 'PostmanCookieJar');
             `, {
                 context: {cookies: []}
             }, done);
@@ -452,7 +452,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var jar = pm.cookies.jar();
 
-                jar.setCookie("a=b; Domain=example.com; Path=/", "http://example.com/", function () {});
+                jar.set("http://example.com/", "a=b; Domain=example.com; Path=/", function () {});
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -500,7 +500,7 @@ describe('sandbox library - pm api', function () {
 
             context.execute(`
                 var jar = pm.cookies.jar();
-                jar.getCookies("http://example.com/", function () {})
+                jar.getAll("http://example.com/", function () {})
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -522,154 +522,6 @@ describe('sandbox library - pm api', function () {
                 expect(methodArgs).to.be.an('array');
                 expect(CookieStore.prototype).to.have.own.property('findCookies');
                 expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `getSetCookieStrings` is called', function (done) {
-            var executionId = '3',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.getSetCookieStrings("http://example.com/", function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for findCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('findCookies');
-                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `getCookieString` is called', function (done) {
-            var executionId = '4',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.getCookieString("http://example.com/", function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for findCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('findCookies');
-                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `serialize` is called', function (done) {
-            var executionId = '5',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.serialize(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for getAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'getAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
-                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `clone` is called', function (done) {
-            var executionId = '6',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.clone(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for getAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'getAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
-                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
 
                 done();
             });
@@ -685,7 +537,7 @@ describe('sandbox library - pm api', function () {
 
             context.execute(`
                 var jar = pm.cookies.jar();
-                jar.removeAllCookies(function () {})
+                jar.clear(function () {})
             `, {
                 context: {cookies: []},
                 id: executionId
