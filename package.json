@@ -30,7 +30,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "inherits": "2.0.4",
-    "lodash": "4.17.11",
+    "lodash": "4.17.12",
     "tough-cookie": "3.0.1",
     "uuid": "3.3.2",
     "uvm": "1.7.5"
