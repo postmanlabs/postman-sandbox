@@ -11,7 +11,7 @@ master:
                 data: {
                   name: 'Postman'
                 },
-                hanadlebarsOptions: {
+                handlebarsOptions: {
                   // options to use while compiling handlebars template
                 }
               };
