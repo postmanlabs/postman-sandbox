@@ -813,6 +813,50 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('visualiser', function () {
+        it('should have visualiser APIs available', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.ok(pm.visualiser);
+                assert.strictEqual(typeof pm.visualiser.set, 'function');
+                assert.strictEqual(typeof pm.visualiser.clear, 'function');
+            `, {context: sampleContextData}, done);
+        });
+
+        it('pm.visualiser.set', function (done) {
+            context.execute(`
+                pm.visualiser.set('Test template', {
+                    data: { name: 'Postman' }
+                });
+            `, {context: sampleContextData}, function (err, result) {
+                expect(err).to.not.be.ok;
+                expect(result).to.have.nested.property('return.visualiser');
+                expect(result.return.visualiser.template).to.eql('Test template');
+                expect(result.return.visualiser.options).to.deep.eql({
+                    data: {
+                        name: 'Postman'
+                    }
+                });
+                done();
+            });
+        });
+
+        it('pm.visualiser.clear', function (done) {
+            context.execute(`
+                pm.visualiser.set('Test template', {
+                    data: { name: 'Postman' }
+                });
+
+                pm.visualiser.clear();
+            `, {context: sampleContextData}, function (err, result) {
+                expect(err).to.not.be.ok;
+                expect(result.return.visualiser).to.not.be.ok;
+                done();
+            });
+        });
+    });
+
     describe('sendRequest', function () {
         it('should be a function exposed', function (done) {
             context.execute(`
