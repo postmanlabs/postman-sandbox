@@ -95,7 +95,8 @@
   "greenkeeper": {
     "ignore": [
       "mocha",
-      "csv-parse"
+      "csv-parse",
+      "eslint-plugin-jsdoc"
     ]
   }
 }
