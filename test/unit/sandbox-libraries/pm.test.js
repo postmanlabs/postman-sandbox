@@ -827,16 +827,14 @@ describe('sandbox library - pm api', function () {
         it('pm.visualiser.set', function (done) {
             context.execute(`
                 pm.visualiser.set('Test template', {
-                    data: { name: 'Postman' }
+                    name: 'Postman'
                 });
             `, {context: sampleContextData}, function (err, result) {
                 expect(err).to.not.be.ok;
                 expect(result).to.have.nested.property('return.visualiser');
                 expect(result.return.visualiser.template).to.eql('Test template');
-                expect(result.return.visualiser.options).to.deep.eql({
-                    data: {
-                        name: 'Postman'
-                    }
+                expect(result.return.visualiser.data).to.deep.eql({
+                    name: 'Postman'
                 });
                 done();
             });
@@ -845,7 +843,7 @@ describe('sandbox library - pm api', function () {
         it('pm.visualiser.clear', function (done) {
             context.execute(`
                 pm.visualiser.set('Test template', {
-                    data: { name: 'Postman' }
+                    name: 'Postman'
                 });
 
                 pm.visualiser.clear();
