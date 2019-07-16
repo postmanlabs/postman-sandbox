@@ -1,9 +1,9 @@
 master:
   new features:
     - |
-      Aadded APIs for visualiser operations with following methods.
+      Aadded APIs for visualizer operations with following methods.
 
-        -> `pm.visualiser.set` - Allow setting visualiser template and its options
+        -> `pm.visualizer.set` - Allow setting visualizer template and its options
 
           ```
           var template = '<h1>Hello, {{name}}<h1>',
@@ -13,14 +13,14 @@ master:
               options = {
                 // options to use while processing the template
               };
-          pm.visualiser.set(template, data, options);
+          pm.visualizer.set(template, data, options);
           ```
 
-        -> `pm.visualiser.clear` - Removes previously set visualiser template and its options
+        -> `pm.visualizer.clear` - Removes previously set visualizer template and its options
 
           ```
-          pm.visualiser.set(template, options);
-          pm.visualiser.clear(); // will remove set template in above line
+          pm.visualizer.set(template, data, options);
+          pm.visualizer.clear(); // will remove set template in above line
           ```
 
 3.2.9:

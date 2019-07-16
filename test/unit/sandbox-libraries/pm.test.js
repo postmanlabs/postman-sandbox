@@ -813,43 +813,43 @@ describe('sandbox library - pm api', function () {
         });
     });
 
-    describe('visualiser', function () {
-        it('should have visualiser APIs available', function (done) {
+    describe('visualizer', function () {
+        it('should have visualizer APIs available', function (done) {
             context.execute(`
                 var assert = require('assert');
 
-                assert.ok(pm.visualiser);
-                assert.strictEqual(typeof pm.visualiser.set, 'function');
-                assert.strictEqual(typeof pm.visualiser.clear, 'function');
+                assert.ok(pm.visualizer);
+                assert.strictEqual(typeof pm.visualizer.set, 'function');
+                assert.strictEqual(typeof pm.visualizer.clear, 'function');
             `, {context: sampleContextData}, done);
         });
 
-        it('pm.visualiser.set', function (done) {
+        it('pm.visualizer.set', function (done) {
             context.execute(`
-                pm.visualiser.set('Test template', {
+                pm.visualizer.set('Test template', {
                     name: 'Postman'
                 });
             `, {context: sampleContextData}, function (err, result) {
                 expect(err).to.not.be.ok;
-                expect(result).to.have.nested.property('return.visualiser');
-                expect(result.return.visualiser.template).to.eql('Test template');
-                expect(result.return.visualiser.data).to.deep.eql({
+                expect(result).to.have.nested.property('return.visualizer');
+                expect(result.return.visualizer.template).to.eql('Test template');
+                expect(result.return.visualizer.data).to.deep.eql({
                     name: 'Postman'
                 });
                 done();
             });
         });
 
-        it('pm.visualiser.clear', function (done) {
+        it('pm.visualizer.clear', function (done) {
             context.execute(`
-                pm.visualiser.set('Test template', {
+                pm.visualizer.set('Test template', {
                     name: 'Postman'
                 });
 
-                pm.visualiser.clear();
+                pm.visualizer.clear();
             `, {context: sampleContextData}, function (err, result) {
                 expect(err).to.not.be.ok;
-                expect(result.return.visualiser).to.not.be.ok;
+                expect(result.return.visualizer).to.not.be.ok;
                 done();
             });
         });
