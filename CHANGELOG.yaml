@@ -7,15 +7,13 @@ master:
 
           ```
           var template = '<h1>Hello, {{name}}<h1>',
+              data = {
+                name: 'Postman'
+              },
               options = {
-                data: {
-                  name: 'Postman'
-                },
-                handlebarsOptions: {
-                  // options to use while compiling handlebars template
-                }
+                // options to use while processing the template
               };
-          pm.visualiser.set(template, options);
+          pm.visualiser.set(template, data, options);
           ```
 
         -> `pm.visualiser.clear` - Removes previously set visualiser template and its options
