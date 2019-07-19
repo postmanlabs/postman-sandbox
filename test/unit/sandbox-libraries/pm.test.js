@@ -526,43 +526,6 @@ describe('sandbox library - pm api', function () {
                 done();
             });
         });
-
-        it('should dispatch store events when `removeAllCookies` is called', function (done) {
-            var executionId = '7',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.clear(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for removeAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'removeAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('removeAllCookies');
-                expect(CookieStore.prototype.removeAllCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
     });
 
     describe('chai', function () {
