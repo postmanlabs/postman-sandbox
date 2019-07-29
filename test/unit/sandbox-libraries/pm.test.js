@@ -813,6 +813,82 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('visualizer', function () {
+        it('should have visualizer APIs available', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.ok(pm.visualizer);
+                assert.strictEqual(typeof pm.visualizer.set, 'function');
+                assert.strictEqual(typeof pm.visualizer.clear, 'function');
+            `, {context: sampleContextData}, done);
+        });
+
+        describe('pm.visualizer.set', function () {
+            it('should correctly set visualizer data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {
+                        name: 'Postman'
+                    });
+                `, {context: sampleContextData}, function (err, result) {
+                    expect(err).to.not.be.ok;
+                    expect(result).to.have.nested.property('return.visualizer');
+                    expect(result.return.visualizer.template).to.eql('Test template');
+                    expect(result.return.visualizer.data).to.deep.eql({
+                        name: 'Postman'
+                    });
+                    done();
+                });
+            });
+
+            it('should throw error for invalid template', function (done) {
+                context.execute(`
+                    pm.visualizer.set(undefined);
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid template. Template must be of type string, found undefined');
+                    done();
+                });
+            });
+
+            it('should throw error for invalid data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', 'invalid data');
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid data. Data must be an object, found string');
+                    done();
+                });
+            });
+
+            it('should throw error for invalid options', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {}, 'Invalid options');
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid options. Options must be an object, found string');
+                    done();
+                });
+            });
+        });
+
+        describe('pm.visualizer.clear', function () {
+            it('should clear visualiser data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {
+                        name: 'Postman'
+                    });
+    
+                    pm.visualizer.clear();
+                `, {context: sampleContextData}, function (err, result) {
+                    expect(err).to.not.be.ok;
+                    expect(result.return.visualizer).to.not.be.ok;
+                    done();
+                });
+            });
+        });
+    });
+
     describe('sendRequest', function () {
         it('should be a function exposed', function (done) {
             context.execute(`
