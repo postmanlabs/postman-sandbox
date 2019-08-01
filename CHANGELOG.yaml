@@ -1,7 +1,8 @@
 master:
   new features:
+    - GH-468 Updated `pm.cookies.jar` methods
     - |
-      Aadded APIs for visualizer operations with following methods.
+      GH-464 Added APIs for visualizer operations with following methods.
 
         -> `pm.visualizer.set` - Allow setting visualizer template and its options
 
@@ -22,6 +23,8 @@ master:
           pm.visualizer.set(template, data, options);
           pm.visualizer.clear(); // will remove set template in above line
           ```
+  chores:
+    - Updated dependencies
 
 3.2.9:
   date: 2019-06-17
