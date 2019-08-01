@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "3.2.9",
+  "version": "3.3.0-beta.2",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -72,7 +72,7 @@
     "moment": "2.24.0",
     "packity": "0.3.2",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.5.0",
+    "postman-collection": "3.5.1",
     "puppeteer": "1.19.0",
     "recursive-readdir": "2.2.2",
     "shelljs": "0.8.3",
