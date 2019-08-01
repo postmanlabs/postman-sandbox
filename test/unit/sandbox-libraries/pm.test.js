@@ -441,7 +441,7 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
-        it('should dispatch store events when `setCookie` is called', function (done) {
+        it('should dispatch store events when `set` is called', function (done) {
             var executionId = '1',
                 executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
@@ -490,8 +490,45 @@ describe('sandbox library - pm api', function () {
             });
         });
 
-        it('should dispatch store events when `getCookies` is called', function (done) {
+        it('should dispatch store events when `get` is called', function (done) {
             var executionId = '2',
+                executionError = sinon.spy(getErrorEventHandler(done)),
+                executionCookies = sinon.spy(getStoreEventHandler(executionId));
+
+            context.on('execution.error', executionError);
+            context.on('execution.cookies.' + executionId, executionCookies);
+
+            context.execute(`
+                var jar = pm.cookies.jar();
+                jar.get("http://example.com/", 'a', function () {})
+            `, {
+                context: {cookies: []},
+                id: executionId
+            }, function (err) {
+                if (err) { return done(err); }
+
+                var methodArgs;
+
+                expect(executionError).to.not.have.been.called;
+                expect(executionCookies).to.have.been.calledOnce;
+
+                // assert for findCookies event
+                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
+                expect(executionCookies.getCall(0)).to.have.been
+                    .calledWith(1, 'store', 'findCookies');
+
+                methodArgs = executionCookies.getCall(0).args[3];
+
+                expect(methodArgs).to.be.an('array');
+                expect(CookieStore.prototype).to.have.own.property('findCookies');
+                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
+
+                done();
+            });
+        });
+
+        it('should dispatch store events when `getAll` is called', function (done) {
+            var executionId = '3',
                 executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
 
