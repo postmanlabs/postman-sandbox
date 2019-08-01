@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
   "main": "index.js",
   "directories": {
@@ -33,7 +33,7 @@
     "lodash": "4.17.15",
     "tough-cookie": "3.0.1",
     "uuid": "3.3.2",
-    "uvm": "1.7.5"
+    "uvm": "1.7.6"
   },
   "devDependencies": {
     "ajv": "6.10.2",
@@ -45,7 +45,7 @@
     "btoa": "1.2.1",
     "buffer": "5.2.1",
     "chai": "4.2.0",
-    "chai-postman": "1.1.2",
+    "chai-postman": "1.1.3",
     "chalk": "2.4.2",
     "cheerio": "0.22.0",
     "crypto-js": "3.1.9-1",
@@ -80,7 +80,7 @@
     "sinon-chai": "3.3.0",
     "tv4": "1.3.0",
     "uglifyify": "5.0.1",
-    "uniscope": "1.1.2",
+    "uniscope": "1.1.3",
     "xml2js": "0.4.19",
     "yankee": "1.0.8"
   },
