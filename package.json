@@ -33,7 +33,7 @@
     "lodash": "4.17.15",
     "tough-cookie": "3.0.1",
     "uuid": "3.3.2",
-    "uvm": "1.7.5"
+    "uvm": "1.7.6"
   },
   "devDependencies": {
     "ajv": "6.10.2",
