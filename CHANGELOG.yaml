@@ -1,4 +1,5 @@
-master:
+3.3.0:
+  date: 2019-08-01
   new features:
     - GH-468 Updated `pm.cookies.jar` methods
     - |
