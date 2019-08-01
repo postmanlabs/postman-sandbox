@@ -1,3 +1,32 @@
+3.3.0:
+  date: 2019-08-01
+  new features:
+    - GH-468 Updated `pm.cookies.jar` methods
+    - |
+      GH-464 Added APIs for visualizer operations with following methods.
+
+        -> `pm.visualizer.set` - Allow setting visualizer template and its options
+
+          ```
+          var template = '<h1>Hello, {{name}}<h1>',
+              data = {
+                name: 'Postman'
+              },
+              options = {
+                // options to use while processing the template
+              };
+          pm.visualizer.set(template, data, options);
+          ```
+
+        -> `pm.visualizer.clear` - Removes previously set visualizer template and its options
+
+          ```
+          pm.visualizer.set(template, data, options);
+          pm.visualizer.clear(); // will remove set template in above line
+          ```
+  chores:
+    - Updated dependencies
+
 3.2.9:
   date: 2019-06-17
   chores:

@@ -435,13 +435,13 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(typeof pm.cookies.jar, 'function');
-                assert.strictEqual(pm.cookies.jar().constructor.name, 'CookieJar');
+                assert.strictEqual(pm.cookies.jar().constructor.name, 'PostmanCookieJar');
             `, {
                 context: {cookies: []}
             }, done);
         });
 
-        it('should dispatch store events when `setCookie` is called', function (done) {
+        it('should dispatch store events when `set` is called', function (done) {
             var executionId = '1',
                 executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
@@ -452,7 +452,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var jar = pm.cookies.jar();
 
-                jar.setCookie("a=b; Domain=example.com; Path=/", "http://example.com/", function () {});
+                jar.set("http://example.com/", "a=b; Domain=example.com; Path=/", function () {});
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -490,7 +490,7 @@ describe('sandbox library - pm api', function () {
             });
         });
 
-        it('should dispatch store events when `getCookies` is called', function (done) {
+        it('should dispatch store events when `get` is called', function (done) {
             var executionId = '2',
                 executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
@@ -500,7 +500,7 @@ describe('sandbox library - pm api', function () {
 
             context.execute(`
                 var jar = pm.cookies.jar();
-                jar.getCookies("http://example.com/", function () {})
+                jar.get("http://example.com/", 'a', function () {})
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -527,7 +527,7 @@ describe('sandbox library - pm api', function () {
             });
         });
 
-        it('should dispatch store events when `getSetCookieStrings` is called', function (done) {
+        it('should dispatch store events when `getAll` is called', function (done) {
             var executionId = '3',
                 executionError = sinon.spy(getErrorEventHandler(done)),
                 executionCookies = sinon.spy(getStoreEventHandler(executionId));
@@ -537,7 +537,7 @@ describe('sandbox library - pm api', function () {
 
             context.execute(`
                 var jar = pm.cookies.jar();
-                jar.getSetCookieStrings("http://example.com/", function () {})
+                jar.getAll("http://example.com/", function () {})
             `, {
                 context: {cookies: []},
                 id: executionId
@@ -559,154 +559,6 @@ describe('sandbox library - pm api', function () {
                 expect(methodArgs).to.be.an('array');
                 expect(CookieStore.prototype).to.have.own.property('findCookies');
                 expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `getCookieString` is called', function (done) {
-            var executionId = '4',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.getCookieString("http://example.com/", function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for findCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('findCookies');
-                expect(CookieStore.prototype.findCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `serialize` is called', function (done) {
-            var executionId = '5',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.serialize(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for getAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'getAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
-                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `clone` is called', function (done) {
-            var executionId = '6',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.clone(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for getAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'getAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('getAllCookies');
-                expect(CookieStore.prototype.getAllCookies).to.have.lengthOf(methodArgs.length + 1);
-
-                done();
-            });
-        });
-
-        it('should dispatch store events when `removeAllCookies` is called', function (done) {
-            var executionId = '7',
-                executionError = sinon.spy(getErrorEventHandler(done)),
-                executionCookies = sinon.spy(getStoreEventHandler(executionId));
-
-            context.on('execution.error', executionError);
-            context.on('execution.cookies.' + executionId, executionCookies);
-
-            context.execute(`
-                var jar = pm.cookies.jar();
-                jar.removeAllCookies(function () {})
-            `, {
-                context: {cookies: []},
-                id: executionId
-            }, function (err) {
-                if (err) { return done(err); }
-
-                var methodArgs;
-
-                expect(executionError).to.not.have.been.called;
-                expect(executionCookies).to.have.been.calledOnce;
-
-                // assert for removeAllCookies event
-                expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
-                expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'removeAllCookies');
-
-                methodArgs = executionCookies.getCall(0).args[3];
-
-                expect(methodArgs).to.be.an('array');
-                expect(CookieStore.prototype).to.have.own.property('removeAllCookies');
-                expect(CookieStore.prototype.removeAllCookies).to.have.lengthOf(methodArgs.length + 1);
 
                 done();
             });
@@ -810,6 +662,82 @@ describe('sandbox library - pm api', function () {
                     var1: 'one-data'
                 });
             `, {context: sampleContextData}, done);
+        });
+    });
+
+    describe('visualizer', function () {
+        it('should have visualizer APIs available', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.ok(pm.visualizer);
+                assert.strictEqual(typeof pm.visualizer.set, 'function');
+                assert.strictEqual(typeof pm.visualizer.clear, 'function');
+            `, {context: sampleContextData}, done);
+        });
+
+        describe('pm.visualizer.set', function () {
+            it('should correctly set visualizer data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {
+                        name: 'Postman'
+                    });
+                `, {context: sampleContextData}, function (err, result) {
+                    expect(err).to.not.be.ok;
+                    expect(result).to.have.nested.property('return.visualizer');
+                    expect(result.return.visualizer.template).to.eql('Test template');
+                    expect(result.return.visualizer.data).to.deep.eql({
+                        name: 'Postman'
+                    });
+                    done();
+                });
+            });
+
+            it('should throw error for invalid template', function (done) {
+                context.execute(`
+                    pm.visualizer.set(undefined);
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid template. Template must be of type string, found undefined');
+                    done();
+                });
+            });
+
+            it('should throw error for invalid data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', 'invalid data');
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid data. Data must be an object, found string');
+                    done();
+                });
+            });
+
+            it('should throw error for invalid options', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {}, 'Invalid options');
+                `, {context: sampleContextData}, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('Invalid options. Options must be an object, found string');
+                    done();
+                });
+            });
+        });
+
+        describe('pm.visualizer.clear', function () {
+            it('should clear visualiser data', function (done) {
+                context.execute(`
+                    pm.visualizer.set('Test template', {
+                        name: 'Postman'
+                    });
+    
+                    pm.visualizer.clear();
+                `, {context: sampleContextData}, function (err, result) {
+                    expect(err).to.not.be.ok;
+                    expect(result.return.visualizer).to.not.be.ok;
+                    done();
+                });
+            });
         });
     });
 
