@@ -1,3 +1,7 @@
+master:
+  chores:
+    - Updated dependencies
+
 3.3.2:
   date: 2019-08-14
   chores:
