@@ -73,7 +73,7 @@
     "packity": "0.3.2",
     "parse-gitignore": "1.0.1",
     "postman-collection": "3.5.3",
-    "puppeteer": "1.19.0",
+    "puppeteer": "1.20.0",
     "recursive-readdir": "2.2.2",
     "shelljs": "0.8.3",
     "sinon": "7.4.2",
