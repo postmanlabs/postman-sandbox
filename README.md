@@ -33,6 +33,7 @@ The following section outlines the API available inside sandbox scripts
 
 - pm.globals
 - pm.environment
+- pm.collectionVariables
 - pm.test
 
 #### pre-request script specials
