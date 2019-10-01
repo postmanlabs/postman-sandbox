@@ -26,8 +26,9 @@ describe('sandbox library - pm api', function () {
                 value: 'collection-var1',
                 type: 'string'
             }, {
-                key: 'var3',
-                value: 'collection-var3'
+                key: 'var2',
+                value: 2.9,
+                type: 'number'
             }],
             data: {
                 'var1': 'one-data'
@@ -98,7 +99,7 @@ describe('sandbox library - pm api', function () {
                 _globals = pm.globals;
                 pm.globals = [];
 
-                assert.strictEqual(pm.globals, _globals, 'property stays inchanged');
+                assert.strictEqual(pm.globals, _globals, 'property stays unchanged');
             `, done);
         });
 
@@ -156,10 +157,10 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert'),
                     _environment;
 
-                _environment = pm.globals;
-                pm.globals = [];
+                _environment = pm.environment;
+                pm.environment = [];
 
-                assert.strictEqual(pm.globals, _environment, 'property stays inchanged');
+                assert.strictEqual(pm.environment, _environment, 'property stays unchanged');
             `, done);
         });
 
@@ -198,6 +199,67 @@ describe('sandbox library - pm api', function () {
                 assert.deepEqual(pm.environment.toObject(), {
                     var1: 'one-env',
                     var2: 2.5
+                });
+            `, {context: sampleContextData}, done);
+        });
+    });
+
+    describe('collectionVariables', function () {
+        it('should be defined as VariableScope', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    VariableScope = require('postman-collection').VariableScope;
+                assert.strictEqual(VariableScope.isVariableScope(pm.collectionVariables), true);
+            `, done);
+        });
+
+        it('should be a readonly property', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    _collectionVariables;
+
+                _collectionVariables = pm.collectionVariables;
+                pm.collectionVariables = [];
+
+                assert.strictEqual(pm.collectionVariables, _collectionVariables, 'property stays unchanged');
+            `, done);
+        });
+
+        it('should forward collection variables forwarded during execution', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.collectionVariables.get('var1'), 'collection-var1');
+                assert.strictEqual(pm.collectionVariables.get('var2'), 2.9);
+            `, {context: sampleContextData}, done);
+        });
+
+        it('should propagate updated collection variables from inside sandbox', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.collectionVariables.get('var1'), 'collection-var1');
+                pm.collectionVariables.set('var1', 'one-one-env');
+                assert.strictEqual(pm.collectionVariables.get('var1'), 'one-one-env');
+
+            `, {context: sampleContextData}, function (err, exec) {
+                expect(err).to.be.null;
+                expect(exec).to.be.ok;
+                expect(exec).to.deep.nested.include({'collectionVariables.values': [
+                    {type: 'string', value: 'one-one-env', key: 'var1'},
+                    {type: 'number', value: 2.9, key: 'var2'}
+                ]});
+                done();
+            });
+        });
+
+        it('pm.collectionVariables.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.collectionVariables.toObject()), true);
+                assert.deepEqual(pm.collectionVariables.toObject(), {
+                    var1: 'collection-var1',
+                    var2: 2.9
                 });
             `, {context: sampleContextData}, done);
         });
@@ -730,7 +792,7 @@ describe('sandbox library - pm api', function () {
                     pm.visualizer.set('Test template', {
                         name: 'Postman'
                     });
-    
+
                     pm.visualizer.clear();
                 `, {context: sampleContextData}, function (err, result) {
                     expect(err).to.not.be.ok;
