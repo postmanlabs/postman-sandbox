@@ -19,7 +19,8 @@
     "test-unit": "node npm/test-unit.js",
     "test-vm": "node npm/test-vm.js",
     "test": "node npm/test.js",
-    "prepublish": "node npm/prepublish.js"
+    "prepublish": "npm run snyk-protect && node npm/prepublish.js",
+    "snyk-protect": "snyk protect"
   },
   "keywords": [
     "eval",
@@ -33,7 +34,8 @@
     "lodash": "4.17.15",
     "tough-cookie": "3.0.1",
     "uuid": "3.3.3",
-    "uvm": "1.7.8"
+    "uvm": "1.7.8",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "ajv": "6.10.2",
@@ -99,5 +101,6 @@
       "csv-parse",
       "eslint-plugin-jsdoc"
     ]
-  }
+  },
+  "snyk": true
 }
