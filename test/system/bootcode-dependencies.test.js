@@ -114,6 +114,7 @@ describe('bootcode dependencies', function () {
             'stream-browserify',
             'string_decoder',
             'supports-color',
+            'teleport-javascript',
             'timers-browserify',
             'tough-cookie',
             'tv4',
