@@ -1,3 +1,7 @@
+master:
+  new features:
+    - GH-502 Added support for non-JSON compatible data types in console logs
+
 3.4.0:
   date: 2019-10-01
   new features:
