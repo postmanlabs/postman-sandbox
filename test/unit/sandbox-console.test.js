@@ -1,3 +1,5 @@
+var teleportJS = require('teleport-javascript');
+
 // @todo use sinopia
 describe('console inside sandbox', function () {
     this.timeout(1000 * 60);
@@ -86,6 +88,102 @@ describe('console inside sandbox', function () {
                 expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
                 expect(consoleEventArgs[2]).to.be.an('object').and.eql(logsData);
                 expect(consoleEventArgs[3]).to.be.a('regexp').and.eql(/a-z/g);
+                done();
+            });
+        });
+    });
+
+    it('should allow sending serialized logs', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var logsData = {
+                    undef: undefined,
+                    str: 'string'
+                },
+                expectedLogs = teleportJS.stringify([logsData]),
+                consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute('console.log({ undef: undefined, str: "string" });', {
+                serializeLogs: true
+            }, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.be.a('string').and.equal(expectedLogs);
+                expect(teleportJS.parse(consoleEventArgs[2])).to.eql([logsData]);
+                done();
+            });
+        });
+    });
+
+    it('should allow calling console.log without arguments', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute('console.log();', {
+                serializeLogs: false
+            }, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.be.undefined;
+                done();
+            });
+        });
+    });
+
+    it('should allow calling console.log without arguments with serializeLogs options set', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute('console.log();', {
+                serializeLogs: true
+            }, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.be.a('string').and.equal('[[]]');
                 done();
             });
         });
