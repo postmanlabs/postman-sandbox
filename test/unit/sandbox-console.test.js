@@ -97,6 +97,93 @@ describe('console inside sandbox', function () {
         });
     });
 
+    it('should handle types which are not handled by teleport-javascript', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var logsData = {
+                    func: '[Function: myFunc]',
+                    anonFunc: '[Function: anonFunc]',
+                    weakmap: '[WeakMap]',
+                    weakset: '[WeakSet]',
+                    uint32array: '[Uint32Array]',
+                    uint16array: '[Uint16Array]',
+                    uint8array: '[Uint8Array]',
+                    uint8clampedarray: '[Uint8ClampedArray]',
+                    arraybuffers: '[ArrayBuffer]'
+                },
+                consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute(`console.log({
+                    func: function myFunc() {},
+                    anonFunc: function () {},
+                    weakmap: new WeakMap(),
+                    weakset: new WeakSet(),
+                    uint32array: new Uint32Array(),
+                    uint16array: new Uint16Array(),
+                    uint8array: new Uint8Array(),
+                    uint8clampedarray: new Uint8ClampedArray(),
+                    arraybuffers: new ArrayBuffer()
+                }, function () {});`, {}, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.be.an('object').and.eql(logsData);
+                expect(consoleEventArgs[3]).to.be.a('string').and.eql('[Function]');
+                done();
+            });
+        });
+    });
+
+    it('should handle case when user logs an object without constructor property', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute(`
+                var r = /a-z/;
+                r.constructor = undefined;
+
+                class c {};
+                c.constructor.name = null;
+
+                console.log(r, c);
+            `, {}, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.eql(/a-z/);
+                expect(consoleEventArgs[3]).to.equal('[Function: c]');
+                done();
+            });
+        });
+    });
+
     it('should be able to revive NaN', function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             var consoleEventArgs,
