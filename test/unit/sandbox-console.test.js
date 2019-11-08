@@ -49,6 +49,8 @@ describe('console inside sandbox', function () {
                         a: 1,
                         b: 2
                     },
+                    inf: Infinity,
+                    neginf: -Infinity,
                     map: new Map([[1, 'one'], [2, 'two']]),
                     set: new Set([1, 2, 3])
                 },
@@ -75,6 +77,8 @@ describe('console inside sandbox', function () {
                         a: 1,
                         b: 2
                     },
+                    inf: Infinity,
+                    neginf: -Infinity,
                     map: new Map([[1, 'one'], [2, 'two']]),
                     set: new Set([1, 2, 3])
                 }, /a-z/g);`, {}, function (err) {
@@ -88,6 +92,38 @@ describe('console inside sandbox', function () {
                 expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
                 expect(consoleEventArgs[2]).to.be.an('object').and.eql(logsData);
                 expect(consoleEventArgs[3]).to.be.a('regexp').and.eql(/a-z/g);
+                done();
+            });
+        });
+    });
+
+    it('should be able to revive NaN', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var consoleEventArgs,
+
+                // @todo This is done because NaN is returned as undefined for
+                // Node but works correctly for browser
+                expectedValue = (typeof window === 'undefined') ? undefined : NaN;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute('console.log(NaN);', {}, function (err) {
+
+                if (err) {
+                    return done(err);
+                }
+
+                expect(consoleEventArgs).to.exist;
+                expect(consoleEventArgs[0]).to.be.an('object');
+                expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                expect(consoleEventArgs[2]).to.eql(expectedValue);
                 done();
             });
         });
