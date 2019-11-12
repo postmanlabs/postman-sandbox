@@ -31,7 +31,7 @@
   "dependencies": {
     "inherits": "2.0.4",
     "lodash": "4.17.15",
-    "teleport-javascript": "0.1.0",
+    "teleport-javascript": "0.2.0",
     "tough-cookie": "3.0.1",
     "uuid": "3.3.3",
     "uvm": "1.7.8"
