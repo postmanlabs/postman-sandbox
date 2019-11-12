@@ -5,6 +5,8 @@ master:
       GH-502 Added option `serializeLogs` to allow sending `teleport-javascript`
       serialized logs
     - GH-504 Added support for functions, weakMaps, etc. in console logs
+  chores:
+    - Updated dependencies
 
 3.4.0:
   date: 2019-10-01
