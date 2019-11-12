@@ -48,6 +48,7 @@ The following section outlines the API available inside sandbox scripts
 ## Events fired from Sandbox
 - pong
 - error
+- console
 - execution
 - execution.error
 - execution.error.*
@@ -61,3 +62,4 @@ The following section outlines the API available inside sandbox scripts
 - execution.abort.*
 - execution.response.*
 - execution.cookies.*
+- execution.console.*
