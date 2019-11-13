@@ -1,3 +1,10 @@
+master:
+  chores:
+    - |
+      GH-507 Updated console serialize replacer to generate verbose placeholders
+      for non-teleported types
+    - Updated dependencies
+
 3.5.0:
   date: 2019-11-12
   new features:

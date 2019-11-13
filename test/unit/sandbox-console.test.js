@@ -44,17 +44,31 @@ describe('console inside sandbox', function () {
                     string: 'some str',
                     number: 1234,
                     boolean: true,
+                    date: new Date('2018-06-04T07:00:00.000Z'),
+                    buffer: Buffer.from('overflow'),
                     arr: [1, 2, 3],
                     obj: {
                         a: 1,
                         b: 2
                     },
+                    custom: {key: 'value'},
                     inf: Infinity,
                     neginf: -Infinity,
                     map: new Map([[1, 'one'], [2, 'two']]),
-                    set: new Set([1, 2, 3])
+                    set: new Set([1, 2, 3]),
+                    int8Array: new Int8Array([1, 2, 3]),
+                    uint8Array: new Uint8Array([1, 2, 3]),
+                    uint8ClampedArray: new Uint8ClampedArray([1, 2, 3]),
+                    int16Array: new Int16Array([1, 2, 3]),
+                    uint16Array: new Uint16Array([1, 2, 3]),
+                    int32Array: new Int32Array([1, 2, 3]),
+                    uint32Array: new Uint32Array([1, 2, 3]),
+                    float32Array: new Float32Array([1, 2, 3]),
+                    float64Array: new Float64Array([1, 2, 3])
                 },
                 consoleEventArgs;
+
+            logsData.circular = logsData;
 
             if (err) {
                 return done(err);
@@ -65,23 +79,45 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute(`console.log({
+            ctx.execute(`
+                function A () {
+                    this.key = 'value';
+                    return this;
+                }
+
+                var obj = {
                     regex: /a-z/g,
                     nil: null,
                     undef: undefined,
                     string: 'some str',
                     number: 1234,
                     boolean: true,
+                    date: new Date('2018-06-04T07:00:00.000Z'),
+                    buffer: Buffer.from('overflow'),
                     arr: [1, 2, 3],
                     obj: {
                         a: 1,
                         b: 2
                     },
+                    custom: new A(),
                     inf: Infinity,
                     neginf: -Infinity,
                     map: new Map([[1, 'one'], [2, 'two']]),
-                    set: new Set([1, 2, 3])
-                }, /a-z/g);`, {}, function (err) {
+                    set: new Set([1, 2, 3]),
+                    int8Array: new Int8Array([1, 2, 3]),
+                    uint8Array: new Uint8Array([1, 2, 3]),
+                    uint8ClampedArray: new Uint8ClampedArray([1, 2, 3]),
+                    int16Array: new Int16Array([1, 2, 3]),
+                    uint16Array: new Uint16Array([1, 2, 3]),
+                    int32Array: new Int32Array([1, 2, 3]),
+                    uint32Array: new Uint32Array([1, 2, 3]),
+                    float32Array: new Float32Array([1, 2, 3]),
+                    float64Array: new Float64Array([1, 2, 3])
+                };
+
+                obj.circular = obj;
+
+                console.log(obj, /a-z/g);`, {}, function (err) {
 
                 if (err) {
                     return done(err);
@@ -102,13 +138,10 @@ describe('console inside sandbox', function () {
             var logsData = {
                     func: '[Function: myFunc]',
                     anonFunc: '[Function: anonFunc]',
+                    genFunc: '[GeneratorFunction: genFunc]',
                     weakmap: '[WeakMap]',
                     weakset: '[WeakSet]',
-                    uint32array: '[Uint32Array]',
-                    uint16array: '[Uint16Array]',
-                    uint8array: '[Uint8Array]',
-                    uint8clampedarray: '[Uint8ClampedArray]',
-                    arraybuffers: '[ArrayBuffer]'
+                    arraybuffers: '[ArrayBuffer { byteLength: 28 }]'
                 },
                 consoleEventArgs;
 
@@ -124,13 +157,10 @@ describe('console inside sandbox', function () {
             ctx.execute(`console.log({
                     func: function myFunc() {},
                     anonFunc: function () {},
+                    genFunc: function* () {},
                     weakmap: new WeakMap(),
                     weakset: new WeakSet(),
-                    uint32array: new Uint32Array(),
-                    uint16array: new Uint16Array(),
-                    uint8array: new Uint8Array(),
-                    uint8clampedarray: new Uint8ClampedArray(),
-                    arraybuffers: new ArrayBuffer()
+                    arraybuffers: new ArrayBuffer(28)
                 }, function () {});`, {}, function (err) {
 
                 if (err) {
