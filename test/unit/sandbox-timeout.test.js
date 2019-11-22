@@ -45,6 +45,16 @@
         });
     });
 
+    it('should not allow setting timeout more that a limit', function (done) {
+        Sandbox.createContext({
+            timeout: 10 * 60 * 1000 // 10 minutes
+        }, function (err, ctx) {
+            expect(err).to.not.exist;
+            expect(ctx.executionTimeout).to.equal(5 * 60 * 1000); // 5 minutes
+            done();
+        });
+    });
+
     it('should clear timeout on bridge disconnect', function (done) {
         Sandbox.createContext({
             debug: true,
