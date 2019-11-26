@@ -7,8 +7,8 @@ var async = require('async'),
 
 async.series([
     require('./test-lint'),
-    require('./test-system'),
     require('./cache'),
+    require('./test-system'),
     require('./test-unit'),
     require('./test-vm'),
     require('./test-integration'),

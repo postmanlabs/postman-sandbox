@@ -21,7 +21,8 @@ createBundle = function (options, file, done) {
         },
 
         function (buf, next) {
-            fs.writeFile(file, `module.exports=function(d){d(null, new Buffer(${JSON.stringify(buf)}.data));};`, next);
+            // eslint-disable-next-line max-len
+            fs.writeFile(file, `module.exports=function(d){d(null,Buffer.from('${buf.toString('base64')}','base64'));};`, next);
         },
 
         function (next) {
