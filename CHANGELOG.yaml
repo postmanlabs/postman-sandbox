@@ -1,3 +1,7 @@
+master:
+  new features:
+    - GH-509 Added a limit to the maximum allowed script execution timeout
+
 3.5.1:
   date: 2019-11-13
   chores:
