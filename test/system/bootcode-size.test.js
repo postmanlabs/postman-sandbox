@@ -1,7 +1,7 @@
 const fs = require('fs'),
     path = require('path'),
     CACHE_DIR = path.join(__dirname, '/../../.cache'),
-    THRESHOLD = 3.4 * 1024 * 1024; // 3.4 MB
+    THRESHOLD = 4 * 1024 * 1024; // 4 MB
 
 describe('bootcode size', function () {
     this.timeout(60 * 1000);
