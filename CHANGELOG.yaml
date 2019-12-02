@@ -1,4 +1,5 @@
-master:
+3.5.2:
+  date: 2019-12-02
   chores:
     - GH-511 Store boot code as base64 string
     - GH-512 Exclude response object from execution before dispatch
