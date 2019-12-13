@@ -14,13 +14,24 @@ var path = require('path'),
 
     IS_WINDOWS = (/^win/).test(process.platform),
     COV_REPORT_PATH = '.coverage',
+    COV_REPORT_FILE = path.join(COV_REPORT_PATH, 'coverage.json'),
     REPORT_PATH = path.join('.tmp', 'report.xml'),
     SPEC_SOURCES = path.join('test', 'unit');
 
 module.exports = function (exit) {
     var specPattern = (process.argv[2] || '.*'),
         mochaReporter = 'spec',
-        istanbulReport = '';
+        istanbulReport = '',
+
+        istanbulBinary = './node_modules/.bin/istanbul',
+        mochaBinary = './node_modules/.bin/_mocha',
+
+        targetCoverage = {
+            statements: 50,
+            branches: 40,
+            functions: 40,
+            lines: 55
+        };
 
     // for CI, we use simple xunit reporter (not on Travis since it does not parse results)
     // if (process.env.CI) {
@@ -38,19 +49,26 @@ module.exports = function (exit) {
 
     // windows istanbul and mocha commands need some special attention.
     if (IS_WINDOWS) {
-        // sample command in case you're confused
-        // node_modules\.bin\istanbul.cmd cover  --dir .coverage --color --print both
-        //      node_modules\mocha\bin\_mocha -- --reporter spec --reporter-options output=
-        //      .tmp\report.xml test\unit --recursive --prof --colors --grep=.*
-        exec(`node_modules\\.bin\\istanbul.cmd cover ${istanbulReport} --dir ${COV_REPORT_PATH} --colors ` +
-            `--print both node_modules\\mocha\\bin\\_mocha -- ${SPEC_SOURCES} --reporter ${mochaReporter} ` +
-            `--reporter-options output=${REPORT_PATH} --recursive --prof --colors --grep=${specPattern}`, exit);
+        istanbulBinary = 'node_modules\\.bin\\istanbul.cmd';
+        mochaBinary = 'node_modules\\mocha\\bin\\_mocha';
     }
-    else {
-        exec(`./node_modules/.bin/istanbul cover ${istanbulReport} --dir ${COV_REPORT_PATH} --colors ` +
-            `--print both node_modules/mocha/bin/_mocha -- ${SPEC_SOURCES} --reporter ${mochaReporter} ` +
-            `--reporter-options output=${REPORT_PATH} --recursive --prof --colors --grep=${specPattern}`, exit);
-    }
+
+    // sample command in case you're confused
+    // node_modules/.bin/istanbul cover  --dir .coverage --color --print both
+    //      node_modules/mocha/bin/_mocha -- --reporter spec --reporter-options output=
+    //      .tmp/report.xml test/unit --recursive --prof --colors --grep=.*
+    // && node_modules/.bin/istanbul check-coverage
+    //      --statements xx --branches xx --functions xx --lines xx
+    exec(`${istanbulBinary} cover ${istanbulReport} --dir ${COV_REPORT_PATH} --colors ` +
+        `--print both ${mochaBinary} -- ${SPEC_SOURCES} --reporter ${mochaReporter} ` +
+        `--reporter-options output=${REPORT_PATH} --recursive --prof --colors --grep=${specPattern} ` +
+
+        `&& ${istanbulBinary} check-coverage ` +
+        `--statements ${targetCoverage.statements} ` +
+        `--branches ${targetCoverage.branches} ` +
+        `--functions ${targetCoverage.functions} ` +
+        `--lines ${targetCoverage.lines} ` +
+        `${COV_REPORT_FILE}`, exit);
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
