@@ -1,6 +1,7 @@
 master:
   chores:
     - GH-513 Added `codecov` for coverage checks
+    - Updated dependencies
 
 3.5.2:
   date: 2019-12-02
