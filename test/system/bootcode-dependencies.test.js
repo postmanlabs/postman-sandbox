@@ -104,7 +104,6 @@ describe('bootcode dependencies', function () {
             'postcss',
             'postman-collection',
             'postman-sandbox',
-            'postman-url-encoder',
             'process',
             'process-nextick-args',
             'psl',
