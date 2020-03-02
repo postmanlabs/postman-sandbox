@@ -1,4 +1,4 @@
-# Postman Sandbox
+# Postman Sandbox [![Build Status](https://travis-ci.org/postmanlabs/postman-sandbox.svg?branch=develop)](https://travis-ci.org/postmanlabs/postman-sandbox) [![codecov](https://codecov.io/gh/postmanlabs/postman-sandbox/branch/develop/graph/badge.svg)](https://codecov.io/gh/postmanlabs/postman-sandbox)
 
 Module that unifies execution of third-party JavaScript within Node VM and Browser iFrame.
 

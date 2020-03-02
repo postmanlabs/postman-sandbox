@@ -1,3 +1,9 @@
+3.5.3:
+  date: 2020-03-02
+  chores:
+    - GH-513 Added `codecov` for coverage checks
+    - Updated dependencies
+
 3.5.2:
   date: 2019-12-02
   chores:
