@@ -19,7 +19,8 @@
     "test-unit": "node npm/test-unit.js",
     "test-vm": "node npm/test-vm.js",
     "test": "npm run test-lint && npm run cache && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
-    "prepublish": "node npm/prepublish.js"
+    "prepublish": "npm run snyk-protect && node npm/prepublish.js",
+    "snyk-protect": "snyk protect"
   },
   "keywords": [
     "eval",
@@ -34,7 +35,8 @@
     "teleport-javascript": "1.0.0",
     "tough-cookie": "3.0.1",
     "uuid": "3.4.0",
-    "uvm": "1.7.8"
+    "uvm": "1.7.8",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "ajv": "6.11.0",
@@ -58,7 +60,7 @@
     "eslint-plugin-mocha": "6.3.0",
     "eslint-plugin-security": "1.4.0",
     "istanbul": "0.4.5",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "js-yaml": "3.13.1",
     "jsdoc": "3.6.3",
     "jsdoc-to-markdown": "5.0.3",
@@ -100,5 +102,6 @@
       "csv-parse",
       "eslint-plugin-jsdoc"
     ]
-  }
+  },
+  "snyk": true
 }
