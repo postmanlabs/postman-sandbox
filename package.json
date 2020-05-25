@@ -52,7 +52,7 @@
     "crypto-js": "3.3.0",
     "csv-parse": "1.2.4",
     "editorconfig": "0.15.3",
-    "eslint": "5.16.0",
+    "eslint": "7.1.0",
     "eslint-plugin-jsdoc": "7.2.3",
     "eslint-plugin-lodash": "6.0.0",
     "eslint-plugin-mocha": "6.3.0",
