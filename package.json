@@ -42,7 +42,7 @@
     "async": "2.6.2",
     "atob": "2.1.2",
     "backbone": "1.4.0",
-    "browserify": "16.5.0",
+    "browserify": "16.5.1",
     "btoa": "1.2.1",
     "buffer": "5.4.3",
     "chai": "4.2.0",
