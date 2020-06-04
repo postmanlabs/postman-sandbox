@@ -7,8 +7,7 @@ node_js:
 - "6"
 - "8"
 - "10"
-before_install:
-  - npm install -g npm
+before_install: if [[ `npm -v` < 4 ]]; then npm install -g npm; fi
 jobs:
   include:
     - name: 'Coverage'
