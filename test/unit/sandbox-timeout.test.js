@@ -59,7 +59,13 @@
 
             ctx.execute('while(1)', function (err) {
                 expect(err).to.be.ok;
-                expect(err).to.have.property('message', 'sandbox: execution interrupted, bridge disconnecting.');
+
+                // @note nodeVersionDiscrepancy
+                expect(err).to.have.property('message');
+                expect(err.message).to.be.oneOf([
+                    'sandbox: execution interrupted, bridge disconnecting.',
+                    'sandbox: synchronous script execution timeout'
+                ]);
                 done();
             });
             ctx.dispose();
