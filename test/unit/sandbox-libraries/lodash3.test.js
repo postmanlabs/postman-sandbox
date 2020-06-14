@@ -25,7 +25,7 @@ describe('sandbox library - lodash3', function () {
     it('should be the correct version (avoid lodash4 conflict)', function (done) {
         context.execute(`
             var assert = require('assert');
-            assert.strictEqual(_ && _.VERSION, '3.10.1', '_.VERSION must be 3.10.1');
+            assert.strictEqual(_ && _.VERSION, '3.10.2', '_.VERSION must be 3.10.2');
         `, done);
     });
 
