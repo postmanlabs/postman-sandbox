@@ -96,7 +96,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    (typeof window === 'undefined' ? it : it.skip)('should call the assertion event on async test', function (done) {
+    it('should call the assertion event on async test', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -131,7 +131,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    (typeof window === 'undefined' ? it : it.skip)('should not wait if async done is not called', function (done) {
+    it('should not wait if async done is not called', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -157,7 +157,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    (typeof window === 'undefined' ? it : it.skip)('should terminate script ' +
+    it('should terminate script ' +
         'if async done is not called in an async script', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
@@ -186,7 +186,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    (typeof window === 'undefined' ? it : it.skip)('should forward errors from asynchronous callback', function (done) {
+    it('should forward errors from asynchronous callback', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
 
@@ -225,7 +225,7 @@ describe('sandbox test assertion', function () {
         });
     });
 
-    (typeof window === 'undefined' ? it : it.skip)('should forward synchronous' +
+    it('should forward synchronous' +
         'errors from asynchronous tests', function (done) {
         Sandbox.createContext({debug: true}, function (err, ctx) {
             if (err) { return done(err); }
