@@ -63,3 +63,9 @@ The following section outlines the API available inside sandbox scripts
 - execution.response.*
 - execution.cookies.*
 - execution.console.*
+
+## Contributing
+
+### Debug in browser
+
+To debug tests in Chrome's DevTools, start tests using `npm run test-browser -- --debug` and click `DEBUG`.
