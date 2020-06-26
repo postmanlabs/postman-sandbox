@@ -1,6 +1,11 @@
-master:
+3.5.6:
+  date: 2020-06-26
   fixed bugs:
-    - GH-589 Fixed a bug where asynchronous scripts are not executed in the browser
+    - >-
+      GH-589 Fixed a bug where asynchronous scripts are not executed in the
+      browser
+  chores:
+    - Updated dependencies
 
 3.5.5:
   date: 2020-06-14
