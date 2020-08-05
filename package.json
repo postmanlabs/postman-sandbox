@@ -12,6 +12,9 @@
   },
   "scripts": {
     "cache": "node npm/cache.js $1",
+    "build-common-types": "node npm/build-types.js",
+    "build-sandbox-types": "node npm/build-sandbox-types.js",
+    "build-types": "npm run build-common-types && npm run build-sandbox-types",
     "test-browser": "node npm/test-browser.js",
     "test-integration": "node npm/test-integration.js",
     "test-system": "node npm/test-system.js",
@@ -79,6 +82,7 @@
     "shelljs": "0.8.4",
     "sinon": "8.1.1",
     "sinon-chai": "3.5.0",
+    "tsd-jsdoc": "2.5.0",
     "tv4": "1.3.0",
     "uglifyify": "5.0.2",
     "uniscope": "1.1.3",
