@@ -13,7 +13,6 @@ var path = require('path'),
     shell = require('shelljs'),
     typescript = require('typescript'),
     templates = require('./utils/templates'),
-    _ = require('lodash'),
 
     IS_WINDOWS = (/^win/).test(process.platform),
     TARGET_DIR = path.join('types', 'sandbox');

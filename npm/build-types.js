@@ -8,7 +8,6 @@ require('shelljs/global');
 
 var path = require('path'),
     fs = require('fs'),
-    pkg = require('../package.json'),
     chalk = require('chalk'),
     templates = require('./utils/templates'),
 
