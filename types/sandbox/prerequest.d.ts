@@ -1,5 +1,5 @@
 // Type definitions for postman-sandbox 3.5.7
-// Project: https://github.com/postmanlabs/postman-collection
+// Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.4
@@ -27,15 +27,26 @@ declare class Postman {
     collectionVariables: VariableScope;
     variables: VariableScope;
     /**
+     * The iterationData object contains data from the data file provided during a collection run.
+     */
+    iterationData: VariableScope;
+    /**
      * The request object inside pm is a representation of the request for which this script is being run.
      * For a pre-request script, this is the request that is about to be sent and when in a test script,
      * this is the representation of the request that was sent.
      */
     request: Request;
     /**
+     * The cookies object contains a list of cookies that are associated with the domain
+     * to which the request was made.
+     */
+    cookies: CookieList;
+    visualizer: Visualizer;
+    /**
      * Allows one to send request from script asynchronously.
      */
     sendRequest(req: Request | string, callback: (...params: any[]) => any): void;
+    expect: Chai.ExpectStatic;
 }
 
 /**
@@ -64,12 +75,51 @@ declare interface Info {
     requestId: string;
 }
 
+declare interface Visualizer {
+    /**
+     * Set visualizer template and its options
+     * @param template - visualisation layout in form of template
+     * @param [data] - data object to be used in template
+     * @param [options] - options to use while processing the template
+     */
+    set(template: string, data?: any, options?: any): void;
+    /**
+     * Clear all visualizer data
+     */
+    clear(): void;
+}
+
 /**
  * The pm object encloses all information pertaining to the script being executed and
  * allows one to access a copy of the request being sent or the response received.
  * It also allows one to get and set environment and global variables.
  */
 declare var pm: Postman;
+
+declare interface PostmanCookieJar {
+    /**
+     * Get the cookie value with the given name.
+     */
+    get(url: string, name: string, callback: (...params: any[]) => any): void;
+    /**
+     * Get all the cookies for the given URL.
+     */
+    getAll(url: string, options?: any, callback: (...params: any[]) => any): void;
+    /**
+     * Set or update a cookie.
+     */
+    set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
+    /**
+     * Remove single cookie with the given name.
+     */
+    unset(url: string, name: string, callback?: (...params: any[]) => any): void;
+    /**
+     * Remove all the cookies for the given URL.
+     */
+    clear(url: string, callback?: (...params: any[]) => any): void;
+}
+
+
 
 interface Postman {
     test: Test;
@@ -85,11 +135,19 @@ interface Test {
      * @param specFunction
      */
     (testName: string, specFunction: Function): void
-  
+
     /**
      * Get the total number tests from a specific location.
      */
-    index(): number
-  }
+    index(): number,
 
+    /**
+     * By appending .skip(), you may tell test runner to ignore test case.
+     * @param testName
+     */
+    skip(testName: string): void
+}
 
+interface CookieList {
+    jar() : PostmanCookieJar
+}

@@ -1,5 +1,5 @@
 // Type definitions for postman-sandbox 3.5.7
-// Project: https://github.com/postmanlabs/postman-collection
+// Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.4
@@ -20,41 +20,6 @@ declare const logLevels: string[];
  * @returns Replaced value
  */
 declare function replacer(key: string, value: any): any;
-
-/**
- * Convert PostmanCookie Cookie instance to ToughCookie instance.
- * @param cookie - Postman Cookie instance
- * @returns Tough Cookie instance
- */
-declare function serialize(cookie: PostmanCookie): ToughCookie;
-
-/**
- * Convert Tough Cookie instance to Electron Cookie instance.
- * @param cookie - Tough Cookie instance
- * @returns Electron Cookie instance
- */
-declare function deserialize(cookie: ToughCookie): ElectronCookie;
-
-/**
- * Sanitize url object or string to Postman Url instance.
- */
-declare function sanitizeURL(url: any | string): Url | null;
-
-/**
- * Executes a provided function once for each array element.
- * @param items - Array of items to iterate over
- * @param fn - An async function to apply to each item in items
- * @param cb - A callback which is called when all iteratee functions have finished,
- * or an error occurs
- */
-declare function forEachWithCallback(items: any[], fn: (...params: any[]) => any, cb: (...params: any[]) => any): void;
-
-/**
- * Helper function to handle callback.
- * @param callback - Callback function
- * @param err - Error or Error message
- */
-declare function callbackHandler(callback: (...params: any[]) => any, err: Error | string, result: any): void;
 
 declare interface PostmanCookieJar {
     /**
@@ -100,11 +65,6 @@ declare type Return = {
     visualizer: Visualizer;
     nextRequest: any;
 };
-
-/**
- * Use this function to assign readonly properties to an object
- */
-declare function _assignDefinedReadonly(obj: any, properties: any): void;
 
 declare class Postman {
     constructor(bridge: EventEmitter, execution: Execution, onRequest: (...params: any[]) => any, cookieStore: any);
