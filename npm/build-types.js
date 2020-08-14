@@ -11,7 +11,6 @@ var path = require('path'),
     chalk = require('chalk'),
     templates = require('./utils/templates'),
 
-
     IS_WINDOWS = (/^win/).test(process.platform),
     TARGET_DIR = path.join('types');
 
@@ -36,6 +35,7 @@ module.exports = function (exit) {
                     console.log(chalk.red.bold('unable to read the type-definition file'));
                     exit(1);
                 }
+
                 var source = contents.toString();
                 source = source
                     // replacing Integer with number as 'Integer' is not a valid data-type in Typescript
