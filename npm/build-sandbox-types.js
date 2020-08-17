@@ -49,7 +49,7 @@ function generateSandboxTypes (node, printer, target) {
     collectionSDKTypesExtension = `\n${templates.cookieListExtensionString}\n`;
     !excludeResponse && (collectionSDKTypesExtension += `\n${templates.responseExtensionString}\n`);
 
-    source += `\ndeclare module "postman-collection" {\n${collectionSDKTypesExtension}\n}`;
+    source += `\ndeclare module "postman-collection" {\n${collectionSDKTypesExtension}\n}\n`;
 
     return source;
 }
