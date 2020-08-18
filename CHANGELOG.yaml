@@ -1,3 +1,8 @@
+master:
+  chores:
+    - GH-597 Added TypeScript Type Declaration
+    - Updated dependencies
+
 3.5.7:
   date: 2020-07-13
   chores:
