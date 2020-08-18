@@ -22,35 +22,35 @@ declare class Postman {
      * stored inside of this object.
      */
     info: Info;
-    globals: VariableScope;
-    environment: VariableScope;
-    collectionVariables: VariableScope;
-    variables: VariableScope;
+    globals: import("postman-collection").VariableScope;
+    environment: import("postman-collection").VariableScope;
+    collectionVariables: import("postman-collection").VariableScope;
+    variables: import("postman-collection").VariableScope;
     /**
      * The iterationData object contains data from the data file provided during a collection run.
      */
-    iterationData: VariableScope;
+    iterationData: import("postman-collection").VariableScope;
     /**
      * The request object inside pm is a representation of the request for which this script is being run.
      * For a pre-request script, this is the request that is about to be sent and when in a test script,
      * this is the representation of the request that was sent.
      */
-    request: Request;
+    request: import("postman-collection").Request;
     /**
      * Inside the test scripts, the pm.response object contains all information pertaining
      * to the response that was received.
      */
-    response: Response;
+    response: import("postman-collection").Response;
     /**
      * The cookies object contains a list of cookies that are associated with the domain
      * to which the request was made.
      */
-    cookies: CookieList;
+    cookies: import("postman-collection").CookieList;
     visualizer: Visualizer;
     /**
      * Allows one to send request from script asynchronously.
      */
-    sendRequest(req: Request | string, callback: (...params: any[]) => any): void;
+    sendRequest(req: import("postman-collection").Request | string, callback: (...params: any[]) => any): void;
     expect: Chai.ExpectStatic;
 }
 
@@ -153,6 +153,8 @@ interface Test {
     skip(testName: string): void
 }
 
+declare module "postman-collection" {
+
 interface CookieList {
     jar() : PostmanCookieJar
 }
@@ -254,4 +256,6 @@ interface AssertableBe {
      * Checks whether response status code is 429
      */
     rateLimited: number
+}
+
 }

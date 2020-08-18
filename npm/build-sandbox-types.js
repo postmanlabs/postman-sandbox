@@ -25,7 +25,8 @@ var _ = require('lodash'),
  */
 function generateSandboxTypes (node, printer, target) {
     var source = '',
-        excludeResponse = target === 'prerequest';
+        excludeResponse = target === 'prerequest',
+        collectionSDKTypesExtension = '';
 
     node.forEachChild((child) => {
         if (excludeResponse && _.get(child, 'name.escapedText') === 'Postman') {
@@ -42,8 +43,13 @@ function generateSandboxTypes (node, printer, target) {
     });
 
     source += `${templates.postmanExtensionString}\n`;
-    source += `\n${templates.cookieListExtensionString}\n`;
-    !excludeResponse && (source += `\n${templates.responseExtensionString}\n`);
+
+    // Any module types that needs to be extended has to be covered inside a module
+    // See https://github.com/microsoft/TypeScript/issues/10859 for further details.
+    collectionSDKTypesExtension = `\n${templates.cookieListExtensionString}\n`;
+    !excludeResponse && (collectionSDKTypesExtension += `\n${templates.responseExtensionString}\n`);
+
+    source += `\ndeclare module "postman-collection" {\n${collectionSDKTypesExtension}\n}\n`;
 
     return source;
 }
@@ -80,7 +86,8 @@ module.exports = function (exit) {
                 source,
                 printer,
                 preScriptSource,
-                testScriptSource;
+                testScriptSource,
+                collectionSDKTypes;
 
             source = contents.toString()
                 // replacing Integer with number as 'Integer' is not a valid data-type in Typescript
@@ -108,6 +115,37 @@ module.exports = function (exit) {
             printer = typescript.createPrinter({
                 removeComments: false,
                 newLine: typescript.NewLineKind.LineFeed
+            });
+
+            // Since we are referencing some types from Postman Collection lib, those types needs to imported.
+            // See https://stackoverflow.com/a/51114250
+            collectionSDKTypes = ['CookieList', 'Request', 'Response', 'VariableScope'];
+
+            node.forEachChild((child) => {
+                child.members && child.members.forEach((c) => {
+                    // takes care of properties referencing CollectionSDK types
+                    if (c.type && c.type.typeName) {
+                        let currentType = c.type.typeName.escapedText;
+                        if (collectionSDKTypes.includes(currentType)) {
+                            c.type.typeName.escapedText = `import("postman-collection").${currentType}`;
+                        }
+                    }
+                    // takes care of functions with parameters referencing CollectionSDK types
+                    else if (c.parameters && c.parameters.length > 0) {
+                        c.parameters.forEach((p) => {
+                            if (p.type && p.type.types && p.type.types.length) {
+                                p.type.types.forEach((t) => {
+                                    if (t.typeName) {
+                                        let currentType = t.typeName.escapedText;
+                                        if (collectionSDKTypes.includes(currentType)) {
+                                            t.typeName.escapedText = `import("postman-collection").${currentType}`;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             });
 
             testScriptSource = generateSandboxTypes(node, printer, 'test');
