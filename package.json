@@ -37,7 +37,7 @@
     "teleport-javascript": "1.0.0",
     "tough-cookie": "3.0.1",
     "uuid": "3.4.0",
-    "uvm": "1.7.9"
+    "uvm": "1.8.0-beta.1"
   },
   "devDependencies": {
     "ajv": "6.12.4",
