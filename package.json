@@ -37,7 +37,7 @@
     "teleport-javascript": "1.0.0",
     "tough-cookie": "3.0.1",
     "uuid": "3.4.0",
-    "uvm": "1.8.0-beta.1"
+    "uvm": "1.7.9"
   },
   "devDependencies": {
     "ajv": "6.12.4",
@@ -76,7 +76,7 @@
     "moment": "2.27.0",
     "packity": "0.3.2",
     "parse-gitignore": "1.0.1",
-    "postman-collection": "3.6.5",
+    "postman-collection": "3.6.6",
     "puppeteer": "1.18.1",
     "recursive-readdir": "2.2.2",
     "shelljs": "0.8.4",
