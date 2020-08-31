@@ -52,6 +52,7 @@ describe('bootcode dependencies', function () {
             'escape-html',
             'escape-string-regexp',
             'events',
+            'faker',
             'fast-deep-equal',
             'fast-json-stable-stringify',
             'file-type',
