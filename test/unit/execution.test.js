@@ -12,7 +12,7 @@ var _ = require('lodash'),
 describe('execution', function () {
     before(function () {
         execution = new Execution('id', {listen: 'test'}, {}, {});
-        pm = new pmAPI({}, execution, _.noop);
+        pm = new pmAPI(execution, _.noop, _.noop);
     });
 
     it('can be serialized', function () {
