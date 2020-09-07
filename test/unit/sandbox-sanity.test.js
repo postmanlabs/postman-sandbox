@@ -43,6 +43,20 @@ describe('sandbox', function () {
         });
     });
 
+    it('should not have access to uvm bridge', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                var assert = require('assert');
+                assert.equal(typeof bridge, 'undefined');
+                assert.equal(typeof this.bridge, 'undefined');
+                assert.equal(typeof Function('return this.bridge')(), 'undefined');
+            `, done);
+        });
+    });
+
     it('should accept an external execution id', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }

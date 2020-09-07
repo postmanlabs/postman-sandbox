@@ -1,3 +1,7 @@
+master:
+  fixed bugs:
+    - GH-603 Removed access from the UVM bridge once it's in execution closure
+
 3.5.9:
   date: 2020-08-31
   chores:
