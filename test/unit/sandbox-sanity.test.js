@@ -1,6 +1,7 @@
 describe('sandbox', function () {
     this.timeout(1000 * 60);
-    var Sandbox = require('../../lib');
+    var Sandbox = require('../../lib'),
+        nodeVersion = process && process.versions && parseInt(process.versions.node);
 
     it('should create context', function (done) {
         Sandbox.createContext(function (err, ctx) {
@@ -53,6 +54,47 @@ describe('sandbox', function () {
                 assert.equal(typeof bridge, 'undefined');
                 assert.equal(typeof this.bridge, 'undefined');
                 assert.equal(typeof Function('return this.bridge')(), 'undefined');
+            `, done);
+        });
+    });
+
+    // In Node.js v6 VM, `delete global` doesn't work so __uvm_* keys will show up here.
+    // remove this when we drop support for Node v6.
+    (nodeVersion === 6 ? it.skip : it)('should not have access to global properties', function (done) {
+        Sandbox.createContext({debug: true}, function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                var assert = require('assert');
+                var allowedGlobals = ${JSON.stringify(require('uniscope/lib/allowed-globals'))};
+                var ignoredProps = [
+                    'TEMPORARY', 'PERSISTENT', // DedicatedWorkerGlobalScope constants (in Browser)
+                    'require', 'eval', 'console', // uniscope ignored
+                    'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setImmediate', 'clearImmediate'
+                ]
+                var propNames = [];
+
+                var contextObject = Function('return this;')();
+                do {
+                    propNames = propNames.concat(Object.getOwnPropertyNames(contextObject));
+                    contextObject = Object.getPrototypeOf(contextObject);
+                    // traverse until Object prototype
+                    // @note since we mutated the scope already, don't check using the constructor
+                    // instead, check for hasOwnProperty existence on the contextObject.
+                } while (contextObject && !Object.hasOwnProperty.call(contextObject, 'hasOwnProperty'));
+
+                // filter out the ignored properties
+                propNames = propNames.filter(prop => !ignoredProps.includes(prop));
+
+                // make sure both propNames and allowedGlobals are same
+                assert.equal(JSON.stringify(propNames.sort()), JSON.stringify(allowedGlobals.sort()));
+
+                // double check using the diff
+                var diff = propNames
+                    .filter(x => !allowedGlobals.includes(x))
+                    .concat(allowedGlobals.filter(x => !propNames.includes(x)));
+                assert.equal(diff.length, 0);
             `, done);
         });
     });
