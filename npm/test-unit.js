@@ -29,8 +29,8 @@ module.exports = function (exit) {
         targetCoverage = {
             statements: 50,
             branches: 40,
-            functions: 40,
-            lines: 55
+            functions: 35,
+            lines: 50
         };
 
     // for CI, we use simple xunit reporter (not on Travis since it does not parse results)
