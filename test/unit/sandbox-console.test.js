@@ -216,11 +216,7 @@ describe('console inside sandbox', function () {
 
     it('should be able to revive NaN', function (done) {
         Sandbox.createContext({}, function (err, ctx) {
-            var consoleEventArgs,
-
-                // @todo This is done because NaN is returned as undefined for
-                // Node but works correctly for browser
-                expectedValue = (typeof window === 'undefined') ? undefined : NaN;
+            var consoleEventArgs;
 
             if (err) {
                 return done(err);
@@ -240,7 +236,7 @@ describe('console inside sandbox', function () {
                 expect(consoleEventArgs).to.exist;
                 expect(consoleEventArgs[0]).to.be.an('object');
                 expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
-                expect(consoleEventArgs[2]).to.eql(expectedValue);
+                expect(consoleEventArgs[2]).to.eql(NaN);
                 done();
             });
         });
