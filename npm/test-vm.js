@@ -2,19 +2,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to execute all unit tests in the Node VM: https://nodejs.org/api/vm.html.
 // ---------------------------------------------------------------------------------------------------------------------
-/* eslint-env node, es6 */
-
-require('shelljs/global');
 
 // set directories and files for test and coverage report
-var vm = require('vm'),
+const vm = require('vm'),
 
     chalk = require('chalk'),
     async = require('async'),
     browserify = require('browserify'),
     recursive = require('recursive-readdir');
 
-/* globals exit */
 module.exports = function (exit) {
     console.info(chalk.yellow.bold('Loading and running the sandbox bundle tests in the Node VM'));
 
@@ -51,4 +47,4 @@ module.exports = function (exit) {
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(process.exit);

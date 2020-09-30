@@ -1,67 +1,54 @@
 #!/usr/bin/env node
-/* eslint-env node, es6 */
-/* eslint-disable no-undef */
-require('shelljs/global');
 
-var recursive = require('recursive-readdir'),
-    path = require('path'),
+const path = require('path'),
 
-    chalk = require('chalk'),
-    async = require('async'),
-    expect = require('chai').expect,
     Mocha = require('mocha'),
+    chalk = require('chalk'),
+    packity = require('packity'),
+    recursive = require('recursive-readdir'),
 
     SPEC_SOURCE_DIR = path.join(__dirname, '..', 'test', 'system');
 
 module.exports = function (exit) {
     // banner line
-    console.info(chalk.yellow.bold('\nRunning system tests using mocha and nsp...'));
+    console.info(chalk.yellow.bold('\nRunning system tests using mocha...'));
 
-    async.series([
-        // run test specs using mocha
-        function (next) {
-            recursive(SPEC_SOURCE_DIR, function (err, files) {
-                if (err) {
-                    console.error(err.stack || err);
+    // add all spec files to mocha
+    recursive(SPEC_SOURCE_DIR, (err, files) => {
+        if (err) {
+            console.error(err);
 
-                    return next(1);
-                }
-
-                var mocha = new Mocha();
-
-                files.filter(function (file) {
-                    return (file.substr(-8) === '.test.js');
-                }).forEach(mocha.addFile.bind(mocha));
-
-                // start the mocha run
-                global.expect = expect; // for easy reference
-
-                mocha.run(function (err) {
-                    // clear references and overrides
-                    delete global.expect;
-
-                    err && console.error(err.stack || err);
-                    next(err ? 1 : 0);
-                });
-                // cleanup
-                mocha = null;
-            });
-        },
-
-        // packity
-        function (next) {
-            var packity = require('packity'),
-                options = {
-                    path: './', dev: true
-                };
-
-            packity(options, function (err, results) {
-                packity.cliReporter(options)(err, results);
-                next(err);
-            });
+            return exit(1);
         }
-    ], exit);
+
+        const mocha = new Mocha({ timeout: 1000 * 60 });
+
+        files.filter((file) => { // extract all test files
+            return (file.substr(-8) === '.test.js');
+        }).forEach(mocha.addFile.bind(mocha));
+
+        // start the mocha run
+        mocha.run((runError) => {
+            if (runError) {
+                console.error(runError.stack || runError);
+
+                return exit(1);
+            }
+
+            // packity
+            const options = {
+                path: './',
+                dev: true
+            };
+
+            packity(options, (err, results) => {
+                packity.cliReporter(options)(err, results);
+
+                exit(err ? 1 : 0);
+            });
+        });
+    });
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(process.exit);

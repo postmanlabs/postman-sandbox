@@ -1,21 +1,18 @@
 #!/usr/bin/env node
+/* globals mkdir, rm */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to execute all unit tests in the Chrome Browser.
 // ---------------------------------------------------------------------------------------------------------------------
-/* eslint-env node, es6 */
-/* eslint-disable no-undef */
 
 require('shelljs/global');
 
-var _ = require('lodash'),
+const _ = require('lodash'),
     async = require('async'),
     fs = require('fs'),
     chalk = require('chalk'),
-    Bundle = require('../lib/bundle'),
+    Bundle = require('../lib/bundle');
 
-    createBundle;
-
-createBundle = function (options, file, done) {
+function createBundle (options, file, done) {
     async.waterfall([
         function (next) {
             Bundle.load(options).compile(next);
@@ -31,7 +28,7 @@ createBundle = function (options, file, done) {
             next();
         }
     ], done);
-};
+}
 
 module.exports = function (exit) {
     mkdir('-p', '.cache'); // create a cache directory in any case
@@ -68,4 +65,4 @@ module.exports = function (exit) {
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(process.exit);

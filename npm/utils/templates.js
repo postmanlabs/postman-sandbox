@@ -1,4 +1,4 @@
-var pkg = require('../../package.json'),
+const pkg = require('../../package.json'),
 
     heading =
 `// Type definitions for postman-sandbox ${pkg.version}

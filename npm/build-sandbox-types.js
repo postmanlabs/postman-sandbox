@@ -1,13 +1,12 @@
 #!/usr/bin/env node
+/* globals exec, test, rm */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to generate type-definition for this module
 // ---------------------------------------------------------------------------------------------------------------------
-/* eslint-env node, es6 */
-/* eslint-disable no-undef */
 
 require('shelljs/global');
 
-var _ = require('lodash'),
+const _ = require('lodash'),
     path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
@@ -193,4 +192,4 @@ module.exports = function (exit) {
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(process.exit);

@@ -1,13 +1,12 @@
 #!/usr/bin/env node
+/* globals exit, mkdir, rm */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to execute all required checks prior to publishing the module
 // ---------------------------------------------------------------------------------------------------------------------
-/* eslint-env node, es6 */
-/* globals exit, mkdir, rm */
 
 require('shelljs/global');
 
-var packity = require('packity'),
+const packity = require('packity'),
     options = {
         path: './', dev: true
     };
