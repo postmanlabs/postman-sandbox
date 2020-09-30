@@ -39,6 +39,7 @@ Thumbs.db
 
 # - Prevent unit test coverage reports from being committed to the repository
 .coverage
+.nyc_output
 
 # - do not commit sandbox .cache (but do not add it in npm ignore)
 .cache
