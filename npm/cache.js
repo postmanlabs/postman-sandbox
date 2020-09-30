@@ -3,6 +3,7 @@
 // This script is intended to execute all unit tests in the Chrome Browser.
 // ---------------------------------------------------------------------------------------------------------------------
 /* eslint-env node, es6 */
+/* eslint-disable no-undef */
 
 require('shelljs/global');
 
@@ -26,7 +27,7 @@ createBundle = function (options, file, done) {
         },
 
         function (next) {
-            console.log(` - ${file}`);
+            console.info(` - ${file}`);
             next();
         }
     ], done);
@@ -38,29 +39,29 @@ module.exports = function (exit) {
     if (_.get(process, 'argv[2]') === 'clear') {
         rm('-rf', '.cache');
 
-        console.log('cache cleared - ".cache/*"');
+        console.info('cache cleared - ".cache/*"');
         exit();
     }
 
-    console.log(chalk.yellow.bold('Generating bootcode in ".cache" directory...'));
+    console.info(chalk.yellow.bold('Generating bootcode in ".cache" directory...'));
 
     var options = require('../lib/environment');
 
     async.parallel([
         async.apply(createBundle, _.merge({
             compress: true,
-            bundler: {browserField: false}
+            bundler: { browserField: false }
         }, options), './.cache/bootcode.js'),
         async.apply(createBundle, _.merge({
             compress: true,
-            bundler: {browserField: true}
+            bundler: { browserField: true }
         }, options), './.cache/bootcode.browser.js')
     ], function (err) {
         if (err) {
             console.error(err);
         }
         else {
-            console.log(chalk.green('bootcode ready for use!'));
+            console.info(chalk.green('bootcode ready for use!'));
         }
         exit(err ? 1 : 0);
     });

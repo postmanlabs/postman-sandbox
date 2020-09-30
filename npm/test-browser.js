@@ -3,6 +3,7 @@
 // This script is intended to execute all unit tests in the Chrome Browser.
 // ---------------------------------------------------------------------------------------------------------------------
 /* eslint-env node, es6 */
+/* eslint-disable no-undef */
 
 require('shelljs/global');
 
@@ -12,9 +13,10 @@ var chalk = require('chalk'),
     KARMA_CONFIG_PATH = path.join(__dirname, '..', 'test', 'karma.conf');
 
 module.exports = function (exit) {
-    console.log(chalk.yellow.bold('Running unit tests within browser...'));
+    console.info(chalk.yellow.bold('Running unit tests within browser...'));
 
     var KarmaServer = require('karma').Server;
+
     (new KarmaServer({ // eslint-disable no-new
         cmd: 'start',
         configFile: KARMA_CONFIG_PATH

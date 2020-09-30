@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-env node, es6 */
-
+/* eslint-disable no-undef */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to contain all actions pertaining to code style checking, linting and normalisation.
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ module.exports = function (exit) {
     var ESLintCLIEngine = require('eslint').CLIEngine;
 
     // banner line
-    console.log(chalk.yellow.bold('\nLinting files using eslint...'));
+    console.info(chalk.yellow.bold('\nLinting files using eslint...'));
 
     async.waterfall([
         // execute the CLI engine
@@ -31,10 +31,11 @@ module.exports = function (exit) {
         // output results
         function (report, next) {
             var errorReport = ESLintCLIEngine.getErrorResults(report.results);
+
             // log the result to CLI
-            console.log(ESLintCLIEngine.getFormatter()(report.results));
+            console.info(ESLintCLIEngine.getFormatter()(report.results));
             // log the success of the parser if it has no errors
-            (errorReport && !errorReport.length) && console.log(chalk.green('eslint ok!'));
+            (errorReport && !errorReport.length) && console.info(chalk.green('eslint ok!'));
             // ensure that the exit code is non zero in case there was an error
             next(Number(errorReport && errorReport.length) || 0);
         }

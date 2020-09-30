@@ -31,7 +31,7 @@ module.exports = function (exit) {
                 return (file.substr(-8) === '.test.js');
             })).forEach(function (file) {
                 // @hack to allow mocha.addFile to work correctly in the Node VM
-                bundler.require('./' + file, {expose: file});
+                bundler.require('./' + file, { expose: file });
             });
 
             bundler.bundle(function (err, bundle) {
@@ -40,12 +40,12 @@ module.exports = function (exit) {
         },
 
         // Run the tests in the VM
-        function (specs, bundle, next) {
-            var context = vm.createContext({console, setTimeout, clearTimeout, __next: next, __specs: specs});
+        function (__specs, bundle, __next) {
+            var context = vm.createContext({ console, setTimeout, clearTimeout, __next, __specs });
 
             context.global = context; // @hack to make the context work correctly
 
-            vm.runInContext(bundle.toString(), context, {displayErrors: true});
+            vm.runInContext(bundle.toString(), context, { displayErrors: true });
         }
     ], exit);
 };

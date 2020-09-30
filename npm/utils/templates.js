@@ -155,11 +155,11 @@ interface AssertableBe {
 }`;
 
 module.exports = {
-    heading: heading,
-    postmanLegacyString: postmanLegacyString,
-    postmanExtensionString: postmanExtensionString,
-    cookieListExtensionString: cookieListExtensionString,
-    responseExtensionString: responseExtensionString
+    heading,
+    postmanLegacyString,
+    postmanExtensionString,
+    cookieListExtensionString,
+    responseExtensionString
 };
 
 

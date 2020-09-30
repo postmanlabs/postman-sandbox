@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-env node, es6 */
-
+/* eslint-disable no-undef */
 require('shelljs/global');
 
 var recursive = require('recursive-readdir'),
@@ -15,13 +15,17 @@ var recursive = require('recursive-readdir'),
 
 module.exports = function (exit) {
     // banner line
-    console.log(chalk.yellow.bold('\nRunning system tests using mocha and nsp...'));
+    console.info(chalk.yellow.bold('\nRunning system tests using mocha and nsp...'));
 
     async.series([
         // run test specs using mocha
         function (next) {
             recursive(SPEC_SOURCE_DIR, function (err, files) {
-                if (err) { console.error(err.stack || err); return next(1); }
+                if (err) {
+                    console.error(err.stack || err);
+
+                    return next(1);
+                }
 
                 var mocha = new Mocha();
 

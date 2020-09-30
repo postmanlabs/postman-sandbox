@@ -3,6 +3,7 @@
 // This script is intended to execute all unit tests.
 // ---------------------------------------------------------------------------------------------------------------------
 /* eslint-env node, es6 */
+/* eslint-disable no-undef */
 
 require('shelljs/global');
 
@@ -16,15 +17,19 @@ var path = require('path'),
 
 module.exports = function (exit) {
     // banner line
-    console.log(chalk.yellow.bold('Running integration tests using mocha on node...'));
+    console.info(chalk.yellow.bold('Running integration tests using mocha on node...'));
 
     var Mocha = require('mocha');
 
     // add all spec files to mocha
     recursive(SPEC_SOURCE_DIR, function (err, files) {
-        if (err) { console.error(err); return exit(1); }
+        if (err) {
+            console.error(err);
 
-        var mocha = new Mocha({timeout: 1000 * 60});
+            return exit(1);
+        }
+
+        var mocha = new Mocha({ timeout: 1000 * 60 });
 
         // specially load bootstrap file
         mocha.addFile(path.join(SPEC_SOURCE_DIR, '_bootstrap.js'));

@@ -2,8 +2,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to generate type-definition for this module
 // ---------------------------------------------------------------------------------------------------------------------
-
 /* eslint-env node, es6 */
+/* eslint-disable no-undef */
+
 require('shelljs/global');
 
 var _ = require('lodash'),
@@ -20,8 +21,10 @@ var _ = require('lodash'),
 
 /**
  * Generate tests script type-def
- * @param {*} node
- * @param {*} printer
+ *
+ * @param {*} node -
+ * @param {*} printer -
+ * @param {String} target -
  */
 function generateSandboxTypes (node, printer, target) {
     var source = '',
@@ -34,6 +37,7 @@ function generateSandboxTypes (node, printer, target) {
                 if (m.name && m.name.escapedText === 'response') {
                     return false;
                 }
+
                 return true;
             });
         }
@@ -55,7 +59,7 @@ function generateSandboxTypes (node, printer, target) {
 }
 
 module.exports = function (exit) {
-    console.log(chalk.yellow.bold('Generating type-definitions...'));
+    console.info(chalk.yellow.bold('Generating type-definitions...'));
 
     try {
         // clean directory
@@ -64,21 +68,21 @@ module.exports = function (exit) {
     }
     catch (e) {
         console.error(e.stack || e);
+
         return exit(e ? 1 : 0);
     }
 
     exec(`${IS_WINDOWS ? '' : 'node'} ${path.join('node_modules', '.bin', 'jsdoc')}${IS_WINDOWS ? '.cmd' : ''}` +
         ' -c .jsdoc-config-type-def-sandbox.json -p', function (code) {
-
         if (code) {
             // output status
-            console.log(chalk.red.bold('unable to generate type-definition'));
+            console.info(chalk.red.bold('unable to generate type-definition'));
             exit(code);
         }
 
         fs.readFile(`${TARGET_DIR}/index.d.ts`, function (err, contents) {
             if (err) {
-                console.log(chalk.red.bold('unable to read the type-definition file'));
+                console.info(chalk.red.bold('unable to read the type-definition file'));
                 exit(1);
             }
 
@@ -106,11 +110,9 @@ module.exports = function (exit) {
 
             source = `${templates.heading}\n\n${templates.postmanLegacyString}\n\n${source}`;
 
-            node = typescript.createSourceFile(
-                '../types/sandbox/index.d.ts',
+            node = typescript.createSourceFile('../types/sandbox/index.d.ts',
                 source,
-                typescript.ScriptTarget.Latest
-            );
+                typescript.ScriptTarget.Latest);
 
             printer = typescript.createPrinter({
                 removeComments: false,
@@ -126,6 +128,7 @@ module.exports = function (exit) {
                     // takes care of properties referencing CollectionSDK types
                     if (c.type && c.type.typeName) {
                         let currentType = c.type.typeName.escapedText;
+
                         if (collectionSDKTypes.includes(currentType)) {
                             c.type.typeName.escapedText = `import("postman-collection").${currentType}`;
                         }
@@ -137,6 +140,7 @@ module.exports = function (exit) {
                                 p.type.types.forEach((t) => {
                                     if (t.typeName) {
                                         let currentType = t.typeName.escapedText;
+
                                         if (collectionSDKTypes.includes(currentType)) {
                                             t.typeName.escapedText = `import("postman-collection").${currentType}`;
                                         }
@@ -152,36 +156,35 @@ module.exports = function (exit) {
             preScriptSource = generateSandboxTypes(node, printer, 'prerequest');
 
             async.each([
-                {fileName: `${TARGET_DIR}/prerequest.d.ts`, content: preScriptSource},
-                {fileName: `${TARGET_DIR}/test.d.ts`, content: testScriptSource}
+                { fileName: `${TARGET_DIR}/prerequest.d.ts`, content: preScriptSource },
+                { fileName: `${TARGET_DIR}/test.d.ts`, content: testScriptSource }
             ], function (file, callback) {
                 fs.writeFile(file.fileName, file.content, function (err) {
                     if (err) {
-                        console.log(chalk.red.bold(`unable to write ${file.fileName} file'`));
+                        console.info(chalk.red.bold(`unable to write ${file.fileName} file'`));
                     }
                     else {
-                        console.log(chalk.green.bold(`${file.fileName} file saved successfully at "${TARGET_DIR}"`));
+                        console.info(chalk.green.bold(`${file.fileName} file saved successfully at "${TARGET_DIR}"`));
                     }
 
                     callback();
                 });
-
             }, function (err) {
                 if (err) {
-                    console.log(chalk.red.bold('couldn\'t save all type-definitions. Aborting...'));
+                    console.info(chalk.red.bold('couldn\'t save all type-definitions. Aborting...'));
                     exit(1);
                 }
 
-                console.log(chalk.green.bold('All type-definition files have been processed successfully'));
-                console.log(chalk.yellow.bold('Deleting index.d.ts files'));
+                console.info(chalk.green.bold('All type-definition files have been processed successfully'));
+                console.info(chalk.yellow.bold('Deleting index.d.ts files'));
 
                 fs.unlink(`${TARGET_DIR}/index.d.ts`, function (err) {
                     if (err) {
-                        console.log(chalk.red.bold('couldn\'t delete index.d.ts file. Aborting...'));
+                        console.info(chalk.red.bold('couldn\'t delete index.d.ts file. Aborting...'));
                         exit(1);
                     }
 
-                    console.log(chalk.green.bold(`sandbox type-definition files available at ${TARGET_DIR}`));
+                    console.info(chalk.green.bold(`sandbox type-definition files available at ${TARGET_DIR}`));
                     exit(0);
                 });
             });

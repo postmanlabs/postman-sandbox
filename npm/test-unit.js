@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-undef */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to execute all unit tests.
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ module.exports = function (exit) {
     // }
 
     // banner line
-    console.log(chalk.yellow.bold('Running unit tests using mocha on node...'));
+    console.info(chalk.yellow.bold('Running unit tests using mocha on node...'));
 
     mkdir('-p', '.tmp');
     test('-d', COV_REPORT_PATH) && rm('-rf', COV_REPORT_PATH) && mkdir('-p', COV_REPORT_PATH);
