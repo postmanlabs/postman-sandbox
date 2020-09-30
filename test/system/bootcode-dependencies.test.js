@@ -1,7 +1,8 @@
 describe('bootcode dependencies', function () {
     this.timeout(60 * 1000);
 
-    var env = require('../../lib/environment'),
+    var expect = require('chai').expect,
+        env = require('../../lib/environment'),
         Bundle = require('../../lib/bundle'),
         currentDependencies;
 
@@ -9,7 +10,8 @@ describe('bootcode dependencies', function () {
         process && process.stdout.write('  -- building dependencies, please wait... ');
         Bundle.load(env).listDependencies(function (err, dependencies) {
             currentDependencies = dependencies;
-            console.log(err ? 'failed' : 'done');
+            console.info(err ? 'failed' : 'done');
+
             return done(err);
         });
     });
@@ -65,6 +67,7 @@ describe('bootcode dependencies', function () {
             'inherits',
             'ip-regex',
             'is-arguments',
+            'is-buffer',
             'is-generator-function',
             'is-nan',
             'isarray',
@@ -105,6 +108,7 @@ describe('bootcode dependencies', function () {
             'postcss',
             'postman-collection',
             'postman-sandbox',
+            'postman-url-encoder',
             'process',
             'process-nextick-args',
             'psl',

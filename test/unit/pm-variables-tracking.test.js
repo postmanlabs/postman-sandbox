@@ -5,7 +5,7 @@ describe('pm api variables', function () {
     this.timeout(1000 * 60);
 
     it('should have tracking enabled by default', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.execute(`
@@ -31,7 +31,7 @@ describe('pm api variables', function () {
     });
 
     it('should bubble mutations in result', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.execute(`
@@ -66,7 +66,7 @@ describe('pm api variables', function () {
     it('should should drop initial mutations in context', function (done) {
         var scopeDefinition = {
             values: [
-                {key: 'bar', value: 'bar value'}
+                { key: 'bar', value: 'bar value' }
             ],
             mutations: {
                 autoCompact: true,
@@ -76,7 +76,7 @@ describe('pm api variables', function () {
             }
         };
 
-        Sandbox.createContext({debug: false}, function (err, ctx) {
+        Sandbox.createContext({ debug: false }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.execute(`

@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-top-level-hooks */
 var chai = require('chai'),
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
@@ -27,6 +28,7 @@ describe('_bootstrap', function () {
     this.timeout(1000 * 60); // set a timeout
 
     var Sandbox = require('../../lib');
+
     it('bundling should work for sandbox', function (done) {
         // we simply create a context and run to ensure it is working
         Sandbox.createContext(function (err, ctx) {

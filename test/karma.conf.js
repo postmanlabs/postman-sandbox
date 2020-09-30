@@ -1,7 +1,4 @@
 // Karma configuration
-// Generated on Mon Nov 09 2015 18:53:12 GMT+0530 (IST)
-process.env.CHROME_BIN = require('puppeteer').executablePath(); // eslint-disable-line no-process-env
-
 module.exports = function (config) {
     var configuration = {
 
@@ -54,7 +51,7 @@ module.exports = function (config) {
         singleRun: true,
 
         // Concurrency level
-        // how many browser should be started simultanous
+        // how many browser should be started simultaneously
         concurrency: Infinity,
 
         // Uncomment "karma-browserify" if you see an error like this:
@@ -73,16 +70,6 @@ module.exports = function (config) {
             }
         }
     };
-
-    if (process.env.TRAVIS) { // eslint-disable-line no-process-env
-        configuration.customLaunchers = {
-            chromeTravis: {
-                base: 'ChromeHeadless',
-                flags: ['--no-sandbox']
-            }
-        };
-        configuration.browsers = ['chromeTravis'];
-    }
 
     // Use `npm run test-browser -- --debug` to debug tests in Chrome console
     if (process.argv[2] === '--debug') {
