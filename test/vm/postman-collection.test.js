@@ -29,7 +29,7 @@ describe('Collection SDK in Node VM', function () {
 
     it('should work correctly for responses', function () {
         var response = new sdk.Response({
-            stream: new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
+            stream: Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
         });
 
         assert.strictEqual(response.text(), 'buffer', 'converts stream in response to text');

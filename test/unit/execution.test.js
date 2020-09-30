@@ -11,12 +11,13 @@ var _ = require('lodash'),
 
 describe('execution', function () {
     before(function () {
-        execution = new Execution('id', {listen: 'test'}, {}, {});
-        pm = new pmAPI(execution, _.noop, _.noop);
+        execution = new Execution('id', { listen: 'test' }, {}, {});
+        pm = new pmAPI(execution, _.noop, _.noop); // eslint-disable-line no-unused-vars
     });
 
     it('can be serialized', function () {
         var json;
+
         expect(function () {
             json = execution.toJSON();
         }).to.not.throw();

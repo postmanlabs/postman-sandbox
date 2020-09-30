@@ -3,7 +3,7 @@ describe('sandbox disposal', function () {
     var Sandbox = require('../../lib');
 
     it('should work', function (done) {
-        Sandbox.createContext({debug: false}, function (err, context) {
+        Sandbox.createContext({ debug: false }, function (err, context) {
             if (err) { return done(err); }
             context.on('error', done);
 

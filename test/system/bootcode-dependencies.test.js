@@ -9,7 +9,8 @@ describe('bootcode dependencies', function () {
         process && process.stdout.write('  -- building dependencies, please wait... ');
         Bundle.load(env).listDependencies(function (err, dependencies) {
             currentDependencies = dependencies;
-            console.log(err ? 'failed' : 'done');
+            console.info(err ? 'failed' : 'done');
+
             return done(err);
         });
     });

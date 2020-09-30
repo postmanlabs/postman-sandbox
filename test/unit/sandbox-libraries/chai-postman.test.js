@@ -4,7 +4,7 @@ describe('sandbox library - chai-postman', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -501,7 +501,7 @@ describe('sandbox library - chai-postman', function () {
                     var response = new (require('postman-collection').Response)({
                         code: 200,
                         header: 'oneHeader:oneValue',
-                        stream: new Buffer('hello there')
+                        stream: Buffer.from('hello there')
                     });
 
                     pm.expect(response).to.have.responseSize.below(50);

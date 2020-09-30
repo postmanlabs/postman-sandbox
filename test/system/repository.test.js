@@ -8,7 +8,6 @@ var _ = require('lodash'),
     fs = require('fs');
 
 describe('project repository', function () {
-
     describe('package.json', function () {
         var content,
             json;
@@ -43,7 +42,7 @@ describe('project repository', function () {
 
             it('should have a valid version string in form of <major>.<minor>.<revision>', function () {
                 expect(json.version)
-                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line max-len, security/detect-unsafe-regex
                     .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
             });
         });
@@ -55,6 +54,7 @@ describe('project repository', function () {
 
             it('should point to a valid semver', function () {
                 Object.keys(json.devDependencies).forEach(function (dependencyName) {
+                    // eslint-disable-next-line security/detect-non-literal-regexp
                     expect(json.devDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
                         '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
                 });
