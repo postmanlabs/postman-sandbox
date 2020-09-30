@@ -18,6 +18,7 @@
     "parserOptions": {
         "ecmaVersion": 2018
     },
+    "ignorePatterns": ["lib/vendor/*"],
     "rules": {
         // Possible Errors
         "for-direction": "error",
