@@ -40,10 +40,8 @@
     "prepublishOnly": "node npm/prepublish.js"
   },
   "dependencies": {
-    "inherits": "2.0.4",
     "lodash": "4.17.20",
     "teleport-javascript": "1.0.0",
-    "uuid": "8.3.0",
     "uvm": "2.0.0"
   },
   "devDependencies": {
