@@ -1,7 +1,8 @@
 describe('bootcode dependencies', function () {
     this.timeout(60 * 1000);
 
-    var env = require('../../lib/environment'),
+    var expect = require('chai').expect,
+        env = require('../../lib/environment'),
         Bundle = require('../../lib/bundle'),
         currentDependencies;
 

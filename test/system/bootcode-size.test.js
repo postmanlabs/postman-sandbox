@@ -1,5 +1,7 @@
 const fs = require('fs'),
     path = require('path'),
+    expect = require('chai').expect,
+
     CACHE_DIR = path.join(__dirname, '/../../.cache'),
     THRESHOLD = 5.5 * 1024 * 1024; // 5.5 MB
 

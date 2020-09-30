@@ -5,6 +5,7 @@
 var _ = require('lodash'),
     yml = require('js-yaml'),
     parseIgnore = require('parse-gitignore'),
+    expect = require('chai').expect,
     fs = require('fs');
 
 describe('project repository', function () {
