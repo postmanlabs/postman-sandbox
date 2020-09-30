@@ -8,7 +8,7 @@ function configOverrides(testType) {
     switch (testType) {
         case 'unit':
             return {
-                statements: 60,
+                statements: 55,
                 branches: 40,
                 functions: 40,
                 lines: 60
