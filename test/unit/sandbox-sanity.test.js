@@ -87,6 +87,11 @@ describe('sandbox', function () {
                 // filter out the ignored properties
                 propNames = propNames.filter(prop => !ignoredProps.includes(prop));
 
+                // @todo remove after dropping support for Node v8
+                if (${nodeVersion} < 10) {
+                    propNames.push('BigInt', 'BigInt64Array', 'BigUint64Array');
+                }
+
                 // make sure both propNames and allowedGlobals are same
                 assert.equal(JSON.stringify(propNames.sort()), JSON.stringify(allowedGlobals.sort()));
 
