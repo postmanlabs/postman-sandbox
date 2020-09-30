@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-top-level-hooks */
 var _expect;
 
 before(function () {

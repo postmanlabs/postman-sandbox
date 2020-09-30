@@ -2,14 +2,28 @@
   "name": "postman-sandbox",
   "version": "3.5.9",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
+  "author": "Postman Inc.",
+  "license": "Apache-2.0",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "browser": {
     "./lib/bundle/index.js": "./lib/bundle/index.browser.js",
     "./.cache/bootcode.js": "./.cache/bootcode.browser.js"
   },
+  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme",
+  "bugs": {
+    "url": "https://github.com/postmanlabs/postman-sandbox/issues",
+    "email": "help@postman.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
+  },
+  "keywords": [
+    "contextify",
+    "postman",
+    "sandbox",
+    "vm"
+  ],
   "scripts": {
     "cache": "node npm/cache.js $1",
     "build-common-types": "node npm/build-types.js",
@@ -19,90 +33,70 @@
     "test-integration": "node npm/test-integration.js",
     "test-system": "node npm/test-system.js",
     "test-lint": "node npm/test-lint.js",
-    "test-unit": "node npm/test-unit.js",
+    "test-unit": "nyc --nycrc-path=.nycrc.js node npm/test-unit.js",
     "test-vm": "node npm/test-vm.js",
-    "test": "npm run test-lint && npm run cache && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
-    "prepublish": "node npm/prepublish.js"
+    "pretest": "npm run cache",
+    "test": "npm run test-lint && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
+    "prepublishOnly": "node npm/prepublish.js"
   },
-  "keywords": [
-    "eval",
-    "scope",
-    "postman"
-  ],
-  "author": "Postman Labs <help@getpostman.com> (=)",
-  "license": "Apache-2.0",
   "dependencies": {
     "inherits": "2.0.4",
     "lodash": "4.17.20",
     "teleport-javascript": "1.0.0",
-    "tough-cookie": "3.0.1",
-    "uuid": "3.4.0",
+    "uuid": "8.3.0",
     "uvm": "2.0.0"
   },
   "devDependencies": {
-    "ajv": "6.12.4",
+    "ajv": "6.12.5",
     "assert": "2.0.0",
-    "async": "2.6.2",
+    "async": "^3.2.0",
     "atob": "2.1.2",
     "backbone": "1.4.0",
-    "browserify": "16.5.1",
+    "browserify": "^16.5.2",
     "btoa": "1.2.1",
     "buffer": "5.6.0",
     "chai": "4.2.0",
     "chai-postman": "1.1.3",
-    "chalk": "2.4.2",
+    "chalk": "^4.1.0",
     "cheerio": "0.22.0",
     "crypto-js": "3.3.0",
     "csv-parse": "1.2.4",
-    "editorconfig": "0.15.3",
-    "eslint": "5.16.0",
-    "eslint-plugin-jsdoc": "7.2.3",
-    "eslint-plugin-lodash": "6.0.0",
-    "eslint-plugin-mocha": "6.3.0",
-    "eslint-plugin-security": "1.4.0",
-    "istanbul": "0.4.5",
+    "editorconfig": "^0.15.3",
+    "eslint": "^7.10.0",
+    "eslint-plugin-jsdoc": "^30.6.2",
+    "eslint-plugin-lodash": "^7.1.0",
+    "eslint-plugin-mocha": "^8.0.0",
+    "eslint-plugin-security": "^1.4.0",
     "jquery": "3.5.1",
     "js-yaml": "3.14.0",
-    "jsdoc": "3.6.5",
-    "jsdoc-to-markdown": "5.0.3",
-    "karma": "3.1.4",
-    "karma-browserify": "6.1.0",
-    "karma-chrome-launcher": "3.1.0",
-    "karma-mocha": "1.3.0",
-    "karma-mocha-reporter": "2.2.5",
+    "jsdoc": "^3.6.6",
+    "jsdoc-to-markdown": "^6.0.1",
+    "karma": "^5.2.3",
+    "karma-browserify": "^7.0.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.2",
-    "mocha": "5.0.1",
-    "moment": "2.27.0",
-    "packity": "0.3.2",
-    "parse-gitignore": "1.0.1",
-    "postman-collection": "3.6.6",
-    "puppeteer": "1.18.1",
-    "recursive-readdir": "2.2.2",
-    "shelljs": "0.8.4",
-    "sinon": "8.1.1",
-    "sinon-chai": "3.5.0",
-    "tsd-jsdoc": "2.5.0",
+    "mocha": "^8.1.3",
+    "moment": "2.29.0",
+    "nyc": "^15.1.0",
+    "packity": "^0.3.2",
+    "parse-gitignore": "^1.0.1",
+    "postman-collection": "3.6.7",
+    "recursive-readdir": "^2.2.2",
+    "shelljs": "^0.8.4",
+    "sinon": "^9.1.0",
+    "sinon-chai": "^3.5.0",
+    "tough-cookie": "3.0.1",
+    "tsd-jsdoc": "^2.5.0",
     "tv4": "1.3.0",
-    "uglifyify": "5.0.2",
+    "uglifyify": "^5.0.2",
     "uniscope": "2.0.0",
-    "xml2js": "0.4.23",
-    "yankee": "1.0.8"
+    "watchify": "^3.11.1",
+    "xml2js": "0.4.23"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
-  },
-  "bugs": {
-    "url": "https://github.com/postmanlabs/postman-sandbox/issues"
-  },
-  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme",
-  "greenkeeper": {
-    "ignore": [
-      "xml2js",
-      "mocha",
-      "csv-parse",
-      "eslint-plugin-jsdoc"
-    ]
+  "engines": {
+    "node": ">=10"
   }
 }

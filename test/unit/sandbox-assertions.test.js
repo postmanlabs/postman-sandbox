@@ -3,7 +3,7 @@ describe('sandbox test assertion', function () {
     var Sandbox = require('../../lib');
 
     it('should call the assertion event with no name', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -28,7 +28,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should call the assertion event with name', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -61,7 +61,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should contain synchronous script errors within test', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -97,7 +97,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should call the assertion event on async test', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -132,7 +132,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should not wait if async done is not called', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -159,7 +159,7 @@ describe('sandbox test assertion', function () {
 
     it('should terminate script ' +
         'if async done is not called in an async script', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -187,7 +187,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should forward errors from asynchronous callback', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -227,7 +227,7 @@ describe('sandbox test assertion', function () {
 
     it('should forward synchronous' +
         'errors from asynchronous tests', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),
@@ -268,7 +268,7 @@ describe('sandbox test assertion', function () {
     });
 
     it('should call the assertion event on skipped test', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             var executionError = sinon.spy(),

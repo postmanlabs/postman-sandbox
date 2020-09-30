@@ -4,7 +4,7 @@ describe('sandbox library - postman-collection', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -61,7 +61,7 @@ describe('sandbox library - postman-collection', function () {
                 response;
 
             response = new sdk.Response({
-                stream: new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
+                stream: Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
             });
 
 

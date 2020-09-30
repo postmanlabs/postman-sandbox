@@ -1,9 +1,20 @@
 master:
+  breaking changes:
+    - GH-610 Dropped support for Node < v10
   fixed bugs:
     - GH-603 Removed access from the UVM bridge once it's in execution closure
     - GH-605 Sanitized the global scope by deleting the forbidden properties
   chores:
     - GH-609 Bumped uvm (Web Worker bridge) and uniscope dependency
+    - >-
+      GH-610 Updated .npmignore to prevent the addition of tests and config
+      files in the published package
+    - GH-610 Added system test for published package content
+    - GH-610 Removed puppeteer dependency for browser tests
+    - GH-414 Removed async and shelljs dev-dependencies
+    - GH-610 Updated nyc configuration
+    - GH-610 Updated ESLint rules
+    - GH-610 Updated dependencies
 
 3.5.9:
   date: 2020-08-31
