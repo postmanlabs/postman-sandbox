@@ -6,6 +6,8 @@ master:
     - GH-605 Sanitized the global scope by deleting the forbidden properties
   chores:
     - GH-609 Bumped uvm (Web Worker bridge) and uniscope dependency
+    - GH-613 Converted internal function implementations to ES6 class
+    - GH-613 Removed uuid and inherits dependencies
     - >-
       GH-610 Updated .npmignore to prevent the addition of tests and config
       files in the published package
