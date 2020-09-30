@@ -2,14 +2,28 @@
   "name": "postman-sandbox",
   "version": "3.5.9",
   "description": "Sandbox for Postman Scripts to run in NodeJS or Chrome",
+  "author": "Postman Inc.",
+  "license": "Apache-2.0",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "browser": {
     "./lib/bundle/index.js": "./lib/bundle/index.browser.js",
     "./.cache/bootcode.js": "./.cache/bootcode.browser.js"
   },
+  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme",
+  "bugs": {
+    "url": "https://github.com/postmanlabs/postman-sandbox/issues",
+    "email": "help@postman.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
+  },
+  "keywords": [
+    "contextify",
+    "postman",
+    "sandbox",
+    "vm"
+  ],
   "scripts": {
     "cache": "node npm/cache.js $1",
     "build-common-types": "node npm/build-types.js",
@@ -24,13 +38,6 @@
     "test": "npm run test-lint && npm run cache && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
     "prepublish": "node npm/prepublish.js"
   },
-  "keywords": [
-    "eval",
-    "scope",
-    "postman"
-  ],
-  "author": "Postman Labs <help@getpostman.com> (=)",
-  "license": "Apache-2.0",
   "dependencies": {
     "inherits": "2.0.4",
     "lodash": "4.17.20",
@@ -90,12 +97,7 @@
     "xml2js": "0.4.23",
     "yankee": "1.0.8"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/postmanlabs/postman-sandbox.git"
-  },
-  "bugs": {
-    "url": "https://github.com/postmanlabs/postman-sandbox/issues"
-  },
-  "homepage": "https://github.com/postmanlabs/postman-sandbox#readme"
+  "engines": {
+    "node": ">=10"
+  }
 }
