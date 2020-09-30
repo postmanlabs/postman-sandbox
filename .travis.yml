@@ -15,8 +15,9 @@ jobs:
       node_js: stable
       os: linux
       script:
+        - npm run cache
         - npm run test-unit
-        - bash <(curl -s https://codecov.io/bash) -c -Z -f .coverage/coverage.json -F unit
+        - bash <(curl -s https://codecov.io/bash) -c -Z -f .coverage/coverage-final.json -F unit
 
 notifications:
   slack:
