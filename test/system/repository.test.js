@@ -35,7 +35,7 @@ describe('project repository', function () {
                 expect(json).to.deep.include({
                     name: 'postman-sandbox',
                     description: 'Sandbox for Postman Scripts to run in NodeJS or Chrome',
-                    author: 'Postman Labs <help@getpostman.com> (=)',
+                    author: 'Postman Inc.',
                     license: 'Apache-2.0'
                 });
             });
