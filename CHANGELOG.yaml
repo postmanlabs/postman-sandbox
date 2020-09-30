@@ -3,6 +3,7 @@ master:
     - GH-610 Dropped support for Node < v10
   fixed bugs:
     - GH-603 Removed access from the UVM bridge once it's in execution closure
+    - GH-605 Sanitized the global scope by deleting the forbidden properties
   chores:
     - GH-609 Bumped uvm (Web Worker bridge) and uniscope dependency
     - >-
