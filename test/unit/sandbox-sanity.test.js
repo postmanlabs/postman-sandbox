@@ -1,7 +1,6 @@
 describe('sandbox', function () {
     this.timeout(1000 * 60);
-    var Sandbox = require('../../lib'),
-        nodeVersion = process && process.versions && parseInt(process.versions.node);
+    var Sandbox = require('../../lib');
 
     it('should create context', function (done) {
         Sandbox.createContext(function (err, ctx) {
@@ -58,10 +57,8 @@ describe('sandbox', function () {
         });
     });
 
-    // In Node.js v6 VM, `delete global` doesn't work so __uvm_* keys will show up here.
-    // remove this when we drop support for Node v6.
-    (nodeVersion === 6 ? it.skip : it)('should not have access to global properties', function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+    it('should not have access to global properties', function (done) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
@@ -86,11 +83,6 @@ describe('sandbox', function () {
 
                 // filter out the ignored properties
                 propNames = propNames.filter(prop => !ignoredProps.includes(prop));
-
-                // @todo remove after dropping support for Node v8
-                if (${nodeVersion} < 10) {
-                    propNames.push('BigInt', 'BigInt64Array', 'BigUint64Array');
-                }
 
                 // make sure both propNames and allowedGlobals are same
                 assert.equal(JSON.stringify(propNames.sort()), JSON.stringify(allowedGlobals.sort()));
