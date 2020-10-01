@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to execute all unit tests.
+// This script is intended to execute all integration tests.
 // ---------------------------------------------------------------------------------------------------------------------
 
 // set directories and files for test and coverage report

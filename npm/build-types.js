@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-/* globals exec, test, rm */
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to generate type-definition for this module
+// This script is intended to generate type-definition for this module.
 // ---------------------------------------------------------------------------------------------------------------------
 
 require('shelljs/global');

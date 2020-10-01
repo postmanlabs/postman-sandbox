@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* globals mkdir, rm */
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to execute all unit tests in the Chrome Browser.
+// This script is intended to generate boot code in ".cache" directory.
 // ---------------------------------------------------------------------------------------------------------------------
 
 require('shelljs/global');
