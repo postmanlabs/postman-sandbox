@@ -37,7 +37,8 @@
     "test-vm": "node npm/test-vm.js",
     "pretest": "npm run cache",
     "test": "npm run test-lint && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
-    "prepublishOnly": "node npm/prepublish.js"
+    "prepublishOnly": "node npm/prepublish.js",
+    "postinstall": "node npm/postinstall.js"
   },
   "dependencies": {
     "lodash": "4.17.20",

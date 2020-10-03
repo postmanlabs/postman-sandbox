@@ -3,7 +3,7 @@ const fs = require('fs'),
     expect = require('chai').expect,
 
     CACHE_DIR = path.join(__dirname, '/../../.cache'),
-    THRESHOLD = 3.7 * 1024 * 1024; // 3.7 MB
+    THRESHOLD = 2.5 * 1024 * 1024; // 2.5 MB
 
 describe('bootcode size', function () {
     this.timeout(60 * 1000);
