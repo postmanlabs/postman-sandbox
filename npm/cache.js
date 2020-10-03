@@ -17,9 +17,8 @@ function createBundle (options, file, done) {
             Bundle.load(options).compile(next);
         },
 
-        function (buf, next) {
-            // eslint-disable-next-line max-len
-            fs.writeFile(file, `module.exports=function(d){d(null,Buffer.from('${buf.toString('base64')}','base64'));};`, next);
+        function (codeString, next) {
+            fs.writeFile(file, `module.exports=c=>c(null,${JSON.stringify(codeString)})`, next);
         },
 
         function (next) {
