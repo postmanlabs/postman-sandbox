@@ -497,7 +497,6 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(typeof pm.cookies.jar, 'function');
-                assert.strictEqual(pm.cookies.jar().constructor.name, 'PostmanCookieJar');
             `, {
                 context: { cookies: [] }
             }, done);
