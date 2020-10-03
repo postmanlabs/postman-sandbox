@@ -1,17 +1,14 @@
 #!/usr/bin/env node
-/* globals exec, test, rm */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to generate type-definition for this module.
 // ---------------------------------------------------------------------------------------------------------------------
-
-require('shelljs/global');
 
 const _ = require('lodash'),
     path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
     async = require('async'),
-    shell = require('shelljs'),
+    { test, exec, rm, mkdir } = require('shelljs'),
     typescript = require('typescript'),
     templates = require('./utils/templates'),
 
@@ -63,7 +60,7 @@ module.exports = function (exit) {
     try {
         // clean directory
         test('-d', TARGET_DIR) && rm('-rf', TARGET_DIR);
-        shell.mkdir('-p', TARGET_DIR);
+        mkdir('-p', TARGET_DIR);
     }
     catch (e) {
         console.error(e.stack || e);
