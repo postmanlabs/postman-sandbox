@@ -85,10 +85,10 @@
     "shelljs": "^0.8.4",
     "sinon": "^9.1.0",
     "sinon-chai": "^3.5.0",
+    "terser": "^5.3.4",
     "tough-cookie": "3.0.1",
     "tsd-jsdoc": "^2.5.0",
     "tv4": "1.3.0",
-    "uglifyify": "^5.0.2",
     "uniscope": "2.0.0",
     "watchify": "^3.11.1",
     "xml2js": "0.4.23"
