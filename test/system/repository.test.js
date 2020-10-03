@@ -46,6 +46,12 @@ describe('project repository', function () {
                     // eslint-disable-next-line max-len, security/detect-unsafe-regex
                     .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
             });
+
+            // @note updating csv-parse will break postman script because of breaking
+            // API and options changes introduced in csv-parse
+            it('should have dev dependency csv-parse v1.2.4', function () {
+                expect(json.devDependencies).to.have.property('csv-parse', '1.2.4');
+            });
         });
 
         describe('devDependencies', function () {
