@@ -3,11 +3,11 @@
 // This script is intended to generate type-definition for this module.
 // ---------------------------------------------------------------------------------------------------------------------
 
-require('shelljs/global');
-
-var path = require('path'),
+const path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
+    { test, exec, rm } = require('shelljs'),
+
     templates = require('./utils/templates'),
 
     IS_WINDOWS = (/^win/).test(process.platform),

@@ -1,15 +1,14 @@
 #!/usr/bin/env node
-/* globals mkdir, rm */
 // ---------------------------------------------------------------------------------------------------------------------
 // This script is intended to generate boot code in ".cache" directory.
 // ---------------------------------------------------------------------------------------------------------------------
-
-require('shelljs/global');
 
 const _ = require('lodash'),
     async = require('async'),
     fs = require('fs'),
     chalk = require('chalk'),
+    { mkdir, rm } = require('shelljs'),
+
     Bundle = require('../lib/bundle');
 
 function createBundle (options, file, done) {
