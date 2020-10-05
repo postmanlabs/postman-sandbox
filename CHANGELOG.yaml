@@ -9,6 +9,7 @@ master:
     - GH-615 Used terser for bootcode compression and store as UTF-8 code string
     - GH-616 Added postinstall script to override locales exported by faker
     - GH-617 Moved postinstall script to cache generation
+    - GH-618 Automated releases and publish process
     - GH-613 Converted internal function implementations to ES6 class
     - GH-613 Removed uuid and inherits dependencies
     - >-
