@@ -52,6 +52,16 @@ describe('project repository', function () {
             it('should have dev dependency csv-parse v1.2.4', function () {
                 expect(json.devDependencies).to.have.property('csv-parse', '1.2.4');
             });
+
+            // @note crypto-js v4 uses native crypto module which will not work after browserify
+            it('should have dev dependency crypto-js v3.3.0', function () {
+                expect(json.devDependencies).to.have.property('crypto-js', '3.3.0');
+            });
+
+            // @note use same tough-cookie version as in postman-request and postman-runtime
+            it('should have dev dependency tough-cookie v3.0.1', function () {
+                expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
+            });
         });
 
         describe('devDependencies', function () {
