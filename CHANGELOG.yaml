@@ -17,7 +17,6 @@ master:
       files in the published package
     - GH-610 Added system test for published package content
     - GH-610 Removed puppeteer dependency for browser tests
-    - GH-414 Removed async and shelljs dev-dependencies
     - GH-610 Updated nyc configuration
     - GH-610 Updated ESLint rules
     - GH-610 Updated dependencies
