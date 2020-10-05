@@ -31,6 +31,7 @@
     "build-types": "npm run build-common-types && npm run build-sandbox-types",
     "prepublishOnly": "node npm/prepublish.js",
     "pretest": "npm run cache",
+    "release": "node npm/create-release.js",
     "test": "npm run test-lint && npm run test-system && npm run test-unit && npm run test-vm && npm run test-integration && npm run test-browser",
     "test-browser": "node npm/test-browser.js",
     "test-integration": "node npm/test-integration.js",
@@ -45,6 +46,7 @@
     "uvm": "2.0.1"
   },
   "devDependencies": {
+    "@postman/shipit": "0.1.0",
     "ajv": "6.12.5",
     "assert": "2.0.0",
     "async": "^3.2.0",
