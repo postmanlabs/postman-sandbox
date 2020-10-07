@@ -14,7 +14,7 @@ describe('sandbox error events', function () {
 
             ctx.execute('throw new Error("this will regurgitate!")', {
                 id: 'my-execution-id'
-            }); // eslint-disable-line no-empty-function
+            }, function () {}); // eslint-disable-line no-empty-function
         });
     });
 
@@ -30,7 +30,7 @@ describe('sandbox error events', function () {
 
             ctx.execute('throw new Error("this will regurgitate!")', {
                 id: 'my-execution-id'
-            }); // eslint-disable-line no-empty-function
+            }, function () {}); // eslint-disable-line no-empty-function
         });
     });
 });

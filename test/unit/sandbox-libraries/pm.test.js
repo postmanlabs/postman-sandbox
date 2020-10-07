@@ -31,13 +31,13 @@ describe('sandbox library - pm api', function () {
                 type: 'number'
             }],
             data: {
-                'var1': 'one-data'
+                var1: 'one-data'
             }
         },
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -108,7 +108,7 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert');
                 assert.strictEqual(pm.globals.get('var1'), 'one');
                 assert.strictEqual(pm.globals.get('var2'), 2);
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
 
         it('should propagate updated globals from inside sandbox', function (done) {
@@ -119,13 +119,13 @@ describe('sandbox library - pm api', function () {
                 pm.globals.set('var1', 'one-one');
                 assert.strictEqual(pm.globals.get('var1'), 'one-one');
 
-            `, {context: sampleContextData}, function (err, exec) {
+            `, { context: sampleContextData }, function (err, exec) {
                 expect(err).to.be.null;
                 expect(exec).to.be.ok;
-                expect(exec).to.deep.nested.include({'globals.values': [
-                    {type: 'any', value: 'one-one', key: 'var1'},
-                    {type: 'number', value: 2, key: 'var2'}
-                ]});
+                expect(exec).to.deep.nested.include({ 'globals.values': [
+                    { type: 'any', value: 'one-one', key: 'var1' },
+                    { type: 'number', value: 2, key: 'var2' }
+                ] });
                 done();
             });
         });
@@ -139,7 +139,7 @@ describe('sandbox library - pm api', function () {
                     var1: 'one',
                     var2: 2
                 });
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
     });
 
@@ -169,7 +169,7 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert');
                 assert.strictEqual(pm.environment.get('var1'), 'one-env');
                 assert.strictEqual(pm.environment.get('var2'), 2.5);
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
 
         it('should propagate updated environment from inside sandbox', function (done) {
@@ -180,13 +180,13 @@ describe('sandbox library - pm api', function () {
                 pm.environment.set('var1', 'one-one-env');
                 assert.strictEqual(pm.environment.get('var1'), 'one-one-env');
 
-            `, {context: sampleContextData}, function (err, exec) {
+            `, { context: sampleContextData }, function (err, exec) {
                 expect(err).to.be.null;
                 expect(exec).to.be.ok;
-                expect(exec).to.deep.nested.include({'environment.values': [
-                    {type: 'any', value: 'one-one-env', key: 'var1'},
-                    {type: 'number', value: 2.5, key: 'var2'}
-                ]});
+                expect(exec).to.deep.nested.include({ 'environment.values': [
+                    { type: 'any', value: 'one-one-env', key: 'var1' },
+                    { type: 'number', value: 2.5, key: 'var2' }
+                ] });
                 done();
             });
         });
@@ -200,7 +200,7 @@ describe('sandbox library - pm api', function () {
                     var1: 'one-env',
                     var2: 2.5
                 });
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
     });
 
@@ -230,7 +230,7 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert');
                 assert.strictEqual(pm.collectionVariables.get('var1'), 'collection-var1');
                 assert.strictEqual(pm.collectionVariables.get('var2'), 2.9);
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
 
         it('should propagate updated collection variables from inside sandbox', function (done) {
@@ -241,13 +241,13 @@ describe('sandbox library - pm api', function () {
                 pm.collectionVariables.set('var1', 'one-one-env');
                 assert.strictEqual(pm.collectionVariables.get('var1'), 'one-one-env');
 
-            `, {context: sampleContextData}, function (err, exec) {
+            `, { context: sampleContextData }, function (err, exec) {
                 expect(err).to.be.null;
                 expect(exec).to.be.ok;
-                expect(exec).to.deep.nested.include({'collectionVariables.values': [
-                    {type: 'string', value: 'one-one-env', key: 'var1'},
-                    {type: 'number', value: 2.9, key: 'var2'}
-                ]});
+                expect(exec).to.deep.nested.include({ 'collectionVariables.values': [
+                    { type: 'string', value: 'one-one-env', key: 'var1' },
+                    { type: 'number', value: 2.9, key: 'var2' }
+                ] });
                 done();
             });
         });
@@ -261,7 +261,7 @@ describe('sandbox library - pm api', function () {
                     var1: 'collection-var1',
                     var2: 2.9
                 });
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
     });
 
@@ -497,9 +497,8 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual(typeof pm.cookies.jar, 'function');
-                assert.strictEqual(pm.cookies.jar().constructor.name, 'PostmanCookieJar');
             `, {
-                context: {cookies: []}
+                context: { cookies: [] }
             }, done);
         });
 
@@ -516,7 +515,7 @@ describe('sandbox library - pm api', function () {
 
                 jar.set("http://example.com/", "a=b; Domain=example.com; Path=/", function () {});
             `, {
-                context: {cookies: []},
+                context: { cookies: [] },
                 id: executionId
             }, function (err) {
                 if (err) { return done(err); }
@@ -564,7 +563,7 @@ describe('sandbox library - pm api', function () {
                 var jar = pm.cookies.jar();
                 jar.get("http://example.com/", 'a', function () {})
             `, {
-                context: {cookies: []},
+                context: { cookies: [] },
                 id: executionId
             }, function (err) {
                 if (err) { return done(err); }
@@ -601,7 +600,7 @@ describe('sandbox library - pm api', function () {
                 var jar = pm.cookies.jar();
                 jar.getAll("http://example.com/", function () {})
             `, {
-                context: {cookies: []},
+                context: { cookies: [] },
                 id: executionId
             }, function (err) {
                 if (err) { return done(err); }
@@ -661,7 +660,7 @@ describe('sandbox library - pm api', function () {
                 pm.response.to.have.statusReason('OK');
             `, {
                 context: {
-                    response: {code: 200}
+                    response: { code: 200 }
                 }
             }, done);
         });
@@ -699,21 +698,21 @@ describe('sandbox library - pm api', function () {
                 var assert = require('assert'),
                     VariableScope = require('postman-collection').VariableScope;
                 assert.strictEqual(VariableScope.isVariableScope(pm.iterationData), true);
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
         it('pm.data must not exist', function (done) {
             context.execute(`
                 var assert = require('assert');
 
                 assert.strictEqual(pm.data, undefined);
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
         it('accesses the current iteration data via pm.iterationData', function (done) {
             context.execute(`
                 var assert = require('assert');
 
                 assert.strictEqual(pm.iterationData.get('var1'), 'one-data');
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
         it('pm.iterationData.toObject must return a pojo', function (done) {
             context.execute(`
@@ -723,7 +722,7 @@ describe('sandbox library - pm api', function () {
                 assert.deepEqual(pm.iterationData.toObject(), {
                     var1: 'one-data'
                 });
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
     });
 
@@ -735,7 +734,7 @@ describe('sandbox library - pm api', function () {
                 assert.ok(pm.visualizer);
                 assert.strictEqual(typeof pm.visualizer.set, 'function');
                 assert.strictEqual(typeof pm.visualizer.clear, 'function');
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
 
         describe('pm.visualizer.set', function () {
@@ -744,7 +743,7 @@ describe('sandbox library - pm api', function () {
                     pm.visualizer.set('Test template', {
                         name: 'Postman'
                     });
-                `, {context: sampleContextData}, function (err, result) {
+                `, { context: sampleContextData }, function (err, result) {
                     expect(err).to.not.be.ok;
                     expect(result).to.have.nested.property('return.visualizer');
                     expect(result.return.visualizer.template).to.eql('Test template');
@@ -758,7 +757,7 @@ describe('sandbox library - pm api', function () {
             it('should throw error for invalid template', function (done) {
                 context.execute(`
                     pm.visualizer.set(undefined);
-                `, {context: sampleContextData}, function (err) {
+                `, { context: sampleContextData }, function (err) {
                     expect(err).to.be.ok;
                     expect(err.message).to.eql('Invalid template. Template must be of type string, found undefined');
                     done();
@@ -768,7 +767,7 @@ describe('sandbox library - pm api', function () {
             it('should throw error for invalid data', function (done) {
                 context.execute(`
                     pm.visualizer.set('Test template', 'invalid data');
-                `, {context: sampleContextData}, function (err) {
+                `, { context: sampleContextData }, function (err) {
                     expect(err).to.be.ok;
                     expect(err.message).to.eql('Invalid data. Data must be an object, found string');
                     done();
@@ -778,7 +777,7 @@ describe('sandbox library - pm api', function () {
             it('should throw error for invalid options', function (done) {
                 context.execute(`
                     pm.visualizer.set('Test template', {}, 'Invalid options');
-                `, {context: sampleContextData}, function (err) {
+                `, { context: sampleContextData }, function (err) {
                     expect(err).to.be.ok;
                     expect(err.message).to.eql('Invalid options. Options must be an object, found string');
                     done();
@@ -794,7 +793,7 @@ describe('sandbox library - pm api', function () {
                     });
 
                     pm.visualizer.clear();
-                `, {context: sampleContextData}, function (err, result) {
+                `, { context: sampleContextData }, function (err, result) {
                     expect(err).to.not.be.ok;
                     expect(result.return.visualizer).to.not.be.ok;
                     done();
@@ -808,7 +807,7 @@ describe('sandbox library - pm api', function () {
             context.execute(`
                 var assert = require('assert');
                 assert.strictEqual((typeof pm.sendRequest), 'function');
-            `, {context: sampleContextData}, done);
+            `, { context: sampleContextData }, done);
         });
 
         it('should dispatch an `execution.request.id` event when called', function (done) {
@@ -835,6 +834,7 @@ describe('sandbox library - pm api', function () {
 
         it('should forward response to callback when sent from outside', function (done) {
             var executionId = '2';
+
             context.on('error', done);
 
             context.on('execution.error', function (cur, err) {
@@ -882,6 +882,7 @@ describe('sandbox library - pm api', function () {
 
         it('should forward history object to callback when sent from outside', function (done) {
             var executionId = '3';
+
             context.on('error', done);
 
             context.on('execution.error', function (cur, err) {

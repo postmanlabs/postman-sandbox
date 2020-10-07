@@ -4,7 +4,7 @@ describe('sandbox library - postman-collection', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -61,7 +61,7 @@ describe('sandbox library - postman-collection', function () {
                 response;
 
             response = new sdk.Response({
-                stream: new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
+                stream: Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
             });
 
 
@@ -90,5 +90,30 @@ describe('sandbox library - postman-collection', function () {
             assert.strictEqual(variables.syncVariablesTo().var1, 'val1');
             assert.strictEqual(variables.syncVariablesTo().var2, 'val2');
         `, done);
+    });
+
+    it('should resolve dynamic variables using pm.variables.replaceIn', function (done) {
+        context.execute(`
+            var assert = require('assert'),
+                replaceIn = pm.variables.replaceIn,
+                variables = [
+                    '$guid', '$timestamp', '$isoTimestamp', '$randomInt', '$randomPhoneNumber', '$randomWords',
+                    '$randomLocale', '$randomDirectoryPath', '$randomCity', '$randomCountry', '$randomBs',
+                    '$randomUrl', '$randomPassword', '$randomFullName', '$randomMonth', '$randomLoremParagraphs'
+                ],
+                guidRE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+                ipRE = /^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(?= - -)/;
+
+            for (var variable of variables) {
+                var resolved = replaceIn(\`{{\${variable}}}\`);
+                assert.notStrictEqual(resolved, \`{{\${variable}}}\`);
+            }
+
+            assert.ok(guidRE.test(replaceIn("{{$guid}}")));
+            assert.ok(replaceIn("{{$randomWords}}").split(' ').length > 1);
+            assert.ok(replaceIn('{{$randomPhoneNumber}}').length === 12);
+            assert.ok(replaceIn('{{$randomBankAccount}}').length === 8);
+            assert.strictEqual(replaceIn('{{$randomImageUrl}}'), 'http://placeimg.com/640/480');
+        `, { debug: true }, done);
     });
 });

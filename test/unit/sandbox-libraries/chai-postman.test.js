@@ -4,7 +4,7 @@ describe('sandbox library - chai-postman', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -462,10 +462,10 @@ describe('sandbox library - chai-postman', function () {
             });
 
             // eslint-disable-next-line max-len
-            (typeof window === 'undefined' ? it : it.skip)('should have a way to be asserted for absence', function (done) {
+            it('should have a way to be asserted for absence', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
-                        responseTime: NaN
+                        responseTime: undefined
                     });
                     pm.expect(response).to.have.responseTime();
                 `, function (err) {
@@ -501,7 +501,7 @@ describe('sandbox library - chai-postman', function () {
                     var response = new (require('postman-collection').Response)({
                         code: 200,
                         header: 'oneHeader:oneValue',
-                        stream: new Buffer('hello there')
+                        stream: Buffer.from('hello there')
                     });
 
                     pm.expect(response).to.have.responseSize.below(50);

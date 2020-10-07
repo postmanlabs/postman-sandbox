@@ -4,7 +4,7 @@ describe('timers inside sandbox', function () {
         ctx;
 
     beforeEach(function (done) {
-        Sandbox.createContext({debug: true}, function (err, context) {
+        Sandbox.createContext({ debug: true }, function (err, context) {
             if (err) { return done(err); }
             ctx = context;
             done();

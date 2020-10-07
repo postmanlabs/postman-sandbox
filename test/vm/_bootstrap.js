@@ -15,8 +15,10 @@ Mocha.prototype.loadFiles = function (fn) {
     fn && fn();
 };
 
-mocha = new Mocha({timeout: 1000 * 60, useColors: true});
+mocha = new Mocha({ timeout: 1000 * 60, useColors: true });
 
+// eslint-disable-next-line no-undef
 __specs.forEach(mocha.addFile.bind(mocha)); // @hack __specs is exposed in the VM context
 
+// eslint-disable-next-line no-undef
 mocha.run(__next); // @hack exposed in the VM context

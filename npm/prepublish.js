@@ -1,25 +1,20 @@
 #!/usr/bin/env node
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to execute all required checks prior to publishing the module
+// This script is intended to execute all required checks prior to publishing the module.
 // ---------------------------------------------------------------------------------------------------------------------
-/* eslint-env node, es6 */
-/* globals exit, mkdir, rm */
 
-require('shelljs/global');
+// eslint-disable-next-line security/detect-child-process
+const { mkdir, rm } = require('shelljs'),
+    cache = require('./cache'),
+    systemTests = require('./test-system');
 
-var packity = require('packity'),
-    options = {
-        path: './', dev: true
-    };
 
 // trigger cache generation after clearing it
-mkdir('-p', '.cache');
 rm('-rf', '.cache');
+mkdir('-p', '.cache');
 
-packity(options, function (err, results) {
-    packity.cliReporter(options)(err, results);
+cache((exitCode) => {
+    exitCode && process.exit(exitCode);
 
-    if (err) { return exit(1); }
-
-    require('./cache')(exit);
+    systemTests(process.exit);
 });

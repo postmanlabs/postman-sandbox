@@ -1,4 +1,4 @@
-var pkg = require('../../package.json'),
+const pkg = require('../../package.json'),
 
     heading =
 `// Type definitions for postman-sandbox ${pkg.version}
@@ -155,11 +155,11 @@ interface AssertableBe {
 }`;
 
 module.exports = {
-    heading: heading,
-    postmanLegacyString: postmanLegacyString,
-    postmanExtensionString: postmanExtensionString,
-    cookieListExtensionString: cookieListExtensionString,
-    responseExtensionString: responseExtensionString
+    heading,
+    postmanLegacyString,
+    postmanExtensionString,
+    cookieListExtensionString,
+    responseExtensionString
 };
 
 

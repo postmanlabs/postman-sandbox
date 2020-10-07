@@ -1,21 +1,20 @@
 #!/usr/bin/env node
 // ---------------------------------------------------------------------------------------------------------------------
-// This script is intended to generate type-definition for this module
+// This script is intended to generate type-definition for this module.
 // ---------------------------------------------------------------------------------------------------------------------
 
-/* eslint-env node, es6 */
-require('shelljs/global');
-
-var path = require('path'),
+const path = require('path'),
     fs = require('fs'),
     chalk = require('chalk'),
+    { test, exec, rm } = require('shelljs'),
+
     templates = require('./utils/templates'),
 
     IS_WINDOWS = (/^win/).test(process.platform),
     TARGET_DIR = path.join('types');
 
 module.exports = function (exit) {
-    console.log(chalk.yellow.bold('Generating type-definitions...'));
+    console.info(chalk.yellow.bold('Generating type-definitions...'));
 
     try {
         // clean directory
@@ -23,20 +22,21 @@ module.exports = function (exit) {
     }
     catch (e) {
         console.error(e.stack || e);
+
         return exit(e ? 1 : 0);
     }
 
     exec(`${IS_WINDOWS ? '' : 'node'} ${path.join('node_modules', '.bin', 'jsdoc')}${IS_WINDOWS ? '.cmd' : ''}` +
         ' -c .jsdoc-config-type-def.json -p', function (code) {
-
         if (!code) {
             fs.readFile(`${TARGET_DIR}/index.d.ts`, function (err, contents) {
                 if (err) {
-                    console.log(chalk.red.bold('unable to read the type-definition file'));
+                    console.info(chalk.red.bold('unable to read the type-definition file'));
                     exit(1);
                 }
 
                 var source = contents.toString();
+
                 source = source
                     // replacing Integer with number as 'Integer' is not a valid data-type in Typescript
                     .replace(/Integer/gm, 'number')
@@ -55,21 +55,21 @@ module.exports = function (exit) {
 
                 fs.writeFile(`${TARGET_DIR}/index.d.ts`, source, function (err) {
                     if (err) {
-                        console.log(chalk.red.bold('unable to write the type-definition file'));
+                        console.info(chalk.red.bold('unable to write the type-definition file'));
                         exit(1);
                     }
-                    console.log(chalk.green.bold(`type-definition file saved successfully at "${TARGET_DIR}"`));
+                    console.info(chalk.green.bold(`type-definition file saved successfully at "${TARGET_DIR}"`));
                     exit(0);
                 });
             });
         }
         else {
             // output status
-            console.log(chalk.red.bold('unable to generate type-definition'));
+            console.info(chalk.red.bold('unable to generate type-definition'));
             exit(code);
         }
     });
 };
 
 // ensure we run this script exports if this is a direct stdin.tty run
-!module.parent && module.exports(exit);
+!module.parent && module.exports(process.exit);

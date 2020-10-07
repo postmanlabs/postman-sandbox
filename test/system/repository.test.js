@@ -5,10 +5,10 @@
 var _ = require('lodash'),
     yml = require('js-yaml'),
     parseIgnore = require('parse-gitignore'),
+    expect = require('chai').expect,
     fs = require('fs');
 
 describe('project repository', function () {
-
     describe('package.json', function () {
         var content,
             json;
@@ -35,16 +35,32 @@ describe('project repository', function () {
             it('should have valid name, description, author and license', function () {
                 expect(json).to.deep.include({
                     name: 'postman-sandbox',
-                    description: 'Sandbox for Postman Scripts to run in NodeJS or Chrome',
-                    author: 'Postman Labs <help@getpostman.com> (=)',
+                    description: 'Sandbox for Postman Scripts to run in Node.js or browser',
+                    author: 'Postman Inc.',
                     license: 'Apache-2.0'
                 });
             });
 
             it('should have a valid version string in form of <major>.<minor>.<revision>', function () {
                 expect(json.version)
-                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line max-len, security/detect-unsafe-regex
                     .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
+            });
+
+            // @note updating csv-parse will break postman script because of breaking
+            // API and options changes introduced in csv-parse
+            it('should have dev dependency csv-parse v1.2.4', function () {
+                expect(json.devDependencies).to.have.property('csv-parse', '1.2.4');
+            });
+
+            // @note crypto-js v4 uses native crypto module which will not work after browserify
+            it('should have dev dependency crypto-js v3.3.0', function () {
+                expect(json.devDependencies).to.have.property('crypto-js', '3.3.0');
+            });
+
+            // @note use same tough-cookie version as in postman-request and postman-runtime
+            it('should have dev dependency tough-cookie v3.0.1', function () {
+                expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
             });
         });
 
@@ -55,6 +71,7 @@ describe('project repository', function () {
 
             it('should point to a valid semver', function () {
                 Object.keys(json.devDependencies).forEach(function (dependencyName) {
+                    // eslint-disable-next-line security/detect-non-literal-regexp
                     expect(json.devDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
                         '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
                 });
@@ -65,15 +82,6 @@ describe('project repository', function () {
             it('should point to a valid file', function (done) {
                 expect(json.main).to.equal('index.js');
                 fs.stat(json.main, done);
-            });
-        });
-
-        describe('greenkeeper', function () {
-            it('should ignore mocha (v5.0.2 and beyond truncate browser tests)', function () {
-                expect(json.devDependencies).to.have.property('mocha', '5.0.1');
-                expect(json.greenkeeper).to.eql({
-                    ignore: ['xml2js', 'mocha', 'csv-parse', 'eslint-plugin-jsdoc']
-                });
             });
         });
     });

@@ -21,7 +21,7 @@ describe('console inside sandbox', function () {
                 });
 
                 ctx.execute(`console.${level}('hello console');`, {
-                    cursor: {ref: 'cursor-identifier'}
+                    cursor: { ref: 'cursor-identifier' }
                 }, function (err) {
                     if (err) { return done(err); }
                     expect(consoleEventArgs).to.be.ok;
@@ -51,7 +51,7 @@ describe('console inside sandbox', function () {
                         a: 1,
                         b: 2
                     },
-                    custom: {key: 'value'},
+                    custom: { key: 'value' },
                     inf: Infinity,
                     neginf: -Infinity,
                     map: new Map([[1, 'one'], [2, 'two']]),
@@ -118,7 +118,6 @@ describe('console inside sandbox', function () {
                 obj.circular = obj;
 
                 console.log(obj, /a-z/g);`, {}, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -162,7 +161,6 @@ describe('console inside sandbox', function () {
                     weakset: new WeakSet(),
                     arraybuffers: new ArrayBuffer(28)
                 }, function () {});`, {}, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -199,7 +197,6 @@ describe('console inside sandbox', function () {
 
                 console.log(r, c);
             `, {}, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -216,11 +213,7 @@ describe('console inside sandbox', function () {
 
     it('should be able to revive NaN', function (done) {
         Sandbox.createContext({}, function (err, ctx) {
-            var consoleEventArgs,
-
-                // @todo This is done because NaN is returned as undefined for
-                // Node but works correctly for browser
-                expectedValue = (typeof window === 'undefined') ? undefined : NaN;
+            var consoleEventArgs;
 
             if (err) {
                 return done(err);
@@ -232,7 +225,6 @@ describe('console inside sandbox', function () {
             });
 
             ctx.execute('console.log(NaN);', {}, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -240,7 +232,7 @@ describe('console inside sandbox', function () {
                 expect(consoleEventArgs).to.exist;
                 expect(consoleEventArgs[0]).to.be.an('object');
                 expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
-                expect(consoleEventArgs[2]).to.eql(expectedValue);
+                expect(consoleEventArgs[2]).to.eql(NaN);
                 done();
             });
         });
@@ -267,7 +259,6 @@ describe('console inside sandbox', function () {
             ctx.execute('console.log({ undef: undefined, str: "string" });', {
                 serializeLogs: true
             }, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -298,7 +289,6 @@ describe('console inside sandbox', function () {
             ctx.execute('console.log();', {
                 serializeLogs: false
             }, function (err) {
-
                 if (err) {
                     return done(err);
                 }
@@ -328,7 +318,6 @@ describe('console inside sandbox', function () {
             ctx.execute('console.log();', {
                 serializeLogs: true
             }, function (err) {
-
                 if (err) {
                     return done(err);
                 }

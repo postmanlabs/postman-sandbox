@@ -7,7 +7,7 @@ describe('sandbox assertion events', function () {
         var contextsExecuted = 0,
             doneCalled = false;
 
-        Sandbox.createContext({debug: true}, function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.on('execution.assertion', function (cursor, results) {
@@ -19,11 +19,13 @@ describe('sandbox assertion events', function () {
 
                 if (err && !doneCalled) {
                     doneCalled = true;
+
                     return done(err);
                 }
 
                 if (contextsExecuted === 2 && !doneCalled) {
                     doneCalled = true;
+
                     return done();
                 }
             };
