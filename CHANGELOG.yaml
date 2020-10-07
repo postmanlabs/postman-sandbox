@@ -1,4 +1,5 @@
-master:
+4.0.0:
+  date: 2020-10-07
   breaking changes:
     - GH-610 Dropped support for Node < v10
   fixed bugs:
