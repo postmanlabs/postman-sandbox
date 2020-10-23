@@ -54,7 +54,7 @@
     "backbone": "1.4.0",
     "browserify": "^16.5.2",
     "btoa": "1.2.1",
-    "buffer": "5.6.0",
+    "buffer": "5.6.1",
     "chai": "4.2.0",
     "chai-postman": "2.0.0",
     "chalk": "^4.1.0",
