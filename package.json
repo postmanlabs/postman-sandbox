@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@postman/shipit": "0.2.0",
-    "ajv": "6.12.5",
+    "ajv": "7.0.1",
     "assert": "2.0.0",
     "async": "^3.2.0",
     "atob": "2.1.2",
