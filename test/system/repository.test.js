@@ -62,6 +62,12 @@ describe('project repository', function () {
             it('should have dev dependency tough-cookie v3.0.1', function () {
                 expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
             });
+
+            // @note Ajv v7 will break postman script because of breaking API
+            // and dropped support for draft-04 schemas
+            it('should have dev dependency ajv v6.12.5', function () {
+                expect(json.devDependencies).to.have.property('ajv', '6.12.5');
+            });
         });
 
         describe('devDependencies', function () {
