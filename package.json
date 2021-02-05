@@ -55,7 +55,7 @@
     "browserify": "^16.5.2",
     "btoa": "1.2.1",
     "buffer": "6.0.3",
-    "chai": "4.2.0",
+    "chai": "4.3.0",
     "chai-postman": "2.0.0",
     "chalk": "^4.1.0",
     "cheerio": "0.22.0",
