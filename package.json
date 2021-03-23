@@ -82,7 +82,7 @@
     "nyc": "^15.1.0",
     "packity": "^0.3.2",
     "parse-gitignore": "^1.0.1",
-    "postman-collection": "3.6.9",
+    "postman-collection": "3.6.10",
     "recursive-readdir": "^2.2.2",
     "shelljs": "^0.8.4",
     "sinon": "^9.2.2",
