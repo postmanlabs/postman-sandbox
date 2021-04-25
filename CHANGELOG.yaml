@@ -1,5 +1,6 @@
 unreleased:
   chores:
+    - Added secure codecov publish script
     - Updated dependencies
 
 4.0.2:

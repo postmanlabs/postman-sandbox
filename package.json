@@ -25,10 +25,11 @@
     "vm"
   ],
   "scripts": {
-    "cache": "node npm/cache.js $1",
     "build-common-types": "node npm/build-types.js",
     "build-sandbox-types": "node npm/build-sandbox-types.js",
     "build-types": "npm run build-common-types && npm run build-sandbox-types",
+    "cache": "node npm/cache.js $1",
+    "codecov": "node npm/publish-coverage.js",
     "prepublishOnly": "node npm/prepublish.js",
     "pretest": "npm run cache",
     "release": "node npm/create-release.js",
