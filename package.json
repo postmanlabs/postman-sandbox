@@ -60,7 +60,7 @@
     "chai-postman": "2.0.1",
     "chalk": "^4.1.1",
     "cheerio": "0.22.0",
-    "crypto-js": "3.3.0",
+    "crypto-js": "4.0.0",
     "csv-parse": "1.2.4",
     "editorconfig": "^0.15.3",
     "eslint": "^7.25.0",
