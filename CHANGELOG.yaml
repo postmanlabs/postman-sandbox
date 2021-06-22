@@ -1,4 +1,5 @@
-unreleased:
+4.0.3:
+  date: 2021-06-22
   chores:
     - Added secure codecov publish script
     - Updated dependencies
@@ -100,7 +101,7 @@ unreleased:
     - |
       GH-502 Added option `serializeLogs` to allow sending `teleport-javascript`
       serialized logs
-    - 'GH-504 Added support for functions, weakMaps, etc. in console logs'
+    - GH-504 Added support for functions, weakMaps, etc. in console logs
   chores:
     - Updated dependencies
 
@@ -377,7 +378,7 @@ unreleased:
   date: 2017-08-18
   new features:
     - GH-106 Support for timers inside sandbox (not in browser)
-    - 'Added `url`, `punycode`, and `querystring` to the Sandbox'
+    - Added `url`, `punycode`, and `querystring` to the Sandbox
     - >-
       Added `pm.sendRequest` which dispatches event `execution.request.${id}`
       and expects `execution.response.${id}`
@@ -421,7 +422,7 @@ unreleased:
   date: 2017-05-12
   new features:
     - Introduced `pm.variables` as a unified interface for variable access
-    - 'Renamed `pm.data` to `pm.iterationData`, exposed as a `VariableScope`'
+    - Renamed `pm.data` to `pm.iterationData`, exposed as a `VariableScope`
   fixed bugs:
     - >-
       Updated `uniscope` to v1.1.1, which contains a bugfix for handling falsey
@@ -461,7 +462,7 @@ unreleased:
     - >-
       Removed legacy handling of environment and collections (both are now
       `VariableScope`s
-    - 'Introduced a standardized execution result object, `Execution`'
+    - Introduced a standardized execution result object, `Execution`
     - Removed the `masked` options which were used by the sandbox
 
 1.0.1:
