@@ -23,6 +23,10 @@ module.exports = function (exit) {
             var specs,
                 bundler = browserify('test/vm/_bootstrap.js');
 
+            // workaround to avoid "getRandomValues() not supported"
+            // ref: https://github.com/uuidjs/uuid#getrandomvalues-not-supported
+            bundler.require(require.resolve('../lib/vendor/uuid'), { expose: 'uuid' });
+
             (specs = files.filter(function (file) { // extract all test files
                 return (file.substr(-8) === '.test.js');
             })).forEach(function (file) {
