@@ -106,9 +106,9 @@ describe('pm.variables', function () {
             });
         });
 
-        it('should be able to work with json variables', function (done) {
+        it('should be able to work with object variables', function (done) {
             ctx.execute(`
-                pm.variables.set('myObject', { version: 'v1' }, 'json');
+                pm.variables.set('myObject', { version: 'v1' }, 'object');
             `, {
                 timeout: 200,
                 context: {
@@ -118,7 +118,7 @@ describe('pm.variables', function () {
                 if (err) { return done(err); }
 
                 expect(execution).to.deep.nested.include({ '_variables.values': [
-                    { type: 'json', value: '{"version":"v1"}', key: 'myObject' }
+                    { type: 'object', value: '{"version":"v1"}', key: 'myObject' }
                 ] });
 
                 return done();
