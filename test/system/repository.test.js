@@ -46,27 +46,17 @@ describe('project repository', function () {
                     // eslint-disable-next-line max-len, security/detect-unsafe-regex
                     .to.match(/^((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?(?:\+([\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/);
             });
+        });
 
-            // @note updating csv-parse will break postman script because of breaking
-            // API and options changes introduced in csv-parse
-            it('should have dev dependency csv-parse v1.2.4', function () {
-                expect(json.devDependencies).to.have.property('csv-parse', '1.2.4');
+        describe('dependencies', function () {
+            it('should exist', function () {
+                expect(json.dependencies).to.be.an('object');
             });
 
-            // @note crypto-js v4 uses native crypto module which will not work after browserify
-            it('should have dev dependency crypto-js v3.3.0', function () {
-                expect(json.devDependencies).to.have.property('crypto-js', '3.3.0');
-            });
-
-            // @note use same tough-cookie version as in postman-request and postman-runtime
-            it('should have dev dependency tough-cookie v3.0.1', function () {
-                expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
-            });
-
-            // @note Ajv v7 will break postman script because of breaking API
-            // and dropped support for draft-04 schemas
-            it('should have dev dependency ajv v6.12.5', function () {
-                expect(json.devDependencies).to.have.property('ajv', '6.12.5');
+            it('should point to specific package version; (*, ^, ~) not expected', function () {
+                _.forEach(json.dependencies, function (dep) {
+                    expect((/^\d/).test(dep)).to.be.ok;
+                });
             });
         });
 
@@ -81,6 +71,39 @@ describe('project repository', function () {
                     expect(json.devDependencies[dependencyName]).to.match(new RegExp('((\\d+)\\.(\\d+)\\.(\\d+))(?:-' +
                         '([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?(?:\\+([\\dA-Za-z\\-]+(?:\\.[\\dA-Za-z\\-]+)*))?$'));
                 });
+            });
+
+            it('should point to specific package version for bundled packages; (*, ^, ~) not expected', function () {
+                [
+                    'ajv', 'assert', 'atob', 'backbone', 'btoa', 'buffer', 'chai',
+                    'chai-postman', 'cheerio', 'crypto-js', 'csv-parse', 'liquid-json',
+                    'lodash3', 'moment', 'postman-collection', 'tough-cookie', 'tv4',
+                    'uniscope', 'xml2js'
+                ].forEach(function (dep) {
+                    expect((/^\d/).test(json.devDependencies[dep]), `${dep} check failed`).to.be.ok;
+                });
+            });
+
+            // @note updating csv-parse will break postman script because of breaking
+            // API and options changes introduced in csv-parse
+            it('should have csv-parse v1.2.4', function () {
+                expect(json.devDependencies).to.have.property('csv-parse', '1.2.4');
+            });
+
+            // @note crypto-js v4 uses native crypto module which will not work after browserify
+            it('should have crypto-js v3.3.0', function () {
+                expect(json.devDependencies).to.have.property('crypto-js', '3.3.0');
+            });
+
+            // @note use same tough-cookie version as in postman-request and postman-runtime
+            it('should have tough-cookie v3.0.1', function () {
+                expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
+            });
+
+            // @note Ajv v7 will break postman script because of breaking API
+            // and dropped support for draft-04 schemas
+            it('should have ajv v6.12.5', function () {
+                expect(json.devDependencies).to.have.property('ajv', '6.12.5');
             });
         });
 
