@@ -64,7 +64,7 @@
     "csv-parse": "1.2.4",
     "editorconfig": "^0.15.3",
     "eslint": "^7.29.0",
-    "eslint-plugin-jsdoc": "^35.4.0",
+    "eslint-plugin-jsdoc": "^36.0.6",
     "eslint-plugin-lodash": "^7.2.0",
     "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-security": "^1.4.0",
