@@ -1,4 +1,6 @@
-var Mocha = require('mocha').Mocha,
+// Assigned 'global' to fix mocha v9.1.2 bump
+// Ref: https://github.com/mochajs/mocha/pull/4746
+var Mocha = Object.assign(require('mocha'), global).Mocha,
 
     mocha;
 

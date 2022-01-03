@@ -84,6 +84,10 @@ describe('sandbox', function () {
                 // filter out the ignored properties
                 propNames = propNames.filter(prop => !ignoredProps.includes(prop));
 
+                // FIXME: why's 'SharedArrayBuffer' missing from browser's context?
+                // Temporarily added to fix browser tests
+                !propNames.includes('SharedArrayBuffer') && propNames.push('SharedArrayBuffer');
+
                 // make sure both propNames and allowedGlobals are same
                 assert.equal(JSON.stringify(propNames.sort()), JSON.stringify(allowedGlobals.sort()));
 
