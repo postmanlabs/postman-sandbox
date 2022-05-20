@@ -5,6 +5,7 @@
   "author": "Postman Inc.",
   "license": "Apache-2.0",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "browser": {
     "./lib/bundle/index.js": "./lib/bundle/index.browser.js",
     "./.cache/bootcode.js": "./.cache/bootcode.browser.js"
