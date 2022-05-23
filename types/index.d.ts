@@ -105,7 +105,7 @@ declare global {
         /**
          * Allows one to send request from script asynchronously.
          */
-        sendRequest(req: Request | string, callback: (...params: any[]) => any): void;
+        sendRequest(req: unknown | string, callback: (...params: any[]) => any): void;
         expect: Chai.ExpectStatic;
     }
 
