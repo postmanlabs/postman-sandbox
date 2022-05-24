@@ -86,7 +86,7 @@
     "postman-collection": "4.1.1",
     "recursive-readdir": "^2.2.2",
     "shelljs": "^0.8.4",
-    "sinon": "^12.0.1",
+    "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
     "terser": "^5.10.0",
     "tough-cookie": "3.0.1",
