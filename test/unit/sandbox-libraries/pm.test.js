@@ -639,7 +639,7 @@ describe('sandbox library - pm api', function () {
                 pm.expect(new Error).to.not.be.an('error');
             `, function (err) {
                 expect(err).to.be.ok;
-                expect(err).have.property('message', 'expected [Error] not to be an error');
+                expect(err).have.property('message', 'expected Error not to be an error');
                 done();
             });
         });

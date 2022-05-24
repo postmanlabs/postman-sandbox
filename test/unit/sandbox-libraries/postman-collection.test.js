@@ -113,7 +113,7 @@ describe('sandbox library - postman-collection', function () {
             assert.ok(replaceIn("{{$randomWords}}").split(' ').length > 1);
             assert.ok(replaceIn('{{$randomPhoneNumber}}').length === 12);
             assert.ok(replaceIn('{{$randomBankAccount}}').length === 8);
-            assert.strictEqual(replaceIn('{{$randomImageUrl}}'), 'http://placeimg.com/640/480');
+            assert.strictEqual(replaceIn('{{$randomImageUrl}}'), 'http://loremflickr.com/640/480');
         `, { debug: true }, done);
     });
 });

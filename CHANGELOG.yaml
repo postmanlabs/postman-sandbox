@@ -1,6 +1,7 @@
 unreleased:
   chores:
     - Run Travis coverage step in latest LTS Node.js release
+    - Updated dependencies
 
 4.0.6:
   date: 2022-01-03

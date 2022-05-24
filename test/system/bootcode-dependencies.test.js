@@ -18,6 +18,7 @@ describe('bootcode dependencies', function () {
 
     it('should not change', function () {
         expect(currentDependencies).to.eql([
+            '@faker-js/faker',
             'ajv',
             'array-filter',
             'assert',
@@ -51,7 +52,6 @@ describe('bootcode dependencies', function () {
             'es-abstract',
             'es6-object-assign',
             'events',
-            'faker',
             'fast-deep-equal',
             'fast-json-stable-stringify',
             'file-type',
@@ -90,6 +90,7 @@ describe('bootcode dependencies', function () {
             'lodash.reject',
             'lodash.some',
             'lodash3',
+            'loupe',
             'lru-cache',
             'mime-db',
             'mime-format',
