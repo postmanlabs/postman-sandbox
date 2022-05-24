@@ -10,9 +10,9 @@ node_js:
 
 jobs:
   include:
-    # run tests in Node.js stable and publish code coverage
+    # run tests in latest LTS Node.js release and publish code coverage
     - name: 'Coverage'
-      node_js: stable
+      node_js: lts/*
       os: linux
       script:
         - npm run cache

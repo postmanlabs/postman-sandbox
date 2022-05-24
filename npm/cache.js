@@ -40,13 +40,6 @@ module.exports = function (exit) {
 
     console.info(chalk.yellow.bold('Generating bootcode in ".cache" directory...'));
 
-    // First, override locales exported by faker otherwise all the locales data will be
-    // bundled by browserify.
-    fs.writeFileSync(require.resolve('faker/lib/locales'),
-        // only export `en` locale as required by postman-collection
-        // refer: https://github.com/postmanlabs/postman-collection/blob/v3.6.7/lib/superstring/dynamic-variables.js#L1
-        "exports['en'] = require('./locales/en');"); // eslint-disable-line quotes
-
     const options = require('../lib/environment');
 
     async.parallel([

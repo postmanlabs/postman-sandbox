@@ -1,3 +1,9 @@
+4.0.7:
+  date: 2022-05-24
+  chores:
+    - Run Travis coverage step in latest LTS Node.js release
+    - Updated dependencies
+
 4.0.6:
   date: 2022-01-03
   chores:

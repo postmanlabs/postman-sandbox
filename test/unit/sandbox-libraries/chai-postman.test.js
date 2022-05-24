@@ -24,7 +24,7 @@ describe('sandbox library - chai-postman', function () {
                 expect(err).to.be.ok;
                 expect(err).to.deep.include({
                     name: 'AssertionError',
-                    message: 'expecting a postman request object but got { Object (id, _details, ...) }'
+                    message: 'expecting a postman request object but got PostmanResponse{ …(6) }'
                 });
                 done();
             });
@@ -58,7 +58,7 @@ describe('sandbox library - chai-postman', function () {
                 expect(err).to.be.ok;
                 expect(err).to.deep.include({
                     name: 'AssertionError',
-                    message: 'expecting a postman request object but got { Object (id, _details, ...) }'
+                    message: 'expecting a postman request object but got PostmanResponse{ …(6) }'
                 });
                 done();
             });
@@ -84,7 +84,8 @@ describe('sandbox library - chai-postman', function () {
                 expect(err).to.be.ok;
                 expect(err).to.deep.include({
                     name: 'AssertionError',
-                    message: 'expecting a postman request or response object but got { Object (key, value) }'
+                    // eslint-disable-next-line max-len
+                    message: 'expecting a postman request or response object but got PostmanHeader{ key: \'key\', …(1) }'
                 });
                 done();
             });
@@ -424,7 +425,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).to.deep.include({
                         name: 'AssertionError',
                         // eslint-disable-next-line max-len
-                        message: 'expected { prop: [ { value: [Object] } ] } in response to not contain property \'prop[0]\''
+                        message: 'expected { prop: [ { value: { oh: \'wow\' } } ] } in response to not contain property \'prop[0]\''
                     });
                     done();
                 });
@@ -472,7 +473,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).to.be.ok;
                     expect(err).to.deep.include({
                         name: 'AssertionError',
-                        message: 'expected { Object (id, _details, ...) } to have property \'responseTime\''
+                        message: 'expected PostmanResponse{ …(4) } to have property \'responseTime\''
                     });
                     done();
                 });
