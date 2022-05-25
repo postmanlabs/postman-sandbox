@@ -105,7 +105,13 @@ declare global {
         /**
          * Allows one to send request from script asynchronously.
          */
+        // TODO: figure out what the correct type is here, both Request from the built in types and from postman-collection
+        // seem to be incorrect
         sendRequest(req: unknown | string, callback: (...params: any[]) => any): void;
+
+        // TODO: import this type instead of relying on ambient module augmentation. this would require a tsconfig.json
+        //  to explicitly specify global modules in the "types" property, however it doesn't seem to work since there
+        //  seems to be types for postman-collection defined in both postman-collection and @types/postman-collection
         expect: Chai.ExpectStatic;
     }
 
