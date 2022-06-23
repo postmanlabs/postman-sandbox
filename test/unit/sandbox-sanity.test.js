@@ -120,4 +120,12 @@ describe('sandbox', function () {
             });
         });
     });
+
+    it('should create context fleet using templates', function (done) {
+        //
+    });
+
+    it('should throw for invalid arguments while creating context fleet', function (done) {
+        //
+    });
 });
