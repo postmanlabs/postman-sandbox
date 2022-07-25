@@ -121,11 +121,11 @@ describe('sandbox', function () {
         });
     });
 
-    it('should create context fleet using templates', function (done) {
-        //
-    });
+    // it('should create context fleet using templates', function (done) {
+    //     //
+    // });
 
-    it('should throw for invalid arguments while creating context fleet', function (done) {
-        //
-    });
+    // it('should return the correct context for the given template name', function (done) {
+    //     //
+    // });
 });
