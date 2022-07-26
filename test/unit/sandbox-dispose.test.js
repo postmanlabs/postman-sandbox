@@ -56,7 +56,7 @@ describe('sandbox disposal', function () {
 
     it('should clear running intervals', function (done) {
         Sandbox.createContext(function (err, ctx) {
-            expect(err).to.be.null;
+            expect(err).to.not.exist;
 
             var intervals = {
                 terminal: -1,
