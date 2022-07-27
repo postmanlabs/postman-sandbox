@@ -1,4 +1,6 @@
 unreleased:
+  new features:
+    - GH-839 [internal] Added new `createContextFleet` method
   fixed bugs:
     - Fixed a bug where synchronous cookie store used to bail out execution
   chores:
