@@ -1,4 +1,6 @@
 unreleased:
+  fixed bugs:
+    - Fixed a bug where synchronous cookie store used to bail out execution
   chores:
     - Updated dependencies
 
