@@ -1,3 +1,12 @@
+4.1.0:
+  date: 2022-07-28
+  new features:
+    - GH-839 [internal] Added new `createContextFleet` method
+  fixed bugs:
+    - Fixed a bug where synchronous cookie store used to bail out execution
+  chores:
+    - Updated dependencies
+
 4.0.8:
   date: 2022-06-06
   chores:
