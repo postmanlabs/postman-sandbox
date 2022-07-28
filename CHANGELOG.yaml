@@ -1,4 +1,5 @@
-unreleased:
+4.1.0:
+  date: 2022-07-28
   new features:
     - GH-839 [internal] Added new `createContextFleet` method
   fixed bugs:
