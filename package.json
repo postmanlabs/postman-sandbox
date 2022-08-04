@@ -44,7 +44,8 @@
   "dependencies": {
     "lodash": "4.17.21",
     "teleport-javascript": "1.0.0",
-    "uvm": "2.1.1"
+    "uvm": "2.1.1",
+    "postman-collection": "4.1.5"
   },
   "devDependencies": {
     "@postman/shipit": "^0.4.0",
@@ -83,7 +84,6 @@
     "nyc": "^15.1.0",
     "packity": "^0.3.4",
     "parse-gitignore": "^1.0.1",
-    "postman-collection": "4.1.5",
     "recursive-readdir": "^2.2.2",
     "shelljs": "^0.8.5",
     "sinon": "^12.0.1",

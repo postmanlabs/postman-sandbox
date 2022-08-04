@@ -77,7 +77,7 @@ describe('project repository', function () {
                 [
                     'ajv', 'assert', 'atob', 'backbone', 'btoa', 'buffer', 'chai',
                     'chai-postman', 'cheerio', 'crypto-js', 'csv-parse', 'liquid-json',
-                    'lodash3', 'moment', 'postman-collection', 'tough-cookie', 'tv4',
+                    'lodash3', 'moment', 'tough-cookie', 'tv4',
                     'uniscope', 'xml2js'
                 ].forEach(function (dep) {
                     expect((/^\d/).test(json.devDependencies[dep]), `${dep} check failed`).to.be.ok;
