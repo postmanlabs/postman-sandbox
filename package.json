@@ -63,7 +63,7 @@
     "cheerio": "0.22.0",
     "crypto-js": "3.3.0",
     "csv-parse": "1.2.4",
-    "editorconfig": "^0.15.3",
+    "editorconfig": "^1.0.1",
     "eslint": "^7.32.0",
     "eslint-plugin-jsdoc": "^39.3.4",
     "eslint-plugin-lodash": "^7.4.0",
