@@ -14,6 +14,9 @@ jobs:
     - name: 'Coverage'
       node_js: lts/*
       os: linux
+      # avoid build errors with Node v18 on older Ubuntu distributions:
+      # https://travis-ci.community/t/the-command-npm-config-set-spin-false-failed-and-exited-with-1-during/12909/7
+      dist: focal
       script:
         - npm run cache
         - npm run test-unit
