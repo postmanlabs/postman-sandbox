@@ -4,7 +4,7 @@ var teleportJS = require('teleport-javascript');
 describe('console inside sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib'),
-        logLevels = ['log', 'warn', 'debug', 'info', 'error'];
+        logLevels = ['log', 'warn', 'debug', 'info', 'error', 'clear'];
 
     logLevels.forEach(function (level) {
         it(`console.${level} must be available inside sandbox`, function (done) {
