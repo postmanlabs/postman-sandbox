@@ -108,25 +108,19 @@ describe('sandbox library - AJV', function () {
                                 }, 10);
                             });
                         }
-                    }),
-
-                    valid;
+                    });
 
                 ajv.compileAsync(SCHEMAS['https://schema.getpostman.com/collection.json'])
                     .then(function (validate) {
-                        valid = validate({
+                        const valid = validate({
                             name: 'test',
                             request: {
                                 method: 'GET',
                                 url: 'https://getpostman.com'
                             }
                         });
+                        pm.globals.set('valid', valid);
                     });
-
-                // this hack is required since we can't assert on async functions
-                setTimeout(function () {
-                    pm.globals.set('valid', valid);
-                }, 100);
             `, {
                 timeout: 200
             }, function (err, res) {

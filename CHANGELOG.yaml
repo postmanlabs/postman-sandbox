@@ -1,3 +1,12 @@
+4.2.0:
+  date: 2022-11-28
+  new features:
+    - GH-872 Added support for Promise execution
+    - GH-874 Added support for console.clear()
+  chores:
+    - GH-875 Updated Travis configuration to use an updated Ubuntu distribution
+    - Updated dependencies
+
 4.1.2:
   date: 2022-08-04
   fixed bugs:
