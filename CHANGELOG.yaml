@@ -1,4 +1,5 @@
-unreleased:
+4.2.0:
+  date: 2022-11-28
   new features:
     - GH-872 Added support for Promise execution
     - GH-874 Added support for console.clear()
