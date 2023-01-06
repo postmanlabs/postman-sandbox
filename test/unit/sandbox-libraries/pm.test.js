@@ -1,4 +1,4 @@
-const CookieStore = require('tough-cookie').Store;
+const CookieStore = require('@postman/tough-cookie').Store;
 
 describe('sandbox library - pm api', function () {
     this.timeout(1000 * 60);
