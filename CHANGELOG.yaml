@@ -1,6 +1,8 @@
 unreleased:
   fixed bugs:
     - GH-884 Fixed memory leak due to console and cookie listeners
+  chores:
+    - Updated dependencies
 
 4.2.0:
   date: 2022-11-28
