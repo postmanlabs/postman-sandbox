@@ -3,6 +3,7 @@
   fixed bugs:
     - GH-884 Fixed memory leak due to console and cookie listeners
   chores:
+    - GH-887 Migrate to GitHub Actions
     - Updated dependencies
 
 4.2.0:
