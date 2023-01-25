@@ -77,7 +77,7 @@ describe('project repository', function () {
                 [
                     'ajv', 'assert', 'atob', 'backbone', 'btoa', 'buffer', 'chai',
                     'chai-postman', 'cheerio', 'crypto-js', 'csv-parse', 'liquid-json',
-                    'lodash3', 'moment', 'tough-cookie', 'tv4',
+                    'lodash3', 'moment', '@postman/tough-cookie', 'tv4',
                     'uniscope', 'xml2js'
                 ].forEach(function (dep) {
                     expect((/^\d/).test(json.devDependencies[dep]), `${dep} check failed`).to.be.ok;
@@ -96,8 +96,8 @@ describe('project repository', function () {
             });
 
             // @note use same tough-cookie version as in postman-request and postman-runtime
-            it('should have tough-cookie v3.0.1', function () {
-                expect(json.devDependencies).to.have.property('tough-cookie', '3.0.1');
+            it('should have @postman/tough-cookie v4.1.2', function () {
+                expect(json.devDependencies).to.have.property('@postman/tough-cookie', '4.1.2-postman.1');
             });
 
             // @note Ajv v7 will break postman script because of breaking API

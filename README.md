@@ -1,4 +1,4 @@
-# Postman Sandbox [![Build Status](https://travis-ci.com/postmanlabs/postman-sandbox.svg?branch=develop)](https://travis-ci.com/postmanlabs/postman-sandbox) [![codecov](https://codecov.io/gh/postmanlabs/postman-sandbox/branch/develop/graph/badge.svg)](https://codecov.io/gh/postmanlabs/postman-sandbox)
+# Postman Sandbox [![Build Status](https://github.com/postmanlabs/postman-sandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/postmanlabs/postman-sandbox/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/postmanlabs/postman-sandbox/branch/develop/graph/badge.svg)](https://codecov.io/gh/postmanlabs/postman-sandbox)
 
 Module that unifies execution of third-party JavaScript within Node.js and Browser.
 

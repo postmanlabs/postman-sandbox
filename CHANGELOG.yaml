@@ -1,8 +1,15 @@
+4.2.2:
+  date: 2023-01-25
+  chores:
+    - GH-886 Bumped tough-cookie dependency
+    - Updated dependencies
+
 4.2.1:
   date: 2023-01-20
   fixed bugs:
     - GH-884 Fixed memory leak due to console and cookie listeners
   chores:
+    - GH-887 Migrate to GitHub Actions
     - Updated dependencies
 
 4.2.0:

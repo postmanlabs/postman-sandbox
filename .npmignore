@@ -48,7 +48,6 @@ test/
 .eslintrc
 .nycrc.js
 codecov.yml
-.travis.yml
 .editorconfig
 .jsdoc-config.json
 .jsdoc-config-type-def.json
