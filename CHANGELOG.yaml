@@ -1,3 +1,8 @@
+unreleased:
+  chores:
+    - GH-886 Bumped tough-cookie dependency
+    - Updated dependencies
+
 4.2.1:
   date: 2023-01-20
   fixed bugs:
