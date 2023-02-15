@@ -331,7 +331,7 @@ describe('console inside sandbox', function () {
         });
     });
 
-    it('should allow calling console.log inside a function', function (done) {
+    it('should allow calling console.log inside a function to be reused', function (done) {
         Sandbox.createContext({}, function (err, ctx) {
             var consoleEventArgs;
 
