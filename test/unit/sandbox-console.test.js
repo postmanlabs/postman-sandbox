@@ -330,4 +330,41 @@ describe('console inside sandbox', function () {
             });
         });
     });
+
+    it('should allow calling console.log inside a function to be reused', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            var consoleEventArgs;
+
+            if (err) {
+                return done(err);
+            }
+
+            ctx.on('error', done);
+            ctx.on('console', function () {
+                consoleEventArgs = arguments;
+            });
+
+            ctx.execute('testLog = function () { console.log("from context 1"); };', {
+                serializeLogs: true
+            }, function (err) {
+                if (err) {
+                    return done(err);
+                }
+
+                ctx.execute('testLog();', {
+                    serializeLogs: true
+                }, function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    expect(consoleEventArgs, 'console event should exist').to.exist;
+                    expect(consoleEventArgs[0]).to.be.an('object');
+                    expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
+                    expect(consoleEventArgs[2]).to.be.a('string').and.equal('[["1"],"from context 1"]');
+                    done();
+                });
+            });
+        });
+    });
 });
