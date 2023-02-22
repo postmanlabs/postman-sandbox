@@ -1,3 +1,11 @@
+unreleased:
+  fixed bugs:
+    - |
+      GH-896 Fixed a bug where console events from previously executed scripts
+      were not emitted
+  chores:
+    - Updated dependencies
+
 4.2.2:
   date: 2023-01-25
   chores:
