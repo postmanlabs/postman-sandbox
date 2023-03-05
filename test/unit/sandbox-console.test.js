@@ -238,7 +238,7 @@ describe('console inside sandbox', function () {
     });
 
     it('should allow sending serialized logs', function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext({ serializeLogs: true }, function (err, ctx) {
             var logsData = {
                     undef: undefined,
                     str: 'string'
@@ -255,9 +255,7 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('console.log({ undef: undefined, str: "string" });', {
-                serializeLogs: true
-            }, function (err) {
+            ctx.execute('console.log({ undef: undefined, str: "string" });', {}, function (err) {
                 if (err) {
                     return done(err);
                 }
@@ -300,7 +298,7 @@ describe('console inside sandbox', function () {
     });
 
     it('should allow calling console.log without arguments with serializeLogs options set', function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext({ serializeLogs: true }, function (err, ctx) {
             var consoleEventArgs;
 
             if (err) {
@@ -312,9 +310,7 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('console.log();', {
-                serializeLogs: true
-            }, function (err) {
+            ctx.execute('console.log();', {}, function (err) {
                 if (err) {
                     return done(err);
                 }

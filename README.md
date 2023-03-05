@@ -62,7 +62,6 @@ The following section outlines the API available inside sandbox scripts
 - execution.abort.*
 - execution.response.*
 - execution.cookies.*
-- execution.console.*
 
 ## Contributing
 
