@@ -1,6 +1,5 @@
 var teleportJS = require('teleport-javascript');
 
-// @todo use sinopia
 describe('console inside sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib'),
@@ -239,7 +238,7 @@ describe('console inside sandbox', function () {
     });
 
     it('should allow sending serialized logs', function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext({ serializeLogs: true }, function (err, ctx) {
             var logsData = {
                     undef: undefined,
                     str: 'string'
@@ -256,9 +255,7 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('console.log({ undef: undefined, str: "string" });', {
-                serializeLogs: true
-            }, function (err) {
+            ctx.execute('console.log({ undef: undefined, str: "string" });', {}, function (err) {
                 if (err) {
                     return done(err);
                 }
@@ -286,9 +283,7 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('console.log();', {
-                serializeLogs: false
-            }, function (err) {
+            ctx.execute('console.log();', {}, function (err) {
                 if (err) {
                     return done(err);
                 }
@@ -303,7 +298,7 @@ describe('console inside sandbox', function () {
     });
 
     it('should allow calling console.log without arguments with serializeLogs options set', function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
+        Sandbox.createContext({ serializeLogs: true }, function (err, ctx) {
             var consoleEventArgs;
 
             if (err) {
@@ -315,9 +310,7 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('console.log();', {
-                serializeLogs: true
-            }, function (err) {
+            ctx.execute('console.log();', {}, function (err) {
                 if (err) {
                     return done(err);
                 }
@@ -344,16 +337,12 @@ describe('console inside sandbox', function () {
                 consoleEventArgs = arguments;
             });
 
-            ctx.execute('testLog = function () { console.log("from context 1"); };', {
-                serializeLogs: true
-            }, function (err) {
+            ctx.execute('testLog = function () { console.log("from context 1"); };', {}, function (err) {
                 if (err) {
                     return done(err);
                 }
 
-                ctx.execute('testLog();', {
-                    serializeLogs: true
-                }, function (err) {
+                ctx.execute('testLog();', {}, function (err) {
                     if (err) {
                         return done(err);
                     }
@@ -361,7 +350,7 @@ describe('console inside sandbox', function () {
                     expect(consoleEventArgs, 'console event should exist').to.exist;
                     expect(consoleEventArgs[0]).to.be.an('object');
                     expect(consoleEventArgs[1]).to.be.a('string').and.equal('log');
-                    expect(consoleEventArgs[2]).to.be.a('string').and.equal('[["1"],"from context 1"]');
+                    expect(consoleEventArgs[2]).to.be.a('string').and.equal('from context 1');
                     done();
                 });
             });

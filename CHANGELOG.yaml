@@ -1,3 +1,10 @@
+4.2.4:
+  date: 2023-03-10
+  fixed bugs:
+    - Fixed memory leak due to console listeners
+  chores:
+    - Moved `serializeLogs` option to context-level instead of per-execute
+
 4.2.3:
   date: 2023-02-22
   fixed bugs:
