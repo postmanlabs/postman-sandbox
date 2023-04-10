@@ -57,6 +57,24 @@ describe('sandbox', function () {
         });
     });
 
+    it('should not be able to mutate Error.prepareStackTrace', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                var assert = require('assert');
+                var fn = Error.prepareStackTrace;
+
+                Error.prepareStackTrace = () => {};
+                assert.equal(Error.prepareStackTrace, fn);
+
+                var err = new Error('Test');
+                assert.equal(err.stack.split('\\n')[0], 'Error: Test');
+            `, done);
+        });
+    });
+
     it('should not have access to global properties', function (done) {
         Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
