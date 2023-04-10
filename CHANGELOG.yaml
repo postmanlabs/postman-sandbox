@@ -1,3 +1,10 @@
+4.2.5:
+  date: 2023-04-10
+  fixed bugs:
+    - GH-907 Defined `Error.prepareStackTrace` to prevent stack trace pollution
+  chores:
+    - Updated dependencies
+
 4.2.4:
   date: 2023-03-10
   fixed bugs:
