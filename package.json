@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@postman/shipit": "^0.4.0",
-    "@postman/tough-cookie": "4.1.2-postman.1",
+    "@postman/tough-cookie": "4.1.2-postman.2",
     "ajv": "6.12.5",
     "assert": "2.0.0",
     "async": "^3.2.4",
