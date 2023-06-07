@@ -22,8 +22,8 @@ shipit({
     preReleaseSuffix: preReleaseSuffix,
     // make sure that following dependencies are up to date
     dependencyList: [
-        'chai-postman', 'liquid-json', 'lodash3', 'postman-collection',
-        'teleport-javascript', 'uniscope', 'uvm'
+        '@postman/tough-cookie', 'chai-postman', 'liquid-json', 'lodash3',
+        'postman-collection', 'teleport-javascript', 'uniscope', 'uvm'
     ]
 }).then((version) => {
     console.info('🚀', version);
