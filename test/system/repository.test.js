@@ -95,11 +95,6 @@ describe('project repository', function () {
                 expect(json.devDependencies).to.have.property('crypto-js', '3.3.0');
             });
 
-            // @note use same tough-cookie version as in postman-request and postman-runtime
-            it('should have @postman/tough-cookie v4.1.2', function () {
-                expect(json.devDependencies).to.have.property('@postman/tough-cookie', '4.1.2-postman.1');
-            });
-
             // @note Ajv v7 will break postman script because of breaking API
             // and dropped support for draft-04 schemas
             it('should have ajv v6.12.5', function () {
