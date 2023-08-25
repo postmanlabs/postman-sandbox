@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "postman-collection": "4.2.0",
+    "postman-collection": "https://github.com/postmanlabs/postman-collection.git#channel-beta",
     "teleport-javascript": "1.0.0",
     "uvm": "2.1.1"
   },
