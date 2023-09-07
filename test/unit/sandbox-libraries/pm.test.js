@@ -368,11 +368,18 @@ describe('sandbox library - pm api', function () {
                 });
                 context.execute(`
                     preRequestScript: {
-                        console.log('pre-request log 1');
-                        pm.variables.set('foo', 'bar');
-                        pm.request.stopExecution();
-                        pm.variables.set('foo', 'nobar');
-                        console.log('pre-request log 2');
+                        async function myFun () {
+                            console.log('pre-request log 1');
+
+                            pm.variables.set('foo', 'bar');
+                            pm.request.stopExecution();
+                            new Promise((res) => setTimeout(res, 100))
+                            pm.variables.set('foo', 'nobar');
+                            console.log('pre-request log 2');
+                        }
+
+                        myFun();
+
                     }
                 `, {
                     timeout: 200,
@@ -385,7 +392,7 @@ describe('sandbox library - pm api', function () {
                     expect(execution).to.deep.nested.include({ '_variables.values': [
                         { value: 'bar', key: 'foo', type: 'any' }
                     ] });
-                    print(execution);
+                    // console.log(execution);
 
                     return done();
                 });
