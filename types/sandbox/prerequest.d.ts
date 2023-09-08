@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 3.5.7
+// Type definitions for postman-sandbox 4.2.7
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -14,8 +14,19 @@ declare interface PostmanLegacy {
     setNextRequest(requestName: string): void;
 }
 
+/**
+ * @param execution - -
+ * @param onRequest - -
+ * @param onSkipRequest - callback to execute when pm.skipRequest called
+ * @param onAssertion - -
+ * @param cookieStore - -
+ * @param [options] - -
+ * @param [options.disabledAPIs] - -
+ */
 declare class Postman {
-    constructor(bridge: EventEmitter, execution: Execution, onRequest: (...params: any[]) => any, cookieStore: any);
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+        disabledAPIs?: string[];
+    });
     /**
      * The pm.info object contains information pertaining to the script being executed.
      * Useful information such as the request name, request Id, and iteration count are
@@ -35,7 +46,7 @@ declare class Postman {
      * For a pre-request script, this is the request that is about to be sent and when in a test script,
      * this is the representation of the request that was sent.
      */
-    request: import("postman-collection").Request;
+    request: IRequest;
     /**
      * The cookies object contains a list of cookies that are associated with the domain
      * to which the request was made.
@@ -44,6 +55,8 @@ declare class Postman {
     visualizer: Visualizer;
     /**
      * Allows one to send request from script asynchronously.
+     * @param req - -
+     * @param callback - -
      */
     sendRequest(req: import("postman-collection").Request | string, callback: (...params: any[]) => any): void;
     expect: Chai.ExpectStatic;
@@ -75,6 +88,20 @@ declare interface Info {
     requestId: string;
 }
 
+declare interface IRequest extends Request {
+    /**
+     * @example
+     * if (pm.environment.get("token")) {
+     *      pm.request.stopExecution();
+     *  }
+     * @property stopExecution - stops the execution of current request.
+     * NOTE: If called from a pre-request script, the request will not be sent.
+     */
+    stopExecution: {
+        stopExecution: (...params: any[]) => any;
+    };
+}
+
 declare interface Visualizer {
     /**
      * Set visualizer template and its options
@@ -96,25 +123,44 @@ declare interface Visualizer {
  */
 declare var pm: Postman;
 
-declare interface PostmanCookieJar {
+/**
+ * @param cookieStore - -
+ */
+declare class PostmanCookieJar {
+    constructor(cookieStore: any);
     /**
      * Get the cookie value with the given name.
+     * @param url - -
+     * @param name - -
+     * @param callback - -
      */
     get(url: string, name: string, callback: (...params: any[]) => any): void;
     /**
      * Get all the cookies for the given URL.
+     * @param url - -
+     * @param [options] - -
+     * @param callback - -
      */
     getAll(url: string, options?: any, callback: (...params: any[]) => any): void;
     /**
      * Set or update a cookie.
+     * @param url - -
+     * @param name - -
+     * @param [value] - -
+     * @param [callback] - -
      */
     set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
     /**
      * Remove single cookie with the given name.
+     * @param url - -
+     * @param name - -
+     * @param [callback] - -
      */
     unset(url: string, name: string, callback?: (...params: any[]) => any): void;
     /**
      * Remove all the cookies for the given URL.
+     * @param url - -
+     * @param [callback] - -
      */
     clear(url: string, callback?: (...params: any[]) => any): void;
 }
