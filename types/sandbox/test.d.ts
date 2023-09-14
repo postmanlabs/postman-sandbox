@@ -46,7 +46,7 @@ declare class Postman {
      * For a pre-request script, this is the request that is about to be sent and when in a test script,
      * this is the representation of the request that was sent.
      */
-    request: IRequest;
+    request: import("postman-collection").Request | IRequest;
     /**
      * Inside the test scripts, the pm.response object contains all information pertaining
      * to the response that was received.
@@ -93,7 +93,7 @@ declare interface Info {
     requestId: string;
 }
 
-declare interface IRequest extends import("postman-collection").Request {
+declare interface IRequest {
     /**
      * @example
      * if (pm.environment.get("token")) {

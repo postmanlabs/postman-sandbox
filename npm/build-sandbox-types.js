@@ -129,6 +129,20 @@ module.exports = function (exit) {
                             c.type.typeName.escapedText = `import("postman-collection").${currentType}`;
                         }
                     }
+
+                    // For properties referencing sdk and some more properties, eg. request: Request|IRequest
+                    if (c.type && c.type.types && c.type.types.length) {
+                        c.type.types.forEach((t) => {
+                            if (t.typeName) {
+                                let currentType = t.typeName.escapedText;
+
+                                if (collectionSDKTypes.includes(currentType)) {
+                                    t.typeName.escapedText = `import("postman-collection").${currentType}`;
+                                }
+                            }
+                        });
+                    }
+
                     // takes care of functions with parameters referencing CollectionSDK types
                     else if (c.parameters && c.parameters.length > 0) {
                         c.parameters.forEach((p) => {
