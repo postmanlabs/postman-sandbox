@@ -17,14 +17,14 @@ declare interface PostmanLegacy {
 /**
  * @param execution - -
  * @param onRequest - -
- * @param onSkipRequest - callback to execute when pm.skipRequest called
+ * @param onStopExecution - callback to execute when pm.request.stopExecution() called
  * @param onAssertion - -
  * @param cookieStore - -
  * @param [options] - -
  * @param [options.disabledAPIs] - -
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onStopExecution: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -90,16 +90,14 @@ declare interface Info {
 
 declare interface IRequest {
     /**
+     * Halts the execution of current request. No line after this will be executed and
+     * if invoked from a pre-request script, the request will not be sent.
      * @example
      * if (pm.environment.get("token")) {
      *      pm.request.stopExecution();
      *  }
-     * @property stopExecution - stops the execution of current request.
-     * NOTE: If called from a pre-request script, the request will not be sent.
      */
-    stopExecution: {
-        stopExecution: (...params: any[]) => any;
-    };
+    stopExecution: (...params: any[]) => any;
 }
 
 declare interface Visualizer {

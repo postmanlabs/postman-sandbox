@@ -304,7 +304,6 @@ describe('sandbox library - pm api', function () {
         it(`should not execute any line after pm.request.stopExecution in pre-request script,
         even if the pm.request.stopExecution invoked inside a try catch block`, function (done) {
             context.on('console', function (level, ...args) {
-                // console.log(args);
                 expect(args[1]).to.equal('pre-request log 1');
             });
             context.execute(`
