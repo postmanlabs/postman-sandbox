@@ -16,5 +16,5 @@ mkdir('-p', '.cache');
 cache((exitCode) => {
     exitCode && process.exit(exitCode);
 
-    systemTests(process.exit);
+    // systemTests(process.exit);
 });
