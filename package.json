@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "postman-collection": "npm:postman-collection-secret-variable-type-only@1.0.5",
+    "postman-collection": "npm:postman-collection-secret-variable-type-only@1.0.7",
     "teleport-javascript": "1.0.0",
     "uvm": "2.1.1"
   },
