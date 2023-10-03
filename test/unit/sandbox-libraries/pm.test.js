@@ -279,9 +279,9 @@ describe('sandbox library - pm api', function () {
         });
 
         it('should not execute any line after pm.request.stopExecution in pre-request script', function (done) {
-            context.on('console', function (level, ...args) {
-                expect(args[1]).to.equal('pre-request log 1');
-            });
+            const consoleSpy = sinon.spy();
+
+            context.on('console', consoleSpy);
             context.execute(`
                 preRequestScript: {
                     console.log('pre-request log 1');
@@ -292,20 +292,38 @@ describe('sandbox library - pm api', function () {
                 timeout: 200,
                 context: {
                     request: 'https://postman-echo.com/get?foo=bar'
+                },
+                legacy: {
+                    _itemName: 'request-name',
+                    _itemId: 'request-id',
+                    _itemPath: 'col1/fol1/request-name'
                 }
             }, function (err, execution) {
                 if (err) { return done(err); }
-                expect(execution).to.include({ shouldSkipExecution: true });
 
-                return done();
+                try {
+                    expect(execution).to.include({ shouldSkipExecution: true });
+                    expect(consoleSpy).to.have.been.calledTwice;
+                    expect(consoleSpy.getCall(0).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(0).args[2]).to.equal('pre-request log 1');
+                    expect(consoleSpy.getCall(1).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(1).args[2]).to.equal('system_message');
+                    expect(consoleSpy.getCall(1).args[3]).to.equal('skip_request');
+                    expect(consoleSpy.getCall(1).args[4]).to.equal('request-name');
+
+                    return done();
+                }
+                catch (err) {
+                    return done(err);
+                }
             });
         });
 
         it(`should not execute any line after pm.request.stopExecution in pre-request script,
         even if the pm.request.stopExecution invoked inside a try catch block`, function (done) {
-            context.on('console', function (level, ...args) {
-                expect(args[1]).to.equal('pre-request log 1');
-            });
+            const consoleSpy = sinon.spy();
+
+            context.on('console', consoleSpy);
             context.execute(`
                 preRequestScript: {
                     console.log('pre-request log 1');
@@ -323,17 +341,30 @@ describe('sandbox library - pm api', function () {
                 }
             }, function (err, execution) {
                 if (err) { return done(err); }
-                expect(execution).to.include({ shouldSkipExecution: true });
 
-                return done();
+                try {
+                    expect(execution).to.include({ shouldSkipExecution: true });
+                    expect(consoleSpy).to.have.been.calledTwice;
+                    expect(consoleSpy.getCall(0).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(0).args[2]).to.equal('pre-request log 1');
+                    expect(consoleSpy.getCall(1).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(1).args[2]).to.equal('system_message');
+                    expect(consoleSpy.getCall(1).args[3]).to.equal('skip_request');
+                    expect(consoleSpy.getCall(1).args[4]).to.equal(undefined);
+
+                    return done();
+                }
+                catch (err) {
+                    return done(err);
+                }
             });
         });
 
         it(`should not execute any line after pm.request.stopExecution in pre-request script,
         even if the pm.request.stopExecution invoked inside an async function`, function (done) {
-            context.on('console', function (level, ...args) {
-                expect(args[1]).to.equal('pre-request log 1');
-            });
+            const consoleSpy = sinon.spy();
+
+            context.on('console', consoleSpy);
             context.execute(`
                 preRequestScript: {
                     console.log('pre-request log 1');
@@ -351,17 +382,30 @@ describe('sandbox library - pm api', function () {
                 }
             }, function (err, execution) {
                 if (err) { return done(err); }
-                expect(execution).to.include({ shouldSkipExecution: true });
 
-                return done();
+                try {
+                    expect(execution).to.include({ shouldSkipExecution: true });
+                    expect(consoleSpy).to.have.been.calledTwice;
+                    expect(consoleSpy.getCall(0).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(0).args[2]).to.equal('pre-request log 1');
+                    expect(consoleSpy.getCall(1).args[1]).to.equal('log');
+                    expect(consoleSpy.getCall(1).args[2]).to.equal('system_message');
+                    expect(consoleSpy.getCall(1).args[3]).to.equal('skip_request');
+                    expect(consoleSpy.getCall(1).args[4]).to.equal(undefined);
+
+                    return done();
+                }
+                catch (err) {
+                    return done(err);
+                }
             });
         });
 
         it('should not reflect any variable change line after pm.request.stopExecution in pre-request script',
             function (done) {
-                context.on('console', function (level, ...args) {
-                    expect(args[1]).to.equal('pre-request log 1');
-                });
+                const consoleSpy = sinon.spy();
+
+                context.on('console', consoleSpy);
                 context.execute(`
                     preRequestScript: {
                         async function myFun () {
@@ -384,12 +428,25 @@ describe('sandbox library - pm api', function () {
                     }
                 }, function (err, execution) {
                     if (err) { return done(err); }
-                    expect(execution).to.include({ shouldSkipExecution: true });
-                    expect(execution).to.deep.nested.include({ '_variables.values': [
-                        { value: 'bar', key: 'foo', type: 'any' }
-                    ] });
 
-                    return done();
+                    try {
+                        expect(execution).to.include({ shouldSkipExecution: true });
+                        expect(execution).to.deep.nested.include({ '_variables.values': [
+                            { value: 'bar', key: 'foo', type: 'any' }
+                        ] });
+                        expect(consoleSpy).to.have.been.calledTwice;
+                        expect(consoleSpy.getCall(0).args[1]).to.equal('log');
+                        expect(consoleSpy.getCall(0).args[2]).to.equal('pre-request log 1');
+                        expect(consoleSpy.getCall(1).args[1]).to.equal('log');
+                        expect(consoleSpy.getCall(1).args[2]).to.equal('system_message');
+                        expect(consoleSpy.getCall(1).args[3]).to.equal('skip_request');
+                        expect(consoleSpy.getCall(1).args[4]).to.equal(undefined);
+
+                        return done();
+                    }
+                    catch (err) {
+                        return done(err);
+                    }
                 });
             });
 
