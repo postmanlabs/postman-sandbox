@@ -77,7 +77,7 @@ declare class Postman {
     globals: VariableScope;
     environment: VariableScope;
     collectionVariables: CollectionVariableScope;
-    variables: VariableScope;
+    variables: CollectionVariableScope;
     /**
      * The iterationData object contains data from the data file provided during a collection run.
      */
