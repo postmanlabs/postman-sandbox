@@ -117,7 +117,7 @@ module.exports = function (exit) {
 
             // Since we are referencing some types from Postman Collection lib, those types needs to imported.
             // See https://stackoverflow.com/a/51114250
-            collectionSDKTypes = ['CookieList', 'Request', 'Response', 'VariableScope'];
+            collectionSDKTypes = ['CookieList', 'Request', 'Response', 'VariableScope', 'CollectionVariableScope'];
 
             node.forEachChild((child) => {
                 child.members && child.members.forEach((c) => {
