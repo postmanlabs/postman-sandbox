@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 3.5.7
+// Type definitions for postman-sandbox 4.2.7
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -14,8 +14,19 @@ declare interface PostmanLegacy {
     setNextRequest(requestName: string): void;
 }
 
+/**
+ * @param execution - -
+ * @param onRequest - -
+ * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
+ * @param onAssertion - -
+ * @param cookieStore - -
+ * @param [options] - -
+ * @param [options.disabledAPIs] - -
+ */
 declare class Postman {
-    constructor(bridge: EventEmitter, execution: Execution, onRequest: (...params: any[]) => any, cookieStore: any);
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+        disabledAPIs?: string[];
+    });
     /**
      * The pm.info object contains information pertaining to the script being executed.
      * Useful information such as the request name, request Id, and iteration count are
@@ -49,8 +60,11 @@ declare class Postman {
     visualizer: Visualizer;
     /**
      * Allows one to send request from script asynchronously.
+     * @param req - -
+     * @param callback - -
      */
     sendRequest(req: import("postman-collection").Request | string, callback: (...params: any[]) => any): void;
+    execution: Execution;
     expect: Chai.ExpectStatic;
 }
 
@@ -95,31 +109,61 @@ declare interface Visualizer {
 }
 
 /**
+ * Exposes handlers to control execution state
+ */
+declare interface Execution {
+    /**
+     * Stops the execution of current request. No line after this will be executed and
+     * if invoked from a pre-request script, the request will not be sent.
+     */
+    skipRequest: (...params: any[]) => any;
+}
+
+/**
  * The pm object encloses all information pertaining to the script being executed and
  * allows one to access a copy of the request being sent or the response received.
  * It also allows one to get and set environment and global variables.
  */
 declare var pm: Postman;
 
-declare interface PostmanCookieJar {
+/**
+ * @param cookieStore - -
+ */
+declare class PostmanCookieJar {
+    constructor(cookieStore: any);
     /**
      * Get the cookie value with the given name.
+     * @param url - -
+     * @param name - -
+     * @param callback - -
      */
     get(url: string, name: string, callback: (...params: any[]) => any): void;
     /**
      * Get all the cookies for the given URL.
+     * @param url - -
+     * @param [options] - -
+     * @param callback - -
      */
     getAll(url: string, options?: any, callback: (...params: any[]) => any): void;
     /**
      * Set or update a cookie.
+     * @param url - -
+     * @param name - -
+     * @param [value] - -
+     * @param [callback] - -
      */
     set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
     /**
      * Remove single cookie with the given name.
+     * @param url - -
+     * @param name - -
+     * @param [callback] - -
      */
     unset(url: string, name: string, callback?: (...params: any[]) => any): void;
     /**
      * Remove all the cookies for the given URL.
+     * @param url - -
+     * @param [callback] - -
      */
     clear(url: string, callback?: (...params: any[]) => any): void;
 }

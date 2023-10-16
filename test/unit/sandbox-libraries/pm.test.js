@@ -278,6 +278,121 @@ describe('sandbox library - pm api', function () {
             }, done);
         });
 
+        it('should not execute any line after pm.execution.skipRequest in pre-request script', function (done) {
+            context.on('console', function (level, ...args) {
+                expect(args[1]).to.equal('pre-request log 1');
+            });
+            context.execute(`
+                preRequestScript: {
+                    console.log('pre-request log 1');
+                    pm.execution.skipRequest();
+                    console.log('pre-request log 2');
+                }
+            `, {
+                timeout: 200,
+                context: {
+                    request: 'https://postman-echo.com/get?foo=bar'
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
+                expect(execution).to.include({ shouldSkipExecution: true });
+
+                return done();
+            });
+        });
+
+        it(`should not execute any line after pm.execution.skipRequest in pre-request script,
+        even if the pm.execution.skipRequest invoked inside a try catch block`, function (done) {
+            context.on('console', function (level, ...args) {
+                expect(args[1]).to.equal('pre-request log 1');
+            });
+            context.execute(`
+                preRequestScript: {
+                    console.log('pre-request log 1');
+                    try {
+                        pm.execution.skipRequest();
+                    } catch (err) {
+                        // ignore
+                    }
+                    console.log('pre-request log 2');
+                }
+            `, {
+                timeout: 200,
+                context: {
+                    request: 'https://postman-echo.com/get?foo=bar'
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
+                expect(execution).to.include({ shouldSkipExecution: true });
+
+                return done();
+            });
+        });
+
+        it(`should not execute any line after pm.execution.skipRequest in pre-request script,
+        even if the pm.execution.skipRequest invoked inside an async function`, function (done) {
+            context.on('console', function (level, ...args) {
+                expect(args[1]).to.equal('pre-request log 1');
+            });
+            context.execute(`
+                preRequestScript: {
+                    console.log('pre-request log 1');
+                    async function myAsyncFunction() {
+                        pm.execution.skipRequest();
+                    }
+
+                    myAsyncFunction();
+                    console.log('pre-request log 2');
+                }
+            `, {
+                timeout: 200,
+                context: {
+                    request: 'https://postman-echo.com/get?foo=bar'
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
+                expect(execution).to.include({ shouldSkipExecution: true });
+
+                return done();
+            });
+        });
+
+        it('should not reflect any variable change line after pm.execution.skipRequest in pre-request script',
+            function (done) {
+                context.on('console', function (level, ...args) {
+                    expect(args[1]).to.equal('pre-request log 1');
+                });
+                context.execute(`
+                    preRequestScript: {
+                        async function myFun () {
+                            console.log('pre-request log 1');
+
+                            pm.variables.set('foo', 'bar');
+                            pm.execution.skipRequest();
+                            new Promise((res) => setTimeout(res, 100))
+                            pm.variables.set('foo', 'nobar');
+                            console.log('pre-request log 2');
+                        }
+
+                        myFun();
+
+                    }
+                `, {
+                    timeout: 200,
+                    context: {
+                        request: 'https://postman-echo.com/get?foo=bar'
+                    }
+                }, function (err, execution) {
+                    if (err) { return done(err); }
+                    expect(execution).to.include({ shouldSkipExecution: true });
+                    expect(execution).to.deep.nested.include({ '_variables.values': [
+                        { value: 'bar', key: 'foo', type: 'any' }
+                    ] });
+
+                    return done();
+                });
+            });
+
         it('when serialized should not have assertion helpers added by sandbox', function (done) {
             context.execute(`
                 var assert = require('assert'),
