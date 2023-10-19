@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - GH-961 Fixed `Error.prepareStackTrace` to prevent stack trace pollution
+
 4.2.7:
   date: 2023-08-03
   chores:
