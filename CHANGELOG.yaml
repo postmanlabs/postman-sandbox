@@ -1,6 +1,8 @@
 unreleased:
   fixed bugs:
     - GH-961 Fixed `Error.prepareStackTrace` to prevent stack trace pollution
+  chores:
+    - Updated dependencies
 
 4.2.7:
   date: 2023-08-03
