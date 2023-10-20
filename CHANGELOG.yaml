@@ -1,4 +1,5 @@
-unreleased:
+4.1.4:
+  date: 2023-10-20
   fixed bugs:
     - GH-961 Fixed `Error.prepareStackTrace` to prevent stack trace pollution
 
