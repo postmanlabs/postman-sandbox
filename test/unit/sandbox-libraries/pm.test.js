@@ -357,6 +357,39 @@ describe('sandbox library - pm api', function () {
             });
         });
 
+        it('should not affect execution of test script when invoked pm.execution.skipRequest', function (done) {
+            const consoleSpy = sinon.spy();
+
+            context.on('console', consoleSpy);
+
+            context.execute({
+                listen: 'test',
+
+                script: `
+                testScript: {
+                    console.log('pre-request log 1');
+                    pm.execution.skipRequest();
+                    console.log('pre-request log 2');
+                }
+            `,
+                timeout: 200,
+                context: {
+                    request: 'https://postman-echo.com/get?foo=bar'
+                }
+            }, function (err, execution) {
+                if (err) { return done(err); }
+                try {
+                    expect(execution).to.include({ shouldSkipExecution: false });
+                    expect(consoleSpy).to.have.been.calledTwice;
+
+                    return done();
+                }
+                catch (err) {
+                    return done(err);
+                }
+            });
+        });
+
         it('should not reflect any variable change line after pm.execution.skipRequest in pre-request script',
             function (done) {
                 context.on('console', function (level, ...args) {
