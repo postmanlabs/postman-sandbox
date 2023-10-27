@@ -48,7 +48,7 @@ declare class Postman {
      */
     request: import("postman-collection").Request;
     /**
-     * Inside the test scripts, the pm.response object contains all information pertaining
+     * @excludeFromPrerequestScript Inside the test scripts, the pm.response object contains all information pertaining
      * to the response that was received.
      */
     response: import("postman-collection").Response;
@@ -112,11 +112,6 @@ declare interface Visualizer {
  * Exposes handlers to control execution state
  */
 declare interface Execution {
-    /**
-     * Stops the execution of current request. No line after this will be executed and
-     * if invoked from a pre-request script, the request will not be sent.
-     */
-    skipRequest: (...params: any[]) => any;
 }
 
 /**

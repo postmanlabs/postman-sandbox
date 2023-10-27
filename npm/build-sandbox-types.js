@@ -25,21 +25,47 @@ const _ = require('lodash'),
 function generateSandboxTypes (node, printer, target) {
     var source = '',
         excludeResponse = target === 'prerequest',
-        collectionSDKTypesExtension = '';
+        collectionSDKTypesExtension = '',
+        shouldExcludeNode = (node, target) => {
+            if (!node.jsDoc || node.jsDoc.length === 0) {
+                return false;
+            }
 
-    node.forEachChild((child) => {
-        if (excludeResponse && _.get(child, 'name.escapedText') === 'Postman') {
-            child.members = child.members.filter((m) => {
-                if (m.name && m.name.escapedText === 'response') {
+            return node.jsDoc.some((doc) => {
+                return doc.tags && doc.tags.some((tag) => {
+                    return tag.tagName.escapedText === `excludeFrom${_.capitalize(target)}Script`;
+                });
+            });
+        },
+        deepFilterNodes = (nodes, target) => {
+            if (!nodes) {
+                return nodes;
+            }
+
+            return nodes.filter((node) => {
+                if (shouldExcludeNode(node, target)) {
                     return false;
                 }
 
+                node.forEachChild((child) => {
+                    if (child.members) {
+                        child.members = deepFilterNodes(child.members, target);
+                    }
+                });
+
                 return true;
             });
-        }
+        },
+        processChild = (child, target, source, printer, node) => {
+            child.members = deepFilterNodes(child.members, target);
+            source += printer.printNode(typescript.EmitHint.Unspecified, child, node);
+            source += '\n\n';
 
-        source += printer.printNode(typescript.EmitHint.Unspecified, child, node);
-        source += '\n\n';
+            return source;
+        };
+
+    node.forEachChild((child) => {
+        source = processChild(child, target, source, printer, node);
     });
 
     source += `${templates.postmanExtensionString}\n`;
@@ -148,8 +174,8 @@ module.exports = function (exit) {
                 });
             });
 
-            testScriptSource = generateSandboxTypes(node, printer, 'test');
-            preScriptSource = generateSandboxTypes(node, printer, 'prerequest');
+            testScriptSource = generateSandboxTypes(_.cloneDeep(node), printer, 'test');
+            preScriptSource = generateSandboxTypes(_.cloneDeep(node), printer, 'prerequest');
 
             async.each([
                 { fileName: `${TARGET_DIR}/prerequest.d.ts`, content: preScriptSource },

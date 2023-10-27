@@ -108,7 +108,7 @@ declare interface Visualizer {
  */
 declare interface Execution {
     /**
-     * Stops the execution of current request. No line after this will be executed and
+     * @excludeFromTestScript Stops the execution of current request. No line after this will be executed and
      * if invoked from a pre-request script, the request will not be sent.
      */
     skipRequest: (...params: any[]) => any;
