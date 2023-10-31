@@ -942,13 +942,13 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('execution', function () {
-        describe('.skipRequest~ ', function () {
+        describe('.skipRequest ', function () {
             it('should emit skipEvent and abort the execution', function (done) {
                 const consoleSpy = sinon.spy(),
                     executionSkipSpy = sinon.spy();
 
                 context.on('console', consoleSpy);
-                context.on('execution.skip.1', executionSkipSpy);
+                context.on('execution.skipRequest.1', executionSkipSpy);
 
                 context.execute(`
                     preRequestScript: {
@@ -987,7 +987,7 @@ describe('sandbox library - pm api', function () {
                     executionRequestSpy = sinon.spy();
 
                 context.on('console', consoleSpy);
-                context.on('execution.skip.1', executionSkipSpy);
+                context.on('execution.skipRequest.1', executionSkipSpy);
                 context.on('execution.request.1', executionRequestSpy);
 
                 context.execute(`
@@ -1019,6 +1019,62 @@ describe('sandbox library - pm api', function () {
                         expect(consoleSpy).to.have.been.calledOnce;
                         expect(executionSkipSpy).to.have.been.calledOnce;
                         expect(executionRequestSpy).to.have.been.calledOnce;
+
+                        done();
+                    }
+                    catch (err) {
+                        done(err);
+                    }
+                });
+            });
+
+            it('should throw if called from test script', function (done) {
+                context.execute({
+                    listen: 'test',
+                    script: `
+                        pm.execution.skipRequest();
+                    `
+                }, function (err) {
+                    expect(err).to.be.ok;
+                    expect(err.message).to.eql('pm.execution.skipRequest is not a function');
+                    done();
+                });
+            });
+
+            it('should emit skipEvent when called from async context', function (done) {
+                const consoleSpy = sinon.spy(),
+                    executionSkipSpy = sinon.spy();
+
+                context.on('console', consoleSpy);
+                context.on('execution.skipRequest.1', executionSkipSpy);
+
+                context.execute(`
+                    preRequestScript: {
+                        console.log('pre-request log 1');
+                        setTimeout(function () {
+                            pm.execution.skipRequest();
+                            console.log('pre-request log 3');
+                        }, 100);
+                        console.log('pre-request log 2');
+                    }
+                `,
+                {
+                    timeout: 200,
+                    id: '1',
+                    context: {
+                        request: 'https://postman-echo.com/get?foo=bar'
+                    }
+                },
+                function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    try {
+                        expect(consoleSpy).to.have.been.calledTwice;
+                        expect(consoleSpy.firstCall.args[2]).to.eql('pre-request log 1');
+                        expect(consoleSpy.secondCall.args[2]).to.eql('pre-request log 2');
+                        expect(executionSkipSpy).to.have.been.calledOnce;
 
                         done();
                     }
