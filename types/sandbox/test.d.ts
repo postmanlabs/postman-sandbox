@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 3.5.7
+// Type definitions for postman-sandbox 4.2.8
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -14,8 +14,19 @@ declare interface PostmanLegacy {
     setNextRequest(requestName: string): void;
 }
 
+/**
+ * @param execution - execution context
+ * @param onRequest - callback to execute when pm.sendRequest() called
+ * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
+ * @param onAssertion - callback to execute when pm.expect() called
+ * @param cookieStore - cookie store
+ * @param [options] - options
+ * @param [options.disabledAPIs] - list of disabled APIs
+ */
 declare class Postman {
-    constructor(bridge: EventEmitter, execution: Execution, onRequest: (...params: any[]) => any, cookieStore: any);
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+        disabledAPIs?: string[];
+    });
     /**
      * The pm.info object contains information pertaining to the script being executed.
      * Useful information such as the request name, request Id, and iteration count are
@@ -39,6 +50,7 @@ declare class Postman {
     /**
      * Inside the test scripts, the pm.response object contains all information pertaining
      * to the response that was received.
+     * @excludeFromPrerequestScript
      */
     response: import("postman-collection").Response;
     /**
@@ -49,8 +61,14 @@ declare class Postman {
     visualizer: Visualizer;
     /**
      * Allows one to send request from script asynchronously.
+     * @param req - request object or request url
+     * @param callback - callback function
      */
     sendRequest(req: import("postman-collection").Request | string, callback: (...params: any[]) => any): void;
+    /**
+     * Exposes handlers to control or access execution state
+     */
+    execution: ExecutionInterface;
     expect: Chai.ExpectStatic;
 }
 
@@ -94,6 +112,9 @@ declare interface Visualizer {
     clear(): void;
 }
 
+declare interface ExecutionInterface {
+}
+
 /**
  * The pm object encloses all information pertaining to the script being executed and
  * allows one to access a copy of the request being sent or the response received.
@@ -101,25 +122,49 @@ declare interface Visualizer {
  */
 declare var pm: Postman;
 
-declare interface PostmanCookieJar {
+/**
+ * @param cookieStore - Cookie store instance
+ */
+declare class PostmanCookieJar {
+    constructor(cookieStore: any);
     /**
      * Get the cookie value with the given name.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param callback - Callback function
      */
     get(url: string, name: string, callback: (...params: any[]) => any): void;
     /**
      * Get all the cookies for the given URL.
+     * @param url - URL string
+     * @param [options] - Options object
+     * @param [options.http] - Include only HttpOnly cookies
+     * @param [options.secure] - Include Secure cookies
+     * @param callback - Callback function
      */
-    getAll(url: string, options?: any, callback: (...params: any[]) => any): void;
+    getAll(url: string, options?: {
+        http?: boolean;
+        secure?: boolean;
+    }, callback: (...params: any[]) => any): void;
     /**
      * Set or update a cookie.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param [value] - Cookie value
+     * @param [callback] - Callback function
      */
     set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
     /**
      * Remove single cookie with the given name.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param [callback] - Callback function
      */
     unset(url: string, name: string, callback?: (...params: any[]) => any): void;
     /**
      * Remove all the cookies for the given URL.
+     * @param url - URL string
+     * @param [callback] - Callback function
      */
     clear(url: string, callback?: (...params: any[]) => any): void;
 }
