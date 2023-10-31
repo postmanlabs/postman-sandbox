@@ -940,4 +940,93 @@ describe('sandbox library - pm api', function () {
             }, function () {}); // eslint-disable-line no-empty-function
         });
     });
+
+    describe('execution', function () {
+        describe('.skipRequest~ ', function () {
+            it('should emit skipEvent and abort the execution', function (done) {
+                const consoleSpy = sinon.spy(),
+                    executionSkipSpy = sinon.spy();
+
+                context.on('console', consoleSpy);
+                context.on('execution.skip.1', executionSkipSpy);
+
+                context.execute(`
+                    preRequestScript: {
+                        console.log('pre-request log 1');
+                        pm.execution.skipRequest();
+                        console.log('pre-request log 2');
+                    }
+                `,
+                {
+                    timeout: 200,
+                    id: '1',
+                    context: {
+                        request: 'https://postman-echo.com/get?foo=bar'
+                    }
+                },
+                function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    try {
+                        expect(consoleSpy).to.have.been.calledOnce;
+                        expect(executionSkipSpy).to.have.been.calledOnce;
+
+                        done();
+                    }
+                    catch (err) {
+                        done(err);
+                    }
+                });
+            });
+
+            it('should not wait for sendRequest response event if execution skipped', function (done) {
+                const consoleSpy = sinon.spy(),
+                    executionSkipSpy = sinon.spy(),
+                    executionRequestSpy = sinon.spy();
+
+                context.on('console', consoleSpy);
+                context.on('execution.skip.1', executionSkipSpy);
+                context.on('execution.request.1', executionRequestSpy);
+
+                context.execute(`
+                    preRequestScript: {
+                        console.log('pre-request log 1');
+                        pm.sendRequest('https://postman-echo.com/get?foo=bar', function (err, res) {
+                            console.log('sendRequest callback');
+                        });
+                        pm.execution.skipRequest();
+                        pm.sendRequest('https://postman-echo.com/get?foo=bar', function (err, res) {
+                            console.log('sendRequest callback');
+                        });
+                        console.log('pre-request log 2');
+                    }
+                `,
+                {
+                    timeout: 200,
+                    id: '1',
+                    context: {
+                        request: 'https://postman-echo.com/get?foo=bar'
+                    }
+                },
+                function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    try {
+                        expect(consoleSpy).to.have.been.calledOnce;
+                        expect(executionSkipSpy).to.have.been.calledOnce;
+                        expect(executionRequestSpy).to.have.been.calledOnce;
+
+                        done();
+                    }
+                    catch (err) {
+                        done(err);
+                    }
+                });
+            });
+        });
+    });
 });
