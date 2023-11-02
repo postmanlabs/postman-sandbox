@@ -16,7 +16,8 @@
     "excludePattern": "(^|\\/|\\\\)_"
   },
   "plugins": [
-    "tsd-jsdoc/dist/plugin"
+    "tsd-jsdoc/dist/plugin",
+    "./npm/utils/jsdoc-custom-tags-plugin.js"
   ],
   "templates": {
     "cleverLinks": true,

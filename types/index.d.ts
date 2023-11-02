@@ -1,16 +1,9 @@
-// Type definitions for postman-sandbox 3.5.7
-// Project: https://github.com/postmanlabs/postman-sandbox
-// Definitions by: PostmanLabs
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.4
-/// <reference types="node" />
-
-declare const CONSOLE_EVENT_BASE = "execution.console.";
+declare const CONSOLE_EVENT = "execution.console";
 
 /**
  * List of functions that we expect and create for console
  */
-declare const logLevels: string[];
+declare const logLevels: String[];
 
 /**
  * Replacer to be used with teleport-javascript to handle cases which are not
@@ -21,25 +14,49 @@ declare const logLevels: string[];
  */
 declare function replacer(key: string, value: any): any;
 
-declare interface PostmanCookieJar {
+/**
+ * @param cookieStore - Cookie store instance
+ */
+declare class PostmanCookieJar {
+    constructor(cookieStore: any);
     /**
      * Get the cookie value with the given name.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param callback - Callback function
      */
     get(url: string, name: string, callback: (...params: any[]) => any): void;
     /**
      * Get all the cookies for the given URL.
+     * @param url - URL string
+     * @param [options] - Options object
+     * @param [options.http] - Include only HttpOnly cookies
+     * @param [options.secure] - Include Secure cookies
+     * @param callback - Callback function
      */
-    getAll(url: string, options?: any, callback: (...params: any[]) => any): void;
+    getAll(url: string, options?: {
+        http?: boolean;
+        secure?: boolean;
+    }, callback: (...params: any[]) => any): void;
     /**
      * Set or update a cookie.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param [value] - Cookie value
+     * @param [callback] - Callback function
      */
     set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
     /**
      * Remove single cookie with the given name.
+     * @param url - URL string
+     * @param name - Cookie name
+     * @param [callback] - Callback function
      */
     unset(url: string, name: string, callback?: (...params: any[]) => any): void;
     /**
      * Remove all the cookies for the given URL.
+     * @param url - URL string
+     * @param [callback] - Callback function
      */
     clear(url: string, callback?: (...params: any[]) => any): void;
 }
@@ -50,10 +67,6 @@ declare interface PostmanCookieJar {
  * It also allows one to get and set environment and global variables.
  */
 declare var pm: Postman;
-
-declare var request: any;
-
-declare var response: any;
 
 /**
  * @property async - true if the executed script was async, false otherwise
@@ -66,8 +79,19 @@ declare type Return = {
     nextRequest: any;
 };
 
+/**
+ * @param execution - execution context
+ * @param onRequest - callback to execute when pm.sendRequest() called
+ * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
+ * @param onAssertion - callback to execute when pm.expect() called
+ * @param cookieStore - cookie store
+ * @param [options] - options
+ * @param [options.disabledAPIs] - list of disabled APIs
+ */
 declare class Postman {
-    constructor(bridge: EventEmitter, execution: Execution, onRequest: (...params: any[]) => any, cookieStore: any);
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+        disabledAPIs?: String[];
+    });
     /**
      * The pm.info object contains information pertaining to the script being executed.
      * Useful information such as the request name, request Id, and iteration count are
@@ -101,8 +125,14 @@ declare class Postman {
     visualizer: Visualizer;
     /**
      * Allows one to send request from script asynchronously.
+     * @param req - request object or request url
+     * @param callback - callback function
      */
     sendRequest(req: Request | string, callback: (...params: any[]) => any): void;
+    /**
+     * Exposes handlers to control or access execution state
+     */
+    execution: Execution;
     expect: Chai.ExpectStatic;
 }
 
@@ -146,10 +176,19 @@ declare interface Visualizer {
     clear(): void;
 }
 
+declare interface Execution {
+    request: any;
+    response: any;
+    /**
+     * Stops the current request and its scripts from executing.
+     */
+    skipRequest(): void;
+}
+
 /**
  * Different modes for a request body.
  */
-declare enum REQUEST_MODES {
+declare const enum REQUEST_MODES {
     RAW = "raw",
     URLENCODED = "urlencoded",
     FORMDATA = "formdata",
@@ -158,20 +197,30 @@ declare enum REQUEST_MODES {
 
 /**
  * Raises a single assertion event with an array of assertions from legacy `tests` object.
+ * @param scope - -
+ * @param pmapi - -
+ * @param onAssertion - -
  */
-declare function raiseAssertionEvent(scope: Uniscope, execution: Execution, pmapi: any): void;
+declare function raiseAssertionEvent(scope: Uniscope, pmapi: any, onAssertion: (...params: any[]) => any): void;
 
+/**
+ * @param execution - -
+ * @param globalvars - -
+ */
 declare class PostmanLegacyInterface {
-    constructor(options: any);
+    constructor(execution: any, globalvars: any);
 }
 
 declare class PostmanLegacyTestInterface extends PostmanLegacyInterface {
-    constructor(options: any);
+    /**
+     * @param cookieName - -
+     */
+    getResponseCookie(cookieName: string): any;
+    /**
+     * @param headerName - -
+     */
+    getResponseHeader(headerName: string): string;
 }
-
-declare function getResponseCookie(cookieName: string): any;
-
-declare function getResponseHeader(headerName: string): string;
 
 declare var SandboxGlobals: any;
 
@@ -179,19 +228,19 @@ declare var SandboxGlobals: any;
  * The set of timer function names. We use this array to define common behaviour of all setters and clearer timer
  * functions
  */
-declare const timerFunctionNames: string[];
+declare const timerFunctionNames: String[];
 
 /**
  * This object defines a set of timer function names that are trigerred a number of times instead of a single time.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const multiFireTimerFunctions: boolean[];
+declare const multiFireTimerFunctions: Boolean[];
 
 /**
  * This object defines a set of function timer names that do not fire based on any pre-set duration or interval.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const staticTimerFunctions: boolean[];
+declare const staticTimerFunctions: Boolean[];
 
 /**
  * A local copy of Slice function of Array
@@ -201,8 +250,14 @@ declare const arrayProtoSlice: (...params: any[]) => any;
 /**
  * This object holds the current global timers
  */
-declare var defaultTimers: any;
+declare const defaultTimers: any;
 
+/**
+ * @param [delegations] - -
+ * @param [onError] - -
+ * @param [onAnyTimerStart] - -
+ * @param [onAllTimerEnd] - -
+ */
 declare class Timerz {
     constructor(delegations?: any, onError?: (...params: any[]) => any, onAnyTimerStart?: (...params: any[]) => any, onAllTimerEnd?: (...params: any[]) => any);
     /**
