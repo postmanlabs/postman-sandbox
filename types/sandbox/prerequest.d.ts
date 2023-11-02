@@ -62,7 +62,7 @@ declare class Postman {
     /**
      * Exposes handlers to control or access execution state
      */
-    execution: ExecutionInterface;
+    execution: Execution;
     expect: Chai.ExpectStatic;
 }
 
@@ -106,7 +106,7 @@ declare interface Visualizer {
     clear(): void;
 }
 
-declare interface ExecutionInterface {
+declare interface Execution {
     /**
      * Stops the current request and its scripts from executing.
      * @excludeFromTestScript
