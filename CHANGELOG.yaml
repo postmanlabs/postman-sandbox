@@ -1,3 +1,7 @@
+unreleased:
+  new features:
+    - GH-964 Added support for `pm.execution.skipRequest()`
+
 4.2.8:
   date: 2023-10-19
   fixed bugs:

@@ -55,6 +55,7 @@ The following section outlines the API available inside sandbox scripts
 - execution.request.*
 - execution.result.*
 - execution.cookies.*
+- execution.skipRequest.*
 
 ## Events responded to
 - ping
