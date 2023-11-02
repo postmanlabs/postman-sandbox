@@ -1,6 +1,8 @@
 unreleased:
   new features:
     - GH-964 Added support for `pm.execution.skipRequest()`
+  chores:
+    - GH-965 Updated generated types
 
 4.2.8:
   date: 2023-10-19
