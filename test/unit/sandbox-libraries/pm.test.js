@@ -950,13 +950,14 @@ describe('sandbox library - pm api', function () {
                 context.on('console', consoleSpy);
                 context.on('execution.skipRequest.1', executionSkipSpy);
 
-                context.execute(`
-                    preRequestScript: {
+                context.execute({
+                    listen: 'prerequest',
+                    script: `
                         console.log('pre-request log 1');
                         pm.execution.skipRequest();
                         console.log('pre-request log 2');
-                    }
-                `,
+                    `
+                },
                 {
                     timeout: 200,
                     id: '1',
@@ -990,8 +991,9 @@ describe('sandbox library - pm api', function () {
                 context.on('execution.skipRequest.1', executionSkipSpy);
                 context.on('execution.request.1', executionRequestSpy);
 
-                context.execute(`
-                    preRequestScript: {
+                context.execute({
+                    listen: 'prerequest',
+                    script: `
                         console.log('pre-request log 1');
                         pm.sendRequest('https://postman-echo.com/get?foo=bar', function (err, res) {
                             console.log('sendRequest callback');
@@ -1001,8 +1003,8 @@ describe('sandbox library - pm api', function () {
                             console.log('sendRequest callback');
                         });
                         console.log('pre-request log 2');
-                    }
-                `,
+                    `
+                },
                 {
                     timeout: 200,
                     id: '1',
@@ -1048,16 +1050,17 @@ describe('sandbox library - pm api', function () {
                 context.on('console', consoleSpy);
                 context.on('execution.skipRequest.1', executionSkipSpy);
 
-                context.execute(`
-                    preRequestScript: {
+                context.execute({
+                    listen: 'prerequest',
+                    script: `
                         console.log('pre-request log 1');
                         setTimeout(function () {
                             pm.execution.skipRequest();
                             console.log('pre-request log 3');
                         }, 100);
                         console.log('pre-request log 2');
-                    }
-                `,
+                    `
+                },
                 {
                     timeout: 200,
                     id: '1',
