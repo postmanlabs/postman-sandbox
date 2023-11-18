@@ -116,12 +116,12 @@ declare interface Execution {
     /**
      * The path of the current request.
      */
-    location: ExecutionLocationInterface;
+    location: ExecutionLocation;
 }
 
-declare interface ExecutionLocationInterface extends Array {
+declare interface ExecutionLocation extends Array {
     /**
-     * The element name whose script is currently being executed.
+     * The item name whose script is currently being executed.
      */
     current: string;
 }

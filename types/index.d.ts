@@ -1,9 +1,16 @@
+// Type definitions for postman-sandbox 4.3.0
+// Project: https://github.com/postmanlabs/postman-sandbox
+// Definitions by: PostmanLabs
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// TypeScript Version: 2.4
+/// <reference types="node" />
+
 declare const CONSOLE_EVENT = "execution.console";
 
 /**
  * List of functions that we expect and create for console
  */
-declare const logLevels: String[];
+declare const logLevels: string[];
 
 /**
  * Replacer to be used with teleport-javascript to handle cases which are not
@@ -69,14 +76,6 @@ declare class PostmanCookieJar {
 declare var pm: Postman;
 
 /**
- * @param current - Current item name, current item is the item whose script is being executed
- * @param rest - Arguments to pass to Array constructor
- */
-declare class ExecutionLocation {
-    constructor(current: string, ...rest: string[]);
-}
-
-/**
  * @property async - true if the executed script was async, false otherwise
  * @property visualizer - visualizer data
  * @property nextRequest - next request to send
@@ -98,7 +97,7 @@ declare type Return = {
  */
 declare class Postman {
     constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
-        disabledAPIs?: String[];
+        disabledAPIs?: string[];
     });
     /**
      * The pm.info object contains information pertaining to the script being executed.
@@ -194,12 +193,12 @@ declare interface Execution {
     /**
      * The path of the current request.
      */
-    location: ExecutionLocationInterface;
+    location: ExecutionLocation;
 }
 
-declare interface ExecutionLocationInterface extends Array<string> {
+declare interface ExecutionLocation extends Array {
     /**
-     * The element name whose script is currently being executed.
+     * The item name whose script is currently being executed.
      */
     current: string;
 }
@@ -247,19 +246,19 @@ declare var SandboxGlobals: any;
  * The set of timer function names. We use this array to define common behaviour of all setters and clearer timer
  * functions
  */
-declare const timerFunctionNames: String[];
+declare const timerFunctionNames: string[];
 
 /**
  * This object defines a set of timer function names that are trigerred a number of times instead of a single time.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const multiFireTimerFunctions: Boolean[];
+declare const multiFireTimerFunctions: boolean[];
 
 /**
  * This object defines a set of function timer names that do not fire based on any pre-set duration or interval.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const staticTimerFunctions: Boolean[];
+declare const staticTimerFunctions: boolean[];
 
 /**
  * A local copy of Slice function of Array
