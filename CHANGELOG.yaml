@@ -1,6 +1,8 @@
 unreleased:
-    new features:
-     - GH-950 Added support for `pm.execution.location`
+  new features:
+    - GH-950 Added support for `pm.execution.location`
+  chores:
+    - Updated dependencies
 
 4.3.0:
   date: 2023-11-02
