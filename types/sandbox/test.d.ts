@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.2.8
+// Type definitions for postman-sandbox 4.3.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -113,6 +113,17 @@ declare interface Visualizer {
 }
 
 declare interface Execution {
+    /**
+     * The path of the current request.
+     */
+    location: ExecutionLocation;
+}
+
+declare interface ExecutionLocation extends Array {
+    /**
+     * The item name whose script is currently being executed.
+     */
+    current: string;
 }
 
 /**

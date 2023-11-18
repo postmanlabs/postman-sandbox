@@ -1,9 +1,16 @@
+// Type definitions for postman-sandbox 4.3.0
+// Project: https://github.com/postmanlabs/postman-sandbox
+// Definitions by: PostmanLabs
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// TypeScript Version: 2.4
+/// <reference types="node" />
+
 declare const CONSOLE_EVENT = "execution.console";
 
 /**
  * List of functions that we expect and create for console
  */
-declare const logLevels: String[];
+declare const logLevels: string[];
 
 /**
  * Replacer to be used with teleport-javascript to handle cases which are not
@@ -90,7 +97,7 @@ declare type Return = {
  */
 declare class Postman {
     constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
-        disabledAPIs?: String[];
+        disabledAPIs?: string[];
     });
     /**
      * The pm.info object contains information pertaining to the script being executed.
@@ -183,6 +190,17 @@ declare interface Execution {
      * Stops the current request and its scripts from executing.
      */
     skipRequest(): void;
+    /**
+     * The path of the current request.
+     */
+    location: ExecutionLocation;
+}
+
+declare interface ExecutionLocation extends Array {
+    /**
+     * The item name whose script is currently being executed.
+     */
+    current: string;
 }
 
 /**
@@ -228,19 +246,19 @@ declare var SandboxGlobals: any;
  * The set of timer function names. We use this array to define common behaviour of all setters and clearer timer
  * functions
  */
-declare const timerFunctionNames: String[];
+declare const timerFunctionNames: string[];
 
 /**
  * This object defines a set of timer function names that are trigerred a number of times instead of a single time.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const multiFireTimerFunctions: Boolean[];
+declare const multiFireTimerFunctions: boolean[];
 
 /**
  * This object defines a set of function timer names that do not fire based on any pre-set duration or interval.
  * Such timers, when placed in generic rules, needs special attention.
  */
-declare const staticTimerFunctions: Boolean[];
+declare const staticTimerFunctions: boolean[];
 
 /**
  * A local copy of Slice function of Array
