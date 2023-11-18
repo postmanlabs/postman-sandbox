@@ -69,6 +69,14 @@ declare class PostmanCookieJar {
 declare var pm: Postman;
 
 /**
+ * @param current - Current item name, current item is the item whose script is being executed
+ * @param rest - Arguments to pass to Array constructor
+ */
+declare class ExecutionLocation {
+    constructor(current: string, ...rest: string[]);
+}
+
+/**
  * @property async - true if the executed script was async, false otherwise
  * @property visualizer - visualizer data
  * @property nextRequest - next request to send
@@ -183,6 +191,17 @@ declare interface Execution {
      * Stops the current request and its scripts from executing.
      */
     skipRequest(): void;
+    /**
+     * The path of the current request.
+     */
+    location: ExecutionLocationInterface;
+}
+
+declare interface ExecutionLocationInterface extends Array<string> {
+    /**
+     * The element name whose script is currently being executed.
+     */
+    current: string;
 }
 
 /**
