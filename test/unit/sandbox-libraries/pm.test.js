@@ -1087,5 +1087,39 @@ describe('sandbox library - pm api', function () {
                 });
             });
         });
+
+        describe('.location', function () {
+            it('should return the correct path of the request', function (done) {
+                context.execute({
+                    script: `
+                        var assert = require('assert');
+                        assert.deepEqual(Array.from(pm.execution.location), ['C1', 'R1']);
+                    ` }, {
+                    legacy: {
+                        _itemName: 'request-name',
+                        _itemId: 'request-id',
+                        _itemPath: ['C1', 'R1'],
+                        _eventItemName: 'R1'
+                    }
+                }, done);
+            });
+
+            describe('.current ', function () {
+                it('should return the correct current item', function (done) {
+                    context.execute({
+                        script: `
+                            var assert = require('assert');
+                            assert.deepEqual(pm.execution.location.current, 'R1');
+                        ` }, {
+                        legacy: {
+                            _itemName: 'request-name',
+                            _itemId: 'request-id',
+                            _itemPath: ['C1', 'R1'],
+                            _eventItemName: 'R1'
+                        }
+                    }, done);
+                });
+            });
+        });
     });
 });
