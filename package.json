@@ -30,6 +30,7 @@
     "build-types": "npm run build-common-types && npm run build-sandbox-types",
     "cache": "node npm/cache.js $1",
     "codecov": "node npm/publish-coverage.js",
+    "prepare": "npm run cache",
     "prepublishOnly": "node npm/prepublish.js",
     "pretest": "npm run cache",
     "release": "node npm/create-release.js",
