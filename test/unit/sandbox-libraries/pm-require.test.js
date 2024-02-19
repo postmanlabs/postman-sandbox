@@ -50,7 +50,19 @@ describe('sandbox library - pm.require api', function () {
         context.execute(`
             var assert = require('assert');
             assert.strictEqual((typeof pm.require), 'function');
-        `, { context: sampleContextData }, done);
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {}
+        }, done);
+    });
+
+    it('should not be a function if resolvedPackages is not present', function (done) {
+        context.execute(`
+            var assert = require('assert');
+            assert.strictEqual((typeof pm.require), 'undefined');
+        `, {
+            context: sampleContextData
+        }, done);
     });
 
     it('should return the exports from the file', function (done) {
@@ -78,7 +90,10 @@ describe('sandbox library - pm.require api', function () {
             catch (e) {
                 assert.strictEqual(e.message, "Cannot find module 'mod1'");
             }
-        `, { context: sampleContextData }, done);
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {}
+        }, done);
     });
 
     it('should throw error if required file throws error', function (done) {
