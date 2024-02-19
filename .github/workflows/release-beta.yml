@@ -1,0 +1,40 @@
+name: Release Beta
+
+on:
+  push:
+    branches:
+      - 'channel/beta'
+
+
+jobs:
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref }}
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: npm ci
+
+      - name: Bump up version
+        run: |
+            version=`node -p "require('./package.json').version"`
+            version=${version}-${GITHUB_SHA::7}
+            npm version ${version} --no-git-tag-version
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
