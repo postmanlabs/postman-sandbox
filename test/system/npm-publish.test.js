@@ -9,7 +9,7 @@ describe('npm publish', function () {
         packagedFiles = packageInfo.files.map(({ path }) => { return path; });
 
     it('should have a valid package name', function () {
-        expect(packageInfo.name).to.equal('postman-sandbox');
+        expect(packageInfo.name).to.equal('postman-sandbox-custom-beta');
     });
 
     it('should include boot code in .cache', function () {

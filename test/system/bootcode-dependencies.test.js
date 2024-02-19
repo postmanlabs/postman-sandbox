@@ -103,7 +103,7 @@ describe('bootcode dependencies', function () {
             'path-browserify',
             'pathval',
             'postman-collection',
-            'postman-sandbox',
+            'postman-sandbox-custom-beta',
             'postman-url-encoder',
             'process',
             'process-nextick-args',
