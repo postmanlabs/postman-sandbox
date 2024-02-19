@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch/SHA/Tag you want to build extension from. Picks up from main branch by default.
+        required: false
+        default: main
+        type: string
+      environment:
+        description: The type of release to trigger.
+        default: beta
+        type: choice
+        options:
+        - beta
+      # run_tests:
+      #   description: 'Run tests before packaging'
+      #   type: boolean
+      #   default: false
+
+
+jobs:
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref }}
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: npm ci
+
+      - name: Bump up version
+        run: |
+            npm pkg set 'name=postman-sandbox-beta'
+            version=`node -p "require('./package.json').version"`
+            version=${version}-${{ github.sha }}
+            npm version ${version} --no-git-tag-version
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
