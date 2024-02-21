@@ -96,6 +96,26 @@ describe('sandbox library - pm.require api', function () {
         }, done);
     });
 
+    it('should throw custom error if required file has error', function (done) {
+        context.execute(`
+            var assert = require('assert');
+            try {
+                pm.require('mod1');
+                throw new Error('should not reach here');
+            }
+            catch (e) {
+                assert.strictEqual(e.message, "Error while loading module 'mod1': my error");
+            }
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {
+                mod1: {
+                    error: 'my error'
+                }
+            }
+        }, done);
+    });
+
     it('should throw error if required file throws error', function (done) {
         context.execute(`
             var assert = require('assert');
