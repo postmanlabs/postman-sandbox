@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.3.0
+// Type definitions for postman-sandbox 4.4.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -87,16 +87,81 @@ declare type Return = {
 };
 
 /**
+ * Cache of all files that are available to be required.
+ */
+declare type FileCache = {
+    [key: string]: { data: string; } | { error: string; };
+};
+
+/**
+ * @param fileCache - fileCache
+ */
+declare class PostmanRequireStore {
+    constructor(fileCache: FileCache);
+    /**
+     * Check if the file is available in the cache.
+     * @param path - path
+     */
+    hasFile(path: string): boolean;
+    /**
+     * Get the file from the cache.
+     * @param path - path
+     * @returns - file
+     */
+    getFile(path: string): any | undefined;
+    /**
+     * Get the resolved path for the file.
+     * @param path - path
+     * @returns - resolved path
+     */
+    getResolvedPath(path: string): string | undefined;
+    /**
+     * Get the file data.
+     * @param path - path
+     */
+    getFileData(path: string): string | undefined;
+    /**
+     * Check if the file has an error.
+     * @param path - path
+     */
+    hasError(path: string): boolean;
+    /**
+     * Get the file error.
+     * @param path - path
+     */
+    getFileError(path: string): string | undefined;
+}
+
+/**
+ * @example
+ * const fileCache = {
+ *      'path/to/file.js': {
+ *          data: 'module.exports = { foo: "bar" };'
+ *      }
+ *  };
+ *
+ *  const postmanRequire = createPostmanRequire(fileCache, scope);
+ *
+ *  const module = postmanRequire('path/to/file.js');
+ *  console.log(module.foo); // bar
+ * @param fileCache - fileCache
+ * @param scope - scope
+ * @returns - postmanRequire
+ */
+declare function createPostmanRequire(fileCache: FileCache, scope: any): (...params: any[]) => any;
+
+/**
  * @param execution - execution context
  * @param onRequest - callback to execute when pm.sendRequest() called
  * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
+ * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -140,6 +205,12 @@ declare class Postman {
      * Exposes handlers to control or access execution state
      */
     execution: Execution;
+    /**
+     * Imports a package in the script.
+     * @param name - name of the module
+     * @returns - exports from the module
+     */
+    require(name: string): any;
     expect: Chai.ExpectStatic;
 }
 
