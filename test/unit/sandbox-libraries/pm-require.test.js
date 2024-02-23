@@ -137,6 +137,21 @@ describe('sandbox library - pm.require api', function () {
         }, done);
     });
 
+    it('should not throw error if file is empty', function (done) {
+        context.execute(`
+            var assert = require('assert');
+            var mod = pm.require('mod1');
+            assert.deepEqual(mod, {});
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {
+                mod1: {
+                    data: ''
+                }
+            }
+        }, done);
+    });
+
     it('should allow required files to access globals', function (done) {
         context.execute(`
             var assert = require('assert');
