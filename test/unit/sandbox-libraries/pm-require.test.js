@@ -505,4 +505,74 @@ describe('sandbox library - pm.require api', function () {
             }
         }, done);
     });
+
+    it('should not have access to legacy postman global', function (done) {
+        const errorSpy = sinon.stub();
+
+        context.on('execution.error', errorSpy);
+        context.execute(`
+            pm.require('sync_usage');
+            pm.require('func_usage');
+            pm.require('async_usage');
+            setTimeout(() => {}, 20); // wait for async code to finish
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {
+                sync_usage: {
+                    data: ['var assert = require(\'assert\');'].concat([
+                        'tests',
+                        'globals',
+                        'environment',
+                        'data',
+                        'request',
+                        'responseCookies',
+                        'responseHeaders',
+                        'responseTime',
+                        'responseCode',
+                        'responseBody',
+                        'iteration',
+                        'postman',
+
+                        // scope libraries
+                        '_',
+                        'CryptoJS',
+                        'atob',
+                        'btoa',
+                        'tv4',
+                        'xml2Json',
+                        'Backbone',
+                        'cheerio'
+                    ].map(function (key) {
+                        return `assert.strictEqual(${key}, undefined);`;
+                    })).join('\n')
+                },
+                func_usage: {
+                    data: `
+                        var assert = require('assert');
+                        try {
+                            Function('return postman')();
+                            throw new Error('should not reach here');
+                        } catch (e) {
+                            assert.strictEqual(e.message, 'postman is not defined');
+                        }
+                    `
+                },
+                async_usage: {
+                    data: `
+                        var assert = require('assert');
+                        setTimeout(function () {
+                            assert.strictEqual(postman, undefined);
+                        }, 10);
+                    `
+                }
+            }
+        }, function (err) {
+            if (err) {
+                return done(err);
+            }
+
+            expect(errorSpy).to.not.have.been.called;
+            done();
+        });
+    });
 });
