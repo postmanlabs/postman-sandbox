@@ -1,4 +1,5 @@
-unreleased:
+4.5.0:
+  date: 2024-02-28
   new features:
     - GH-976 Add `pm.require` API to use packages inside scripts
 
