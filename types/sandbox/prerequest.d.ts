@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.3.0
+// Type definitions for postman-sandbox 4.4.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -20,11 +20,12 @@ declare interface PostmanLegacy {
  * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
+ * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -63,6 +64,12 @@ declare class Postman {
      * Exposes handlers to control or access execution state
      */
     execution: Execution;
+    /**
+     * Imports a package in the script.
+     * @param name - name of the module
+     * @returns - exports from the module
+     */
+    require(name: string): any;
     expect: Chai.ExpectStatic;
 }
 
