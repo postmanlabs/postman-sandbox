@@ -1,3 +1,7 @@
+unreleased:
+  chores:
+    - GH-968 Added support on demand template registration
+
 4.5.0:
   date: 2024-02-28
   new features:
