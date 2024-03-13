@@ -1,3 +1,9 @@
+unreleased:
+  new features:
+    - |
+      GH-984 Added `pm.execution.setNextRequest` API, similar to legacy
+      `postman.setNextRequest`
+
 4.5.1:
   date: 2024-03-12
   chores:

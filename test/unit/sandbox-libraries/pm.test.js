@@ -1121,5 +1121,20 @@ describe('sandbox library - pm api', function () {
                 });
             });
         });
+
+        describe('.setNextRequest', function () {
+            it('should have the next request in result.nextRequest', function (done) {
+                context.execute({
+                    listen: 'test',
+                    script: `
+                        pm.execution.setNextRequest('R2');
+                    `
+                }, {}, function (err, result) {
+                    expect(err).to.be.null;
+                    expect(result).to.have.nested.property('return.nextRequest', 'R2');
+                    done();
+                });
+            });
+        });
     });
 });
