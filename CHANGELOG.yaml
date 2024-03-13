@@ -3,6 +3,8 @@ unreleased:
     - |
       GH-984 Added `pm.execution.setNextRequest` API, similar to legacy
       `postman.setNextRequest`
+  chores:
+    - Updated dependencies
 
 4.5.1:
   date: 2024-03-12
