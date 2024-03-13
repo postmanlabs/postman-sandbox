@@ -1,6 +1,7 @@
 unreleased:
   fixed bugs:
     - GH-981 Dropped support for legacy sandbox APIs in packages
+    - GH-985 Fixed the error message shown when there is an error in packages
   new features:
     - |
       GH-984 Added `pm.execution.setNextRequest` API, similar to legacy
