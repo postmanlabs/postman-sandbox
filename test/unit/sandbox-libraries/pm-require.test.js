@@ -88,7 +88,7 @@ describe('sandbox library - pm.require api', function () {
                 pm.require('mod1');
             }
             catch (e) {
-                assert.strictEqual(e.message, "Cannot find module 'mod1'");
+                assert.strictEqual(e.message, "Cannot find package 'mod1'");
             }
         `, {
             context: sampleContextData,
@@ -104,7 +104,7 @@ describe('sandbox library - pm.require api', function () {
                 throw new Error('should not reach here');
             }
             catch (e) {
-                assert.strictEqual(e.message, "Error while loading module 'mod1': my error");
+                assert.strictEqual(e.message, "Error while loading package 'mod1': my error");
             }
         `, {
             context: sampleContextData,
@@ -124,7 +124,7 @@ describe('sandbox library - pm.require api', function () {
                 throw new Error('expected to throw');
             }
             catch (e) {
-                assert.strictEqual(e.message, "my error");
+                assert.strictEqual(e.message, "Error in package 'mod1': my error");
             }
         `, {
             context: sampleContextData,
