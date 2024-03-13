@@ -92,7 +92,7 @@
     "terser": "^5.29.1",
     "tsd-jsdoc": "^2.5.0",
     "tv4": "1.3.0",
-    "uniscope": "2.1.0",
+    "uniscope": "2.2.0",
     "watchify": "^4.0.0",
     "xml2js": "0.4.23"
   },
