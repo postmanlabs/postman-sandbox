@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - GH-986 Fixed the types for `pm.execution.setNextRequest`
+
 4.6.0:
   date: 2024-03-13
   fixed bugs:
