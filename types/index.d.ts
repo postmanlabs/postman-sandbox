@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.5.0
+// Type definitions for postman-sandbox 4.5.1
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -254,16 +254,6 @@ declare interface Visualizer {
     clear(): void;
 }
 
-declare namespace Execution {
-    /**
-     * Sets the next request to be run after the current request, when
-     * running the collection. Passing `null` stops the collection run
-     * after the current request is executed.
-     * @param request - name of the request to run next
-     */
-    function setNextRequest(request: string | null): void;
-}
-
 declare interface Execution {
     request: any;
     response: any;
@@ -275,6 +265,13 @@ declare interface Execution {
      * The path of the current request.
      */
     location: ExecutionLocation;
+    /**
+     * Sets the next request to be run after the current request, when
+     * running the collection. Passing `null` stops the collection run
+     * after the current request is executed.
+     * @param request - name of the request to run next
+     */
+    setNextRequest(request: string | null): void;
 }
 
 declare interface ExecutionLocation extends Array {
