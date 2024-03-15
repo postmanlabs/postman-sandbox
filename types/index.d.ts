@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.5.1
+// Type definitions for postman-sandbox 4.6.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
