@@ -1,6 +1,7 @@
 unreleased:
   fixed bugs:
     - GH-986 Fixed the types for `pm.execution.setNextRequest`
+    - GH-990 Sanitized the global scope by deleting the timers properties
 
 4.6.0:
   date: 2024-03-13

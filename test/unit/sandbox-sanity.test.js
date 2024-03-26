@@ -86,7 +86,6 @@ describe('sandbox', function () {
                 var ignoredProps = [
                     'TEMPORARY', 'PERSISTENT', // DedicatedWorkerGlobalScope constants (in Browser)
                     'require', 'eval', 'console', // uniscope ignored
-                    'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setImmediate', 'clearImmediate'
                 ]
                 var propNames = [];
 
