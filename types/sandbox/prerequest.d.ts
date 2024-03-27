@@ -1,18 +1,93 @@
-// Type definitions for postman-sandbox 4.5.1
+// Type definitions for postman-sandbox 4.6.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.4
 /// <reference types="node" />
+/**
+ * @deprecated
+ */
 declare var postman: PostmanLegacy;
 
 declare interface PostmanLegacy {
     /***
      * Sets the next request to be executed.
      * @param requestName Name of the next request to be executed.
+     *
+     * @deprecated Use pm.execution.setNextRequest instead
      */
     setNextRequest(requestName: string): void;
 }
+
+/**
+ * @deprecated Use pm.test instead
+ */
+declare var tests;
+
+/**
+ * @deprecated Use pm.global instead
+ */
+declare var globals;
+
+/**
+ * @deprecated Use pm.environment instead
+ */
+declare var environment;
+
+/**
+ * @deprecated Use pm.iterationData instead
+ */
+declare var data;
+
+/**
+ * @deprecated Use pm.request instead
+ */
+declare var request;
+
+/**
+ * @deprecated Use pm.info.iteration instead
+ */
+declare var iteration;
+
+/**
+ * @deprecated Use require('lodash') instead
+ */
+declare var _;
+
+/**
+ * @deprecated Use require('crypto-js') instead
+ */
+declare var CryptoJS;
+
+/**
+ * @deprecated Use require('atob') instead
+ */
+declare var atob;
+
+/**
+ * @deprecated Use require('btoa') instead
+ */
+declare var btoa;
+
+/**
+ * @deprecated Use require('tv4') instead
+ */
+declare var tv4;
+
+/**
+ * @deprecated Use require('xml2js') instead
+ */
+declare var xml2Json;
+
+/**
+ * @deprecated Use require('backbone') instead
+ */
+declare var Backbone;
+
+/**
+ * @deprecated Use require('cheerio') instead
+ */
+declare var cheerio;
 
 /**
  * @param execution - execution context
