@@ -22,7 +22,7 @@ declare interface PostmanLegacy {
      * Sets the next request to be executed.
      * @param requestName Name of the next request to be executed.
      *
-     * @deprecated Use pm.execution.setNextRequest instead
+     * @deprecated Use pm.execution.setNextRequest() instead
      */
     setNextRequest(requestName: string): void
 }
@@ -33,7 +33,7 @@ declare interface PostmanLegacy {
 declare var tests;
 
 /**
- * @deprecated Use pm.global instead
+ * @deprecated Use pm.globals instead
  */
 declare var globals;
 
@@ -108,7 +108,7 @@ declare var atob;
 declare var btoa;
 
 /**
- * @deprecated Use require('tv4') instead
+ * @deprecated Use require('ajv') instead
  */
 declare var tv4;
 
