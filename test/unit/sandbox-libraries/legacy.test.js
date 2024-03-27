@@ -44,7 +44,7 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'data\' is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
             done();
         });
     });
@@ -62,7 +62,7 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'atob\' is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using "atob" is deprecated. Use "require(\'atob\')" instead.');
             done();
         });
     });
@@ -82,9 +82,28 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledTwice;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'data\' is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
             expect(consoleSpy.secondCall.args[1]).to.equal('warn');
-            expect(consoleSpy.secondCall.args[2]).to.equal('Using \'environment\' is deprecated.');
+            expect(consoleSpy.secondCall.args[2]).to.equal('Using "environment" is deprecated. Use "pm.environment" instead.');
+            done();
+        });
+    });
+
+    it('should have special handling for postman.setNextRequest', function (done) {
+        const consoleSpy = sinon.spy();
+
+        context.on('console', consoleSpy);
+        context.execute(`
+            postman.setNextRequest('abc');
+        `, function (err) {
+            if (err) {
+                return done(err);
+            }
+
+            expect(consoleSpy).to.be.calledOnce;
+            expect(consoleSpy.firstCall.args[1]).to.equal('warn');
+            expect(consoleSpy.firstCall.args[2])
+                .to.equal('Using "postman.setNextRequest" is deprecated. Use "pm.execution.setNextRequest()" instead.');
             done();
         });
     });
