@@ -44,7 +44,7 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using legacy globals is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'data\' is deprecated.');
             done();
         });
     });
@@ -62,26 +62,29 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using legacy globals is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'atob\' is deprecated.');
             done();
         });
     });
 
-    it('should show a single warning for one execution', function (done) {
+    it('should show a single warning per execution for each global', function (done) {
         const consoleSpy = sinon.spy();
 
         context.on('console', consoleSpy);
         context.execute(`
-            data['foo'] = 'bar';
+            data['foo'] = 'bar1';
+            data['foo'] = 'bar2';
             environment['foo'] = 'bar';
         `, function (err) {
             if (err) {
                 return done(err);
             }
 
-            expect(consoleSpy).to.be.calledOnce;
+            expect(consoleSpy).to.be.calledTwice;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using legacy globals is deprecated.');
+            expect(consoleSpy.firstCall.args[2]).to.equal('Using \'data\' is deprecated.');
+            expect(consoleSpy.secondCall.args[1]).to.equal('warn');
+            expect(consoleSpy.secondCall.args[2]).to.equal('Using \'environment\' is deprecated.');
             done();
         });
     });
