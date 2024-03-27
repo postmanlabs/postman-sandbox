@@ -44,7 +44,8 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
+            expect(consoleSpy.firstCall.args[2])
+                .to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
             done();
         });
     });
@@ -62,7 +63,8 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using "atob" is deprecated. Use "require(\'atob\')" instead.');
+            expect(consoleSpy.firstCall.args[2])
+                .to.equal('Using "atob" is deprecated. Use "require(\'atob\')" instead.');
             done();
         });
     });
@@ -82,9 +84,12 @@ describe('sandbox library - legacy', function () {
 
             expect(consoleSpy).to.be.calledTwice;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
-            expect(consoleSpy.firstCall.args[2]).to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
+            expect(consoleSpy.firstCall.args[2])
+                .to.equal('Using "data" is deprecated. Use "pm.iterationData" instead.');
+
             expect(consoleSpy.secondCall.args[1]).to.equal('warn');
-            expect(consoleSpy.secondCall.args[2]).to.equal('Using "environment" is deprecated. Use "pm.environment" instead.');
+            expect(consoleSpy.secondCall.args[2])
+                .to.equal('Using "environment" is deprecated. Use "pm.environment" instead.');
             done();
         });
     });
