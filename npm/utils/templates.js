@@ -28,7 +28,7 @@ declare interface PostmanLegacy {
 }
 
 /**
- * @deprecated Use pm.test instead
+ * @deprecated Use pm.test() instead
  */
 declare var tests;
 
