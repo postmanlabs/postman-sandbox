@@ -1,3 +1,7 @@
+unreleased:
+  chores:
+    - GH-990 Sanitized the global scope by deleting the timers properties
+
 4.1.4:
   date: 2023-10-20
   fixed bugs:
