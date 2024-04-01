@@ -10,16 +10,123 @@ const pkg = require('../../package.json'),
 `,
 
     postmanLegacyString =
-`declare var postman: PostmanLegacy;
+`
+/**
+ * @deprecated
+ */
+declare var postman: PostmanLegacy;
 
 declare interface PostmanLegacy {
 
     /***
      * Sets the next request to be executed.
      * @param requestName Name of the next request to be executed.
+     *
+     * @deprecated Use pm.execution.setNextRequest() instead
      */
     setNextRequest(requestName: string): void
-}`,
+}
+
+/**
+ * @deprecated Use pm.test() instead
+ */
+declare var tests;
+
+/**
+ * @deprecated Use pm.globals instead
+ */
+declare var globals;
+
+/**
+ * @deprecated Use pm.environment instead
+ */
+declare var environment;
+
+/**
+ * @deprecated Use pm.iterationData instead
+ */
+declare var data;
+
+/**
+ * @deprecated Use pm.request instead
+ */
+declare var request;
+
+/**
+ * @deprecated Use pm.cookies instead
+ * @excludeFromPrerequestScript
+ */
+declare var responseCookies;
+
+/**
+ * @deprecated Use pm.response.headers instead
+ * @excludeFromPrerequestScript
+ */
+declare var responseHeaders;
+
+/**
+ * @deprecated Use pm.response.responseTime instead
+ * @excludeFromPrerequestScript
+ */
+declare var responseTime;
+
+/**
+ * @deprecated Use pm.response.code instead
+ * @excludeFromPrerequestScript
+ */
+declare var responseCode;
+
+/**
+ * @deprecated Use pm.response.text() instead
+ * @excludeFromPrerequestScript
+ */
+declare var responseBody;
+
+/**
+ * @deprecated Use pm.info.iteration instead
+ */
+declare var iteration;
+
+/**
+ * @deprecated Use require('lodash') instead
+ */
+declare var _;
+
+/**
+ * @deprecated Use require('crypto-js') instead
+ */
+declare var CryptoJS;
+
+/**
+ * @deprecated Use require('atob') instead
+ */
+declare var atob;
+
+/**
+ * @deprecated Use require('btoa') instead
+ */
+declare var btoa;
+
+/**
+ * @deprecated Use require('ajv') instead
+ */
+declare var tv4;
+
+/**
+ * @deprecated Use require('xml2js') instead
+ */
+declare var xml2Json;
+
+/**
+ * @deprecated Use require('backbone') instead
+ */
+declare var Backbone;
+
+/**
+ * @deprecated Use require('cheerio') instead
+ */
+declare var cheerio;
+`,
 
     postmanExtensionString =
 `interface Postman {
@@ -161,5 +268,3 @@ module.exports = {
     cookieListExtensionString,
     responseExtensionString
 };
-
-

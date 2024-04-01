@@ -59,6 +59,10 @@ function generateSandboxTypes (node, printer, target) {
             return node;
         },
         processChild = (child, target, source, printer, node) => {
+            if (shouldExcludeNode(child, target)) {
+                return source;
+            }
+
             removeNodesExcludedFromTarget(child, target);
             source += printer.printNode(typescript.EmitHint.Unspecified, child, node);
             source += '\n\n';
