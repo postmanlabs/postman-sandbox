@@ -1,5 +1,6 @@
 unreleased:
   chores:
+    - GH-994 Modified process.mainModule to prevent access to the Module object
     - GH-990 Sanitized the global scope by deleting the timers properties
 
 4.1.4:
