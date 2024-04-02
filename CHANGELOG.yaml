@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - GH-994 Modified process.mainModule to prevent access to the Module object
+
 4.6.1:
   date: 2024-04-01
   fixed bugs:
