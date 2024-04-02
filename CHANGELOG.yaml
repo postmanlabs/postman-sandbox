@@ -1,4 +1,6 @@
 unreleased:
+  fixed bugs:
+    - GH-994 Modified process.mainModule to prevent access to the Module object
   chores:
     - GH-993 Moved deprecation warnings to be on the first usage of API
 
