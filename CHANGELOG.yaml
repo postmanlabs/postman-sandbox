@@ -1,4 +1,5 @@
-unreleased:
+4.7.1:
+  date: 2024-04-03
   fixed bugs:
     - GH-994 Modified process.mainModule to prevent access to the Module object
   chores:
