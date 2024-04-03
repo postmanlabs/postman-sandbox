@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "Sandbox for Postman Scripts to run in Node.js or browser",
   "author": "Postman Inc.",
   "license": "Apache-2.0",
