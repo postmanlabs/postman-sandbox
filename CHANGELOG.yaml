@@ -1,3 +1,10 @@
+4.7.1:
+  date: 2024-04-03
+  fixed bugs:
+    - GH-994 Modified process.mainModule to prevent access to the Module object
+  chores:
+    - GH-993 Moved deprecation warnings to be on the first usage of API
+
 4.7.0:
   date: 2024-04-01
   new features:
