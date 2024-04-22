@@ -1,3 +1,7 @@
+unreleased:
+  new features:
+    - Added support for top-level await in scripts
+
 4.7.1:
   date: 2024-04-03
   fixed bugs:

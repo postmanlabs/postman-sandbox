@@ -29,6 +29,22 @@ describe('sandbox', function () {
         });
     });
 
+    it('should execute code with top level await', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.execute(`
+                async function main () {
+                    await Promise.resolve();
+                }
+
+                await main();
+            `, done);
+        });
+    });
+
     it('should have a few important globals', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
