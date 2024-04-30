@@ -42,4 +42,4 @@ Thumbs.db
 .nyc_output
 
 # - do not commit sandbox .cache (but do not add it in npm ignore)
-.cache
+#.cache
