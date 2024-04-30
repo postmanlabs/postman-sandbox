@@ -1,6 +1,4 @@
-// @todo find ways to support basic timeout, if not the real ones that protect
-// against infinite loops, but at least ones that can emulate the timeout APIs
-(typeof window === 'undefined' ? describe : describe.skip)('sandbox timeout', function () {
+describe('sandbox timeout', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
 
@@ -26,11 +24,11 @@
         }, function (err, ctx) {
             if (err) { return done(err); }
 
-            ctx.on('error', function () { }); // eslint-disable-line no-empty-function
+            ctx.on('error', done);
 
-            ctx.execute('while(1)', function (err) {
+            ctx.execute('while(1);', function (err) {
                 expect(err).to.be.ok;
-                expect(err).to.have.property('message', 'sandbox: synchronous script execution timeout');
+                expect(err).to.have.property('message', 'sandbox not responding');
                 done();
             });
         });
@@ -43,34 +41,123 @@
             if (err) { return done(err); }
 
             ctx.on('error', done);
-            ctx.execute('var x = "i am doing nothing!";', done);
+            ctx.on('execution.error', done);
+            ctx.on('execution.result.1', (err) => {
+                expect(err).to.be.null;
+            });
+            ctx.execute('var x = "i am doing nothing!";', { id: '1' }, done);
         });
     });
 
     it('should clear timeout on bridge disconnect', function (done) {
         Sandbox.createContext({
-            debug: true,
             timeout: 500 // 500 ms
         }, function (err, ctx) {
             if (err) { return done(err); }
 
-            // @todo once async execution comes into play, this should not even be triggered
-            // @todo fix a race condition where this error swaps between "Script execution timed out." and
-            //  "sandbox: execution interrupted, bridge disconnecting."
-            ctx.on('error', function () { }); // eslint-disable-line no-empty-function
+            ctx.on('error', done);
 
-            ctx.execute('while(1)', function (err) {
+            ctx.execute('while(1)', { id: '1' }, function (err) {
                 expect(err).to.be.ok;
-
-                // @note nodeVersionDiscrepancy
                 expect(err).to.have.property('message');
-                expect(err.message).to.be.oneOf([
-                    'sandbox: execution interrupted, bridge disconnecting.',
-                    'sandbox: synchronous script execution timeout'
-                ]);
+                ctx.once('execution.result.1', (err) => {
+                    expect(err).to.be.ok;
+                    expect(err).to.have.property('message');
+                    expect(err).to.have.property('message', 'sandbox not responding');
+
+                    ctx.once('execution.result.1', (err) => {
+                        expect(err).to.be.ok;
+                        expect(err).to.have.property('message');
+                        expect(err).to.have.property('message', 'sandbox: execution interrupted, ' +
+                            'bridge disconnecting.');
+                    });
+                });
                 done();
             });
             ctx.dispose();
+        });
+    });
+
+
+    it('should reconnect on execute after a timeout', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+            ctx.on('console', (...args) => {
+                expect(args).to.be.ok;
+                expect(args[2]).to.equal('knock knock');
+            });
+
+            ctx.execute('while(1);', { id: '1', timeout: 500 }, (err) => {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'sandbox not responding');
+
+                ctx.execute('console.log("knock knock")', { id: '2' }, done);
+            });
+        });
+    });
+
+    it('should retain init and connect options on reconnect', function (done) {
+        Sandbox.createContextFleet({
+            grpc: `
+                function initializeExecution () {
+                    return {
+                        request: {
+                            type: 'grpc-request'
+                        },
+                        response: {
+                            type: 'grpc-response'
+                        }
+                    }
+                };
+
+                function chaiPlugin (chai) {
+                    const Assertion = chai.Assertion;
+
+                    Assertion.addProperty('grpcRequest', function () {
+                      this.assert(this._obj.type === 'grpc-request',
+                        'expecting a gRPC request but got #{this}',
+                        'not expecting a gRPC request object');
+                    });
+
+                    Assertion.addProperty('grpcResponse', function () {
+                        this.assert(this._obj.type === 'grpc-response',
+                          'expecting a gRPC response but got #{this}',
+                          'not expecting a gRPC response object');
+                      });
+                }
+
+                module.exports = { initializeExecution, chaiPlugin };
+            `,
+            websocket: ''
+        }, {}, { timeout: 500 }, (err, fleet) => {
+            if (err) { return done(err); }
+
+            fleet.getContext('grpc', (err, ctx) => {
+                if (err) { return done(err); }
+
+                ctx.on('error', done);
+                ctx.on('execution.assertion', (_, assertions) => {
+                    assertions.forEach((a) => {
+                        expect(a.passed).to.be.true;
+                    });
+                });
+
+                ctx.execute('while(1);', () => {
+                    ctx.execute(`
+                        pm.test('Should be gRPC request and response', () => {
+                            pm.request.to.be.grpcRequest;
+                            pm.response.to.be.grpcResponse;
+                        });
+                        while(1);
+                    `, (err) => {
+                        expect(err).to.be.ok;
+                        expect(err).to.have.property('message', 'sandbox not responding');
+                        done();
+                    });
+                });
+            });
         });
     });
 });
