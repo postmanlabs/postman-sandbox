@@ -26,7 +26,7 @@ describe('sandbox timeout', function () {
 
             ctx.on('error', done);
 
-            ctx.execute('while(1);', function (err) {
+            ctx.execute('while(1)', function (err) {
                 expect(err).to.be.ok;
                 expect(err).to.have.property('message', 'sandbox not responding');
                 done();
@@ -89,7 +89,7 @@ describe('sandbox timeout', function () {
                 expect(args[2]).to.equal('knock knock');
             });
 
-            ctx.execute('while(1);', { id: '1', timeout: 500 }, (err) => {
+            ctx.execute('while(1)', { id: '1', timeout: 500 }, (err) => {
                 expect(err).to.be.ok;
                 expect(err).to.have.property('message', 'sandbox not responding');
 
@@ -144,7 +144,7 @@ describe('sandbox timeout', function () {
                     });
                 });
 
-                ctx.execute('while(1);', () => {
+                ctx.execute('while(1)', () => {
                     ctx.execute(`
                         pm.test('Should be gRPC request and response', () => {
                             pm.request.to.be.grpcRequest;
