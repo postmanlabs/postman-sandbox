@@ -78,10 +78,11 @@ describe('sandbox error events', function () {
 
             ctx.on('execution.error', executionError);
             ctx.on('execution.error.exec-id', executionErrorSpecific);
+            ctx.on('error', done);
 
             ctx.execute(`
                 async function makeMeThrow () {
-                    await Promise.reject(new Error('catch me if you can'));
+                    return Promise.reject(new Error('catch me if you can'));
                 }
 
                 await makeMeThrow();
