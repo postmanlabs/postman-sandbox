@@ -30,13 +30,15 @@ describe('pm.variables', function () {
 
     describe('.set', function () {
         before(function (done) {
-            var globalVarList = new sdk.VariableList(null, { key: 'key-1', value: 'value-1' }),
+            var vaultSecretList = new sdk.VariableList(null, { key: 'vault:key-0', value: 'value-0' }),
+                globalVarList = new sdk.VariableList(null, { key: 'key-1', value: 'value-1' }),
                 collectionVarList = new sdk.VariableList(null, { key: 'key-2', value: 'value-2' }),
                 envVarList = new sdk.VariableList(null, { key: 'key-3', value: 'value-3' }),
                 contextData = { 'key-4': 'value-4' },
                 localVarList = new sdk.VariableList(null, { key: 'key-5', value: 'value-5' });
 
             ctx.execute(`
+                pm.variables.set("vault:key-0", "modified");
                 pm.variables.set("key-1", "modified");
                 pm.variables.set("key-2", "modified");
                 pm.variables.set("key-3", "modified");
@@ -46,6 +48,7 @@ describe('pm.variables', function () {
             `, {
                 timeout: 200,
                 context: {
+                    vaultSecrets: new sdk.VariableScope(vaultSecretList),
                     globals: new sdk.VariableScope(globalVarList),
                     collectionVariables: new sdk.VariableScope(collectionVarList),
                     environment: new sdk.VariableScope(envVarList),
@@ -64,6 +67,7 @@ describe('pm.variables', function () {
         it('should return the modified variables in the result', function () {
             expect(executionResults).to.deep.nested.include({ '_variables.values': [
                 { type: 'any', value: 'modified', key: 'key-5' },
+                { type: 'any', value: 'modified', key: 'vault:key-0' },
                 { type: 'any', value: 'modified', key: 'key-1' },
                 { type: 'any', value: 'modified', key: 'key-2' },
                 { type: 'any', value: 'modified', key: 'key-3' },
@@ -74,6 +78,9 @@ describe('pm.variables', function () {
 
         it('should not modify the globals, envrironment, collection and data variables', function () {
             expect(executionResults).to.deep.nested.include({
+                'vaultSecrets.values': [
+                    { type: 'any', key: 'vault:key-0', value: 'value-0' }
+                ],
                 'globals.values': [
                     { type: 'any', value: 'value-1', key: 'key-1' }
                 ],
@@ -128,7 +135,12 @@ describe('pm.variables', function () {
 
     describe('.get', function () {
         it('should honour the precendence', function (done) {
-            var globalVarList = new sdk.VariableList(null, [
+            var vaultSecretList = new sdk.VariableList(null, [
+                    { key: 'vault:key-0', value: 'value-0' },
+                    { key: 'vault:key-1', value: 'value-0' }
+                ]),
+                globalVarList = new sdk.VariableList(null, [
+                    { key: 'vault:key-1', value: 'value-1' },
                     { key: 'key-1', value: 'value-1' },
                     { key: 'key-2', value: 'value-1' },
                     { key: 'key-3', value: 'value-1' },
@@ -165,11 +177,14 @@ describe('pm.variables', function () {
                     'key-2': 'value-2',
                     'key-3': 'value-3',
                     'key-4': 'value-4',
-                    'key-5': 'value-5'
+                    'key-5': 'value-5',
+                    'vault:key-0': 'value-0',
+                    'vault:key-1': 'value-1'
                 });
             `, {
                 timeout: 200,
                 context: {
+                    vaultSecrets: new sdk.VariableScope(vaultSecretList),
                     globals: new sdk.VariableScope(globalVarList),
                     collectionVariables: new sdk.VariableScope(collectionVarList),
                     environment: new sdk.VariableScope(envVarList),
@@ -186,7 +201,8 @@ describe('pm.variables', function () {
         });
 
         it('should return appropriate variables', function (done) {
-            var globalVarList = new sdk.VariableList(null, { key: 'key-1', value: 'value-1' }),
+            var vaultSecretList = new sdk.VariableList(null, { key: 'vault:key-0', value: 'value-0' }),
+                globalVarList = new sdk.VariableList(null, { key: 'key-1', value: 'value-1' }),
                 collectionVarList = new sdk.VariableList(null, { key: 'key-2', value: 'value-2' }),
                 envVarList = new sdk.VariableList(null, { key: 'key-3', value: 'value-3' }),
                 contextData = { 'key-4': 'value-4' },
@@ -194,6 +210,7 @@ describe('pm.variables', function () {
 
             ctx.execute(`
                 var assert = require('assert');
+                assert.strictEqual(pm.variables.get('vault:key-0'), 'value-0');
                 assert.strictEqual(pm.variables.get('key-1'), 'value-1');
                 assert.strictEqual(pm.variables.get('key-2'), 'value-2');
                 assert.strictEqual(pm.variables.get('key-3'), 'value-3');
@@ -203,6 +220,7 @@ describe('pm.variables', function () {
             `, {
                 timeout: 200,
                 context: {
+                    vaultSecrets: new sdk.VariableScope(vaultSecretList),
                     globals: new sdk.VariableScope(globalVarList),
                     collectionVariables: new sdk.VariableScope(collectionVarList),
                     environment: new sdk.VariableScope(envVarList),
@@ -221,6 +239,7 @@ describe('pm.variables', function () {
         it('should reinitialize the variables when same sandbox instance is used again', function (done) {
             ctx.execute(`
                 var assert = require('assert');
+                assert.strictEqual(pm.variables.get('vault:key-0'), undefined);
                 assert.strictEqual(pm.variables.get('key-1'), undefined);
                 assert.strictEqual(pm.variables.get('key-2'), undefined);
                 assert.strictEqual(pm.variables.get('key-3'), undefined);
@@ -234,6 +253,7 @@ describe('pm.variables', function () {
                 if (err) { return done(err); }
 
                 expect(execution).to.deep.nested.include({
+                    'vaultSecrets.values': [],
                     'globals.values': [],
                     '_variables.values': [],
                     'collectionVariables.values': [],
