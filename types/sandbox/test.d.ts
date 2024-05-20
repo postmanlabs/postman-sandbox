@@ -142,6 +142,7 @@ declare class Postman {
     globals: import("postman-collection").VariableScope;
     environment: import("postman-collection").VariableScope;
     collectionVariables: import("postman-collection").VariableScope;
+    vault: import("postman-collection").VariableScope;
     variables: import("postman-collection").VariableScope;
     /**
      * The iterationData object contains data from the data file provided during a collection run.

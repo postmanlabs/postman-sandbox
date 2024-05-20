@@ -26,6 +26,10 @@ describe('pm api variables', function () {
                 assert.equal(pm.collectionVariables.mutations.count(), 0);
                 pm.collectionVariables.set('foo', 'foo');
                 assert.equal(pm.collectionVariables.mutations.count(), 1);
+
+                assert.equal(pm.vault.mutations.count(), 0);
+                pm.vault.set('foo', 'foo');
+                assert.equal(pm.vault.mutations.count(), 1);
             `, done);
         });
     });
@@ -41,6 +45,7 @@ describe('pm api variables', function () {
                 pm.environment.set('foo', 'environment');
                 pm.globals.set('foo', 'global');
                 pm.collectionVariables.set('foo', 'collectionVariables');
+                pm.vault.set('foo', 'vaultVariable');
             `, function (err, result) {
                 if (err) {
                     return done(err);
@@ -57,6 +62,9 @@ describe('pm api variables', function () {
 
                 expect(result.collectionVariables.mutations).to.be.ok;
                 expect(new sdk.MutationTracker(result.collectionVariables.mutations).count()).to.equal(1);
+
+                expect(result.vaultSecrets.mutations).to.be.ok;
+                expect(new sdk.MutationTracker(result.vaultSecrets.mutations).count()).to.equal(1);
 
                 done();
             });
