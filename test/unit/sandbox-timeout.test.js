@@ -98,6 +98,28 @@ describe('sandbox timeout', function () {
         });
     });
 
+    it('should not reconnect on execute if context is already disposed', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', (err) => {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'uvm: unable to dispatch "execute" post disconnection.');
+                done();
+            });
+            ctx.on('console', () => {
+                done(new Error('should not have fired'));
+            });
+
+            ctx.execute(';', (err) => {
+                if (err) { return done(err); }
+
+                ctx.dispose();
+                ctx.execute('console.log("knock knock")', done);
+            });
+        });
+    });
+
     it('should retain init and connect options on reconnect', function (done) {
         Sandbox.createContextFleet({
             grpc: `
