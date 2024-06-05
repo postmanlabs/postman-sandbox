@@ -1,3 +1,9 @@
+unreleased:
+  new features:
+    - GH-999 Improved isolation for executing scripts
+  chores:
+    - GH-999 Bumped `uvm` dependency
+
 4.7.1:
   date: 2024-04-03
   fixed bugs:
