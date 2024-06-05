@@ -1,6 +1,9 @@
 unreleased:
   new features:
-    - Added support for top-level await in scripts
+    - GH-1000 Added support for top-level await in scripts
+    - GH-999 Improved isolation for executing scripts
+  chores:
+    - GH-999 Bumped `uvm` dependency
 
 4.7.1:
   date: 2024-04-03
