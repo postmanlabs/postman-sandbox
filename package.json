@@ -45,7 +45,7 @@
     "lodash": "4.17.21",
     "postman-collection": "4.4.0",
     "teleport-javascript": "1.0.0",
-    "uvm": "2.1.1"
+    "uvm": "3.0.0-beta.1"
   },
   "devDependencies": {
     "@postman/shipit": "^0.4.0",
