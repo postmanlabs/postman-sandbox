@@ -2,8 +2,11 @@ unreleased:
   new features:
     - GH-1000 Added support for top-level await in scripts
     - GH-999 Improved isolation for executing scripts
+  breaking changes:
+    - GH-1004 Dropped support for Node < v16
   chores:
     - GH-999 Bumped `uvm` dependency
+    - GH-1004 Updated ESLint rules
 
 4.7.1:
   date: 2024-04-03
