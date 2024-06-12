@@ -209,4 +209,17 @@ describe('sandbox', function () {
             });
         });
     });
+
+    it('should not be able to access NodeJS\'s `require`', function (done) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute('const childProcess = require("child_process");', function (err) {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'Cannot find module \'child_process\'');
+                done();
+            });
+        });
+    });
 });
