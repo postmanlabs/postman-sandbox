@@ -84,7 +84,7 @@ describe('sandbox library - chai-postman', function () {
                 expect(err).to.be.ok;
                 expect(err).to.deep.include({
                     name: 'AssertionError',
-                    // eslint-disable-next-line max-len
+                    // eslint-disable-next-line @stylistic/js/max-len
                     message: 'expecting a postman request or response object but got PostmanHeader{ key: \'key\', …(1) }'
                 });
                 done();
@@ -424,7 +424,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).to.be.ok;
                     expect(err).to.deep.include({
                         name: 'AssertionError',
-                        // eslint-disable-next-line max-len
+                        // eslint-disable-next-line @stylistic/js/max-len
                         message: 'expected { prop: [ { value: { oh: \'wow\' } } ] } in response to not contain property \'prop[0]\''
                     });
                     done();
@@ -443,7 +443,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).to.be.ok;
                     expect(err).to.deep.include({
                         name: 'AssertionError',
-                        // eslint-disable-next-line max-len
+                        // eslint-disable-next-line @stylistic/js/max-len
                         message: 'expected response body json at "prop[0].value" to contain { v: 1 } but got { oh: \'wow\' }'
                     });
                     done();
@@ -462,7 +462,7 @@ describe('sandbox library - chai-postman', function () {
                 `, done);
             });
 
-            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @stylistic/js/max-len
             it('should have a way to be asserted for absence', function (done) {
                 context.execute(`
                     var response = new (require('postman-collection').Response)({
@@ -604,7 +604,7 @@ describe('sandbox library - chai-postman', function () {
                     expect(err).to.be.ok;
                     expect(err).to.deep.include({
                         name: 'AssertionError',
-                        // eslint-disable-next-line max-len
+                        // eslint-disable-next-line @stylistic/js/max-len
                         message: 'expected data to satisfy schema but found following errors: \ndata.alpha should be boolean'
                     });
                     done();
