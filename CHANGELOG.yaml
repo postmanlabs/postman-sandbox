@@ -1,3 +1,7 @@
+unreleased:
+  breaking changes:
+    - GH-1004 Dropped support for Node < v16
+
 4.7.1:
   date: 2024-04-03
   fixed bugs:
