@@ -26,4 +26,14 @@ describe('script in sandbox', function () {
             });
         });
     });
+
+    it('should be able to define variables with names matching legacy globals', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+            ctx.on('execution.error', done);
+
+            ctx.execute('const data = 1;', done);
+        });
+    });
 });

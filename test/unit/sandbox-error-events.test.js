@@ -68,4 +68,40 @@ describe('sandbox error events', function () {
             });
         });
     });
+
+    it('should forward errors from top level await', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            const executionError = sinon.spy(),
+                executionErrorSpecific = sinon.spy();
+
+            ctx.on('execution.error', executionError);
+            ctx.on('execution.error.exec-id', executionErrorSpecific);
+            ctx.on('error', done);
+
+            ctx.execute(`
+                async function makeMeThrow () {
+                    return Promise.reject(new Error('catch me if you can'));
+                }
+
+                await makeMeThrow();
+            `, { id: 'exec-id' }, function (err) {
+                expect(err).to.be.an('object').and.have.property('message', 'catch me if you can');
+
+                expect(executionError).to.have.been.calledOnce;
+                expect(executionErrorSpecific).to.have.been.calledOnce;
+
+                expect(executionError.args[0][0]).to.be.an('object').and.have.property('execution', 'exec-id');
+                expect(executionError.args[0][1]).to.be.an('object')
+                    .and.have.property('message', 'catch me if you can');
+
+                expect(executionErrorSpecific.args[0][0]).to.be.an('object').and.have.property('execution', 'exec-id');
+                expect(executionErrorSpecific.args[0][1]).to.be.an('object')
+                    .and.have.property('message', 'catch me if you can');
+
+                done();
+            });
+        });
+    });
 });
