@@ -1,3 +1,15 @@
+5.0.0:
+  date: 2024-06-19
+  breaking changes:
+    - GH-1004 Dropped support for Node < v16
+  new features:
+    - GH-999 Improved isolation for executing scripts
+    - GH-1000 Added support for top-level await in scripts
+  chores:
+    - GH-999 Bumped `uvm` dependency
+    - GH-1004 Updated ESLint rules
+    - Bumped `xml2js` to `v0.6.2`
+
 4.7.1:
   date: 2024-04-03
   fixed bugs:

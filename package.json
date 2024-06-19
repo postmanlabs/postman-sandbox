@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "4.7.1",
+  "version": "5.0.0",
   "description": "Sandbox for Postman Scripts to run in Node.js or browser",
   "author": "Postman Inc.",
   "license": "Apache-2.0",
@@ -45,11 +45,12 @@
     "lodash": "4.17.21",
     "postman-collection": "4.4.0",
     "teleport-javascript": "1.0.0",
-    "uvm": "2.1.1"
+    "uvm": "3.0.0"
   },
   "devDependencies": {
     "@postman/shipit": "^0.4.0",
     "@postman/tough-cookie": "4.1.3-postman.1",
+    "@stylistic/eslint-plugin-js": "^1.8.0",
     "ajv": "6.12.5",
     "assert": "2.0.0",
     "async": "^3.2.5",
@@ -64,11 +65,12 @@
     "cheerio": "0.22.0",
     "crypto-js": "3.3.0",
     "csv-parse": "1.2.4",
-    "editorconfig": "^0.15.3",
-    "eslint": "^7.32.0",
-    "eslint-plugin-jsdoc": "^40.1.2",
+    "editorconfig": "^2.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jsdoc": "^47.0.2",
     "eslint-plugin-lodash": "^7.4.0",
-    "eslint-plugin-mocha": "^10.4.1",
+    "eslint-plugin-mocha": "^10.4.3",
+    "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-security": "^2.1.1",
     "jquery": "^3.7.1",
     "js-yaml": "^4.1.0",
@@ -80,23 +82,23 @@
     "karma-mocha-reporter": "^2.2.5",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.2",
-    "mocha": "^9.1.3",
+    "mocha": "^10.4.0",
     "moment": "2.30.1",
     "nyc": "^15.1.0",
     "packity": "^0.3.5",
-    "parse-gitignore": "^1.0.1",
+    "parse-gitignore": "^2.0.0",
     "recursive-readdir": "^2.2.3",
     "shelljs": "^0.8.5",
-    "sinon": "^12.0.1",
+    "sinon": "^18.0.0",
     "sinon-chai": "^3.7.0",
-    "terser": "^5.30.2",
+    "terser": "^5.31.1",
     "tsd-jsdoc": "^2.5.0",
     "tv4": "1.3.0",
     "uniscope": "2.2.0",
     "watchify": "^4.0.0",
-    "xml2js": "0.4.23"
+    "xml2js": "0.6.2"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=16"
   }
 }

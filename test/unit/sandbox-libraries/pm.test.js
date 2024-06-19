@@ -939,6 +939,52 @@ describe('sandbox library - pm api', function () {
                 id: executionId
             }, function () {}); // eslint-disable-line no-empty-function
         });
+
+        it('should return a promise when no callback is provided', function (done) {
+            var executionId = '4';
+
+            context.on('error', done);
+
+            context.on('execution.error', function (cur, err) {
+                expect(err).to.not.be.ok;
+                done();
+            });
+
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+
+            context.on('execution.request.' + executionId, function (cursor, id, requestId, req) {
+                expect(req.url).to.eql({
+                    protocol: 'https',
+                    path: ['get'],
+                    host: ['postman-echo', 'com'],
+                    query: [],
+                    variable: []
+                });
+                context.dispatch(`execution.response.${id}`, requestId, null, {
+                    code: 200,
+                    body: '{"i am": "a json"}'
+                });
+            });
+
+            context.execute(`
+                const res = await pm.sendRequest('https://postman-echo.com/get');
+                pm.test('response', function () {
+                    pm.expect(res).to.have.property('code', 200);
+                    pm.expect(res.json()).to.have.property('i am', 'a json');
+                });
+            `, {
+                context: sampleContextData,
+                id: executionId
+            }, function () {}); // eslint-disable-line no-empty-function
+        });
     });
 
     describe('execution', function () {

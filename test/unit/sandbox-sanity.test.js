@@ -29,6 +29,22 @@ describe('sandbox', function () {
         });
     });
 
+    it('should execute code with top level await', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.execute(`
+                async function main () {
+                    await Promise.resolve();
+                }
+
+                await main();
+            `, done);
+        });
+    });
+
     it('should have a few important globals', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
@@ -206,6 +222,19 @@ describe('sandbox', function () {
                         pm.response.to.be.grpcResponse;
                     });
                 `, done);
+            });
+        });
+    });
+
+    it('should not be able to access NodeJS\'s `require`', function (done) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute('const childProcess = require("child_process");', function (err) {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'Cannot find module \'child_process\'');
+                done();
             });
         });
     });
