@@ -1,4 +1,5 @@
-unreleased:
+5.0.0:
+  date: 2024-06-19
   breaking changes:
     - GH-1004 Dropped support for Node < v16
   new features:
