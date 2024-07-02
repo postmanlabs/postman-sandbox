@@ -30,6 +30,13 @@ describe('sandbox library - pm api', function () {
                 value: 2.9,
                 type: 'number'
             }],
+            vaultSecrets: [{
+                key: 'vault:var1',
+                value: 'one-vault'
+            }, {
+                key: 'vault:var2',
+                value: 'two-vault'
+            }],
             data: {
                 var1: 'one-data'
             }
@@ -260,6 +267,48 @@ describe('sandbox library - pm api', function () {
                 assert.deepEqual(pm.collectionVariables.toObject(), {
                     var1: 'collection-var1',
                     var2: 2.9
+                });
+            `, { context: sampleContextData }, done);
+        });
+    });
+
+    describe('vaultSecrets', function () {
+        it('should be defined as VariableScope', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    VariableScope = require('postman-collection').VariableScope;
+                assert.strictEqual(VariableScope.isVariableScope(pm.vault), true);
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should be a readonly property', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    _vaultSecrets;
+
+                _vaultSecrets = pm.vault;
+                pm.vault = [];
+
+                assert.strictEqual(pm.vault, _vaultSecrets, 'property stays unchanged');
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should forward vaultSecrets forwarded during execution', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.vault.get('vault:var1'), 'one-vault');
+                assert.strictEqual(pm.vault.get('vault:var2'), 'two-vault');
+            `, { context: sampleContextData }, done);
+        });
+
+        it('pm.vault.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.vault.toObject()), true);
+                assert.deepEqual(pm.vault.toObject(), {
+                    'vault:var1': 'one-vault',
+                    'vault:var2': 'two-vault'
                 });
             `, { context: sampleContextData }, done);
         });
