@@ -76,10 +76,10 @@ describe('pm.variables', function () {
             ] });
         });
 
-        it('should not modify the globals, envrironment, collection and data variables', function () {
+        it('should not modify the globals, environment, collection and data variables', function () {
             expect(executionResults).to.deep.nested.include({
                 'vaultSecrets.values': [
-                    { type: 'any', key: 'vault:key-0', value: 'value-0' }
+                    { type: 'any', value: 'value-0', key: 'vault:key-0' }
                 ],
                 'globals.values': [
                     { type: 'any', value: 'value-1', key: 'key-1' }

@@ -35,7 +35,7 @@ The following section outlines the API available inside sandbox scripts
 - pm.environment
 - pm.collectionVariables
 - pm.test
-- pm.vaultSecrets
+- pm.vault
 
 #### pre-request script specials
 

@@ -90,16 +90,38 @@ describe('pm api variables', function () {
             ctx.execute(`
                 var assert = require('assert');
 
+                assert.equal(pm.variables.get('bar'), 'bar value');
                 pm.variables.set('foo', '_variable');
+
+                assert.equal(pm.environment.get('bar'), 'bar value');
                 pm.environment.set('foo', 'environment');
+
+                assert.equal(pm.globals.get('bar'), 'bar value');
                 pm.globals.set('foo', 'global');
+
+                assert.equal(pm.collectionVariables.get('bar'), 'bar value');
                 pm.collectionVariables.set('foo', 'collectionVariables');
+
+                assert.equal(pm.vault.get('bar'), 'bar value');
+                pm.vault.set('foo', 'vault');
             `, {
                 context: {
                     globals: scopeDefinition,
                     _variables: scopeDefinition,
                     environment: scopeDefinition,
-                    collectionVariables: scopeDefinition
+                    collectionVariables: scopeDefinition,
+                    vaultSecrets: {
+                        prefix: 'vault:',
+                        values: [
+                            { key: 'vault:bar', value: 'bar value' }
+                        ],
+                        mutations: {
+                            autoCompact: true,
+                            compacted: {
+                                'vault:bar': ['vault:bar', 'bar value']
+                            }
+                        }
+                    }
                 }
             }, function (err, result) {
                 if (err) {
@@ -117,6 +139,9 @@ describe('pm api variables', function () {
 
                 expect(result.collectionVariables.mutations).to.be.ok;
                 expect(new sdk.MutationTracker(result.collectionVariables.mutations).count()).to.equal(1);
+
+                expect(result.vaultSecrets.mutations).to.be.ok;
+                expect(new sdk.MutationTracker(result.vaultSecrets.mutations).count()).to.equal(1);
 
                 done();
             });

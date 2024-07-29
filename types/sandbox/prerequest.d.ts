@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.7.1
+// Type definitions for postman-sandbox 5.0.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -109,10 +109,10 @@ declare class Postman {
      * stored inside of this object.
      */
     info: Info;
+    vault: import("postman-collection").VariableScope;
     globals: import("postman-collection").VariableScope;
     environment: import("postman-collection").VariableScope;
     collectionVariables: import("postman-collection").VariableScope;
-    vault: import("postman-collection").VariableScope;
     variables: import("postman-collection").VariableScope;
     /**
      * The iterationData object contains data from the data file provided during a collection run.

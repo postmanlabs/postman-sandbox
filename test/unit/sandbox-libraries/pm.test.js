@@ -277,7 +277,7 @@ describe('sandbox library - pm api', function () {
         });
     });
 
-    describe('vaultSecrets', function () {
+    describe('vault', function () {
         it('should be defined as VariableScope', function (done) {
             context.execute(`
                 var assert = require('assert'),
