@@ -1,3 +1,9 @@
+unreleased:
+  fixed bugs:
+    - GH-1018 Fixed warnings for all `postman.*` legacy APIs
+  chores:
+    - Updated dependencies
+
 5.0.0:
   date: 2024-06-19
   breaking changes:
