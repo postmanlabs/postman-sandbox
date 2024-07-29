@@ -31,10 +31,18 @@ The following section outlines the API available inside sandbox scripts
 
 ### pm
 
-- pm.globals
-- pm.environment
-- pm.collectionVariables
 - pm.test
+- pm.info
+- pm.vault
+- pm.globals
+- pm.cookies
+- pm.execution
+- pm.variables
+- pm.visualizer
+- pm.sendRequest
+- pm.environment
+- pm.iterationData
+- pm.collectionVariables
 
 #### pre-request script specials
 
