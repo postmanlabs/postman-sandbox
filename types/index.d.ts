@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.6.0
+// Type definitions for postman-sandbox 5.0.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -30,42 +30,47 @@ declare class PostmanCookieJar {
      * Get the cookie value with the given name.
      * @param url - URL string
      * @param name - Cookie name
-     * @param callback - Callback function
+     * @param [callback] - Callback function
+     * @returns - Returns a promise if callback is not provided
      */
-    get(url: string, name: string, callback: (...params: any[]) => any): void;
+    get(url: string, name: string, callback?: (...params: any[]) => any): Promise | undefined;
     /**
      * Get all the cookies for the given URL.
      * @param url - URL string
      * @param [options] - Options object
      * @param [options.http] - Include only HttpOnly cookies
      * @param [options.secure] - Include Secure cookies
-     * @param callback - Callback function
+     * @param [callback] - Callback function
+     * @returns - Returns a promise if callback is not provided
      */
     getAll(url: string, options?: {
         http?: boolean;
         secure?: boolean;
-    }, callback: (...params: any[]) => any): void;
+    }, callback?: (...params: any[]) => any): Promise | undefined;
     /**
      * Set or update a cookie.
      * @param url - URL string
      * @param name - Cookie name
      * @param [value] - Cookie value
      * @param [callback] - Callback function
+     * @returns - Returns a promise if callback is not provided
      */
-    set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): void;
+    set(url: string, name: string | any, value?: string | ((...params: any[]) => any), callback?: (...params: any[]) => any): Promise | undefined;
     /**
      * Remove single cookie with the given name.
      * @param url - URL string
      * @param name - Cookie name
      * @param [callback] - Callback function
+     * @returns - Returns a promise if callback is not provided
      */
-    unset(url: string, name: string, callback?: (...params: any[]) => any): void;
+    unset(url: string, name: string, callback?: (...params: any[]) => any): Promise | undefined;
     /**
      * Remove all the cookies for the given URL.
      * @param url - URL string
      * @param [callback] - Callback function
+     * @returns - Returns a promise if callback is not provided
      */
-    clear(url: string, callback?: (...params: any[]) => any): void;
+    clear(url: string, callback?: (...params: any[]) => any): Promise | undefined;
 }
 
 /**
@@ -170,6 +175,7 @@ declare class Postman {
      * stored inside of this object.
      */
     info: Info;
+    vault: VariableScope;
     globals: VariableScope;
     environment: VariableScope;
     collectionVariables: VariableScope;
@@ -198,9 +204,10 @@ declare class Postman {
     /**
      * Allows one to send request from script asynchronously.
      * @param req - request object or request url
-     * @param callback - callback function
+     * @param [callback] - callback function
+     * @returns - returns a promise if callback is not provided
      */
-    sendRequest(req: Request | string, callback: (...params: any[]) => any): void;
+    sendRequest(req: Request | string, callback?: (...params: any[]) => any): Promise | undefined;
     /**
      * Exposes handlers to control or access execution state
      */
@@ -321,13 +328,13 @@ declare class PostmanLegacyTestInterface extends PostmanLegacyInterface {
 declare var SandboxGlobals: any;
 
 /**
- * The set of timer function names. We use this array to define common behaviour of all setters and clearer timer
+ * The set of timer function names. We use this array to define common behavior of all setters and clearer timer
  * functions
  */
 declare const timerFunctionNames: string[];
 
 /**
- * This object defines a set of timer function names that are trigerred a number of times instead of a single time.
+ * This object defines a set of timer function names that are triggered a number of times instead of a single time.
  * Such timers, when placed in generic rules, needs special attention.
  */
 declare const multiFireTimerFunctions: boolean[];

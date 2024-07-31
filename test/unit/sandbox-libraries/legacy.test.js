@@ -94,21 +94,25 @@ describe('sandbox library - legacy', function () {
         });
     });
 
-    it('should have special handling for postman.setNextRequest', function (done) {
+    it('should have special handling for postman.*', function (done) {
         const consoleSpy = sinon.spy();
 
         context.on('console', consoleSpy);
         context.execute(`
             postman.setNextRequest('abc');
+            postman.setEnvironmentVariable('foo', 'bar');
         `, function (err) {
             if (err) {
                 return done(err);
             }
 
-            expect(consoleSpy).to.be.calledOnce;
+            expect(consoleSpy).to.be.calledTwice;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
             expect(consoleSpy.firstCall.args[2])
                 .to.equal('Using "postman.setNextRequest" is deprecated. Use "pm.execution.setNextRequest()" instead.');
+            expect(consoleSpy.secondCall.args[1]).to.equal('warn');
+            expect(consoleSpy.secondCall.args[2])
+                .to.equal('Using "postman.setEnvironmentVariable" is deprecated. Use "pm.environment.set()" instead.');
             done();
         });
     });

@@ -18,7 +18,10 @@ function createBundle (options, file, done) {
         },
 
         function (codeString, next) {
-            fs.writeFile(file, `module.exports=c=>c(null,${JSON.stringify(codeString)})`, next);
+            // @note: we are appending "require=null;" here to avoid access to
+            // node's require function when running sandbox in worker_threads.
+            // This does not affect the require function injected by browserify.
+            fs.writeFile(file, `module.exports=c=>c(null,${JSON.stringify('require=null;' + codeString)})`, next);
         },
 
         function (next) {

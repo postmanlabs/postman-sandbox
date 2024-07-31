@@ -96,7 +96,7 @@ describe('sandbox library - buffer', function () {
     });
 
     it('should base64 decode extended utf8 characters', function (done) {
-        /* eslint-disable max-len */
+        /* eslint-disable @stylistic/js/max-len */
         var fromValue = 'eyJuYW1lIjoi5b6Q5a6BIiwiZW1haWwiOiJ4dW5pbmdoc3VAZXhhbXBsZS5jb20iLCJ1c2VybmFtZSI6Iueci+aIkeeahOWkp+eZveecvCJ9';
 
         context.execute(`
@@ -107,7 +107,7 @@ describe('sandbox library - buffer', function () {
 
            assert.strictEqual(buf.toString('ascii'), value, 'conversion from utf8 base64');
         `, done);
-        /* eslint-enable max-len */
+        /* eslint-enable @stylistic/js/max-len */
     });
 
     it('should allow to use deprecated new Buffer syntax', function (done) {
