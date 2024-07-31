@@ -16,6 +16,60 @@ describe('sandbox', function () {
         });
     });
 
+    describe('invalid target', function () {
+        let context;
+
+        function tester (input, done) {
+            context.on('error', done);
+            context.execute(input, function (err) {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'sandbox: no target provided for execution');
+
+                done();
+            });
+            context.removeEventListener('error', done);
+        }
+
+
+        before(function (done) {
+            Sandbox.createContext(function (err, ctx) {
+                if (err) { return done(err); }
+                context = ctx;
+                done();
+            });
+        });
+
+        it('should not execute `null`', function (done) { tester(null, done); });
+        it('should not execute `undefined`', function (done) { tester(undefined, done); });
+        it('should not execute `{}`', function (done) { tester({}, done); });
+        it('should not execute `{ script: {} }`', function (done) { tester({ script: {} }, done); });
+    });
+
+    describe('valid target', function () {
+        let context;
+
+        function tester (input, done) {
+            context.on('error', done);
+            context.execute(input, done);
+        }
+
+
+        before(function (done) {
+            Sandbox.createContext(function (err, ctx) {
+                if (err) { return done(err); }
+                context = ctx;
+                done();
+            });
+        });
+
+        it('should execute \'\'', function (done) { tester('', done); });
+        it('should execute []', function (done) { tester([], done); });
+        it('should execute [\'\']', function (done) { tester([''], done); });
+        it('should execute { script: { exec: \'\' } }', function (done) { tester({ script: { exec: '' } }, done); });
+        it('should execute { script: { exec: [] } }', function (done) { tester({ script: { exec: [] } }, done); });
+        it('should execute { script: { exec: [\'\'] }}', function (done) { tester({ script: { exec: [''] } }, done); });
+    });
+
     it('should execute a piece of code', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }

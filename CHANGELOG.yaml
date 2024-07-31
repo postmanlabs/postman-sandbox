@@ -1,3 +1,6 @@
+unreleased:
+  fixed bugs:
+    - GH-1023 Prevented invalid events from being executed
 5.0.0:
   date: 2024-06-19
   breaking changes:
