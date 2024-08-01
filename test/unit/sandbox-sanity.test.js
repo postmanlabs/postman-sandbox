@@ -16,7 +16,7 @@ describe('sandbox', function () {
         });
     });
 
-    describe('invalid target', function () {
+    describe('invalid targets', function () {
         let context;
 
         function tester (input, done) {
@@ -41,11 +41,9 @@ describe('sandbox', function () {
 
         it('should not execute `null`', function (done) { tester(null, done); });
         it('should not execute `undefined`', function (done) { tester(undefined, done); });
-        it('should not execute `{}`', function (done) { tester({}, done); });
-        it('should not execute `{ script: {} }`', function (done) { tester({ script: {} }, done); });
     });
 
-    describe('valid target', function () {
+    describe('valid empty targets', function () {
         let context;
 
         function tester (input, done) {
@@ -65,6 +63,8 @@ describe('sandbox', function () {
         it('should execute \'\'', function (done) { tester('', done); });
         it('should execute []', function (done) { tester([], done); });
         it('should execute [\'\']', function (done) { tester([''], done); });
+        it('should not execute `{}`', function (done) { tester({}, done); });
+        it('should not execute `{ script: {} }`', function (done) { tester({ script: {} }, done); });
         it('should execute { script: { exec: \'\' } }', function (done) { tester({ script: { exec: '' } }, done); });
         it('should execute { script: { exec: [] } }', function (done) { tester({ script: { exec: [] } }, done); });
         it('should execute { script: { exec: [\'\'] }}', function (done) { tester({ script: { exec: [''] } }, done); });
