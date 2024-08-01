@@ -1,4 +1,5 @@
-unreleased:
+5.1.1:
+  date: 2024-08-01
   fixed bugs:
     - GH-1023 Prevented invalid Events from being executed
   chores:
