@@ -30,7 +30,11 @@ describe('pm api variables', function () {
                 assert.equal(pm.vault.mutations.count(), 0);
                 pm.vault.set('foo', 'foo');
                 assert.equal(pm.vault.mutations.count(), 1);
-            `, done);
+            `, {
+                context: {
+                    vaultSecrets: {} // enable pm.vault
+                }
+            }, done);
         });
     });
 
@@ -46,7 +50,11 @@ describe('pm api variables', function () {
                 pm.globals.set('foo', 'global');
                 pm.collectionVariables.set('foo', 'collectionVariables');
                 pm.vault.set('foo', 'vaultVariable');
-            `, function (err, result) {
+            `, {
+                context: {
+                    vaultSecrets: {} // enable pm.vault
+                }
+            }, function (err, result) {
                 if (err) {
                     return done(err);
                 }

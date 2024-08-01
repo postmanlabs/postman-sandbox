@@ -91,7 +91,6 @@ describe('bootcode dependencies', function () {
             'lodash.some',
             'lodash3',
             'loupe',
-            'lru-cache',
             'mime-db',
             'mime-format',
             'mime-types',
@@ -134,8 +133,7 @@ describe('bootcode dependencies', function () {
             'uuid',
             'which-typed-array',
             'xml2js',
-            'xmlbuilder',
-            'yallist'
+            'xmlbuilder'
         ]);
     });
 });

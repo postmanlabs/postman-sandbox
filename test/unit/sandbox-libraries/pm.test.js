@@ -1,5 +1,4 @@
-const { VariableScope } = require('postman-collection'),
-    CookieStore = require('@postman/tough-cookie').Store;
+const CookieStore = require('@postman/tough-cookie').Store;
 
 describe('sandbox library - pm api', function () {
     this.timeout(1000 * 60);
@@ -31,7 +30,7 @@ describe('sandbox library - pm api', function () {
                 value: 2.9,
                 type: 'number'
             }],
-            vaultSecrets: new VariableScope({
+            vaultSecrets: {
                 prefix: 'vault:',
                 values: [{
                     key: 'vault:var1',
@@ -41,7 +40,7 @@ describe('sandbox library - pm api', function () {
                     key: 'vault:var2',
                     value: 'two-vault',
                     type: 'string'
-                }] }),
+                }] },
             data: {
                 var1: 'one-data'
             }
@@ -278,6 +277,13 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('vault', function () {
+        it('should not be a function if vaultSecrets is not present', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual((typeof pm.vault), 'undefined');
+            `, done);
+        });
+
         it('should be defined as VariableScope', function (done) {
             context.execute(`
                 var assert = require('assert'),

@@ -1,3 +1,11 @@
+5.1.1:
+  date: 2024-08-01
+  fixed bugs:
+    - GH-1023 Prevented invalid Events from being executed
+  chores:
+    - Allowed access to `pm.vault` only when `vaultSecrets` is set
+    - Updated dependencies
+
 5.1.0:
   date: 2024-07-29
   new features:
