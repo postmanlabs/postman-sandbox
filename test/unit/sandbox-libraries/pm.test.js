@@ -30,6 +30,17 @@ describe('sandbox library - pm api', function () {
                 value: 2.9,
                 type: 'number'
             }],
+            vaultSecrets: {
+                prefix: 'vault:',
+                values: [{
+                    key: 'vault:var1',
+                    value: 'one-vault',
+                    type: 'string'
+                }, {
+                    key: 'vault:var2',
+                    value: 'two-vault',
+                    type: 'string'
+                }] },
             data: {
                 var1: 'one-data'
             }
@@ -262,6 +273,84 @@ describe('sandbox library - pm api', function () {
                     var2: 2.9
                 });
             `, { context: sampleContextData }, done);
+        });
+    });
+
+    describe('vault', function () {
+        it('should not be a function if vaultSecrets is not present', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual((typeof pm.vault), 'undefined');
+            `, done);
+        });
+
+        it('should be defined as VariableScope', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    VariableScope = require('postman-collection').VariableScope;
+                assert.strictEqual(VariableScope.isVariableScope(pm.vault), true);
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should be a readonly property', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    _vaultSecrets;
+
+                _vaultSecrets = pm.vault;
+                pm.vault = [];
+
+                assert.strictEqual(pm.vault, _vaultSecrets, 'property stays unchanged');
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should forward vaultSecrets forwarded during execution', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.vault.get('var1'), 'one-vault');
+                assert.strictEqual(pm.vault.get('var2'), 'two-vault');
+            `, { context: sampleContextData }, done);
+        });
+
+        it('pm.vault.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.vault.toObject()), true);
+                assert.deepEqual(pm.vault.toObject(), {
+                    'vault:var1': 'one-vault',
+                    'vault:var2': 'two-vault'
+                });
+            `, { context: sampleContextData }, done);
+        });
+        it('pm.variables.toObject must contain vaultSecrets', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
+                assert.deepEqual(pm.variables.toObject(), {
+                    'vault:var1': 'one-vault',
+                    'vault:var2': 'two-vault',
+                    'var1': 'one-data',
+                    'var2': 2.5
+                });
+            `, { context: sampleContextData }, done);
+        });
+        it('should propagate updated vault secrets from inside sandbox', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                pm.vault.set('var1', 'one-one-vault');
+                assert.strictEqual(pm.vault.get('var1'), 'one-one-vault');
+            `, { context: sampleContextData }, function (err, exec) {
+                expect(err).to.be.null;
+                expect(exec).to.be.ok;
+                expect(exec).to.deep.nested.include({ 'vaultSecrets.values': [
+                    { type: 'string', value: 'one-one-vault', key: 'vault:var1' },
+                    { type: 'string', value: 'two-vault', key: 'vault:var2' }
+                ] });
+                done();
+            });
         });
     });
 

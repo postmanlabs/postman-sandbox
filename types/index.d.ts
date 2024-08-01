@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 4.7.1
+// Type definitions for postman-sandbox 5.0.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -175,6 +175,7 @@ declare class Postman {
      * stored inside of this object.
      */
     info: Info;
+    vault: VariableScope;
     globals: VariableScope;
     environment: VariableScope;
     collectionVariables: VariableScope;
