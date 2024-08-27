@@ -68,7 +68,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         include:
           - coverage: true
-            node-version: 20
+            node-version: latest
             os: ubuntu-latest
 
     steps:
