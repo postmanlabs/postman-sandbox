@@ -1,3 +1,6 @@
+unreleased:
+  fixed bugs:
+    - Fixed an issue where sandbox crashes for large response body
 5.1.1:
   date: 2024-08-01
   fixed bugs:
