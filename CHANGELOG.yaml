@@ -1,6 +1,8 @@
 unreleased:
   chores:
     - Add support for configuring module resolver based on environment
+  new features:
+    - Enhanced performance when operating on buffers in Node environment
 
 5.1.1:
   date: 2024-08-01
