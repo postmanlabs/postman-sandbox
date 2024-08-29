@@ -3,6 +3,7 @@ unreleased:
     - GH-1032 Add support for configuring module resolver based on environment
   new features:
     - GH-1032 Enhanced performance when operating on buffers in Node environment
+    - GH-1035 Added missing buffer APIs to expose a uniform interface across environments
 
 5.1.1:
   date: 2024-08-01
