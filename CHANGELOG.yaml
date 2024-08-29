@@ -1,3 +1,7 @@
+unreleased:
+  chores:
+    - Add support for configuring module resolver based on environment
+
 5.1.1:
   date: 2024-08-01
   fixed bugs:
