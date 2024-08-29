@@ -292,4 +292,15 @@ describe('sandbox', function () {
             });
         });
     });
+
+    it('should not hold reference to bootCode after initialization', function (done) {
+        // TODO: Add a memory footprint test to ensure bootCode is not retained elsewhere
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            expect(ctx.connectOptions.bootCode).to.be.undefined;
+            done();
+        });
+    });
 });
