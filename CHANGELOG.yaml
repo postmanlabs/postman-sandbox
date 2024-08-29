@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - Fixed `uncaughtException` event listener not being removed
+
 5.1.1:
   date: 2024-08-01
   fixed bugs:
