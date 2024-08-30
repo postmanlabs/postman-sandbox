@@ -311,14 +311,12 @@ describe('sandbox library - pm api', function () {
             `, { context: sampleContextData }, done);
         });
 
-        it('pm.variables.toObject must contain vaultSecrets', function (done) {
+        it('pm.variables.toObject must not contain vaultSecrets', function (done) {
             context.execute(`
                 var assert = require('assert');
 
                 assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
                 assert.deepEqual(pm.variables.toObject(), {
-                    'vault:var1': 'one-vault',
-                    'vault:var2': 'two-vault',
                     'var1': 'one-data',
                     'var2': 2.5
                 });

@@ -178,7 +178,6 @@ describe('pm.variables', function () {
                     'key-3': 'value-3',
                     'key-4': 'value-4',
                     'key-5': 'value-5',
-                    'vault:key-0': 'value-0',
                     'vault:key-1': 'value-1'
                 });
             `, {
@@ -210,7 +209,6 @@ describe('pm.variables', function () {
 
             ctx.execute(`
                 var assert = require('assert');
-                assert.strictEqual(pm.variables.get('vault:key-0'), 'value-0');
                 assert.strictEqual(pm.variables.get('key-1'), 'value-1');
                 assert.strictEqual(pm.variables.get('key-2'), 'value-2');
                 assert.strictEqual(pm.variables.get('key-3'), 'value-3');
