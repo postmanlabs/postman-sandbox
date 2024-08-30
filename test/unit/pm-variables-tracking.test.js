@@ -26,10 +26,21 @@ describe('pm api variables', function () {
                 assert.equal(pm.collectionVariables.mutations.count(), 0);
                 pm.collectionVariables.set('foo', 'foo');
                 assert.equal(pm.collectionVariables.mutations.count(), 1);
+            `, {
+                context: {
+                    vaultSecrets: {} // enable pm.vault
+                }
+            }, done);
+        });
+    });
 
-                assert.equal(pm.vault.mutations.count(), 0);
-                pm.vault.set('foo', 'foo');
-                assert.equal(pm.vault.mutations.count(), 1);
+    it('should not support tracking options in scripts for vault', function (done) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.execute(`
+                var assert = require('assert');
+                assert.equal(pm.vault.mutations, undefined);
             `, {
                 context: {
                     vaultSecrets: {} // enable pm.vault

@@ -284,11 +284,10 @@ describe('sandbox library - pm api', function () {
             `, done);
         });
 
-        it('should be defined as VariableScope', function (done) {
+        it('should only have get and set properties', function (done) {
             context.execute(`
-                var assert = require('assert'),
-                    VariableScope = require('postman-collection').VariableScope;
-                assert.strictEqual(VariableScope.isVariableScope(pm.vault), true);
+                var assert = require('assert');
+                assert.deepEqual(Object.keys(pm.vault), ['get', 'set']);
             `, { context: sampleContextData }, done);
         });
 
@@ -312,17 +311,6 @@ describe('sandbox library - pm api', function () {
             `, { context: sampleContextData }, done);
         });
 
-        it('pm.vault.toObject must return a pojo', function (done) {
-            context.execute(`
-                var assert = require('assert');
-
-                assert.strictEqual(_.isPlainObject(pm.vault.toObject()), true);
-                assert.deepEqual(pm.vault.toObject(), {
-                    'vault:var1': 'one-vault',
-                    'vault:var2': 'two-vault'
-                });
-            `, { context: sampleContextData }, done);
-        });
         it('pm.variables.toObject must contain vaultSecrets', function (done) {
             context.execute(`
                 var assert = require('assert');
