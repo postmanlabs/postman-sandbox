@@ -3,7 +3,6 @@ const CookieStore = require('@postman/tough-cookie').Store;
 describe('sandbox library - pm api', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
-
         sampleContextData = {
             globals: [{
                 key: 'var1',
@@ -30,17 +29,6 @@ describe('sandbox library - pm api', function () {
                 value: 2.9,
                 type: 'number'
             }],
-            vaultSecrets: {
-                prefix: 'vault:',
-                values: [{
-                    key: 'vault:var1',
-                    value: 'one-vault',
-                    type: 'string'
-                }, {
-                    key: 'vault:var2',
-                    value: 'two-vault',
-                    type: 'string'
-                }] },
             data: {
                 var1: 'one-data'
             }
@@ -277,78 +265,73 @@ describe('sandbox library - pm api', function () {
     });
 
     describe('vault', function () {
-        it('should not be a function if vaultSecrets is not present', function (done) {
+        it('should only have get, set and unset properties', function (done) {
             context.execute(`
                 var assert = require('assert');
-                assert.strictEqual((typeof pm.vault), 'undefined');
-            `, done);
+                assert.deepEqual(Object.keys(pm.vault), ['get', 'set', 'unset']);
+            `, {}, done);
         });
+        it('should send correct events and receive data for pm.vault operations', function (done) {
+            const executionId = '2',
 
-        it('should be defined as VariableScope', function (done) {
-            context.execute(`
-                var assert = require('assert'),
-                    VariableScope = require('postman-collection').VariableScope;
-                assert.strictEqual(VariableScope.isVariableScope(pm.vault), true);
-            `, { context: sampleContextData }, done);
-        });
+                getErrorEventHandler = function (callback) {
+                // errors from the execute callback are catched here as well
+                // so, call mocha `done` callback with an error
+                // @todo this is not supposed to happen, fix this
+                    return function () {
+                        callback(new Error('Assertion Error'));
+                    };
+                },
+                executionError = sinon.spy(getErrorEventHandler(done));
 
-        it('should be a readonly property', function (done) {
-            context.execute(`
-                var assert = require('assert'),
-                    _vaultSecrets;
-
-                _vaultSecrets = pm.vault;
-                pm.vault = [];
-
-                assert.strictEqual(pm.vault, _vaultSecrets, 'property stays unchanged');
-            `, { context: sampleContextData }, done);
-        });
-
-        it('should forward vaultSecrets forwarded during execution', function (done) {
+            context.on('execution.error', executionError);
+            // eslint-disable-next-line no-unused-vars
+            context.on('execution.vault.' + executionId, (eventId, _cmd, ..._args) => {
+                context.dispatch(`execution.vault.${executionId}`, eventId, null, 'value2');
+            });
             context.execute(`
                 var assert = require('assert');
-                assert.strictEqual(pm.vault.get('var1'), 'one-vault');
-                assert.strictEqual(pm.vault.get('var2'), 'two-vault');
-            `, { context: sampleContextData }, done);
-        });
+                const val = await pm.vault.get('key1');
+                assert.equal(val, "value2");
+            `, {
+                id: executionId
+            }, function (err) {
+                if (err) {
+                    return done(err);
+                }
 
-        it('pm.vault.toObject must return a pojo', function (done) {
+                done();
+            });
+        });
+        it('should throw error if pm.vault.<operation> promise rejects', function (done) {
+            const executionId = '2',
+                executionError = sinon.spy();
+
+            context.on('execution.error', (...args) => {
+                executionError(args);
+            });
+            // eslint-disable-next-line no-unused-vars
+            context.on('execution.vault.' + executionId, (eventId, _cmd, ..._args) => {
+                context.dispatch(`execution.vault.${executionId}`, eventId, new Error('Vault access denied'));
+            });
             context.execute(`
                 var assert = require('assert');
-
-                assert.strictEqual(_.isPlainObject(pm.vault.toObject()), true);
-                assert.deepEqual(pm.vault.toObject(), {
-                    'vault:var1': 'one-vault',
-                    'vault:var2': 'two-vault'
-                });
-            `, { context: sampleContextData }, done);
-        });
-        it('pm.variables.toObject must contain vaultSecrets', function (done) {
-            context.execute(`
-                var assert = require('assert');
-
-                assert.strictEqual(_.isPlainObject(pm.variables.toObject()), true);
-                assert.deepEqual(pm.variables.toObject(), {
-                    'vault:var1': 'one-vault',
-                    'vault:var2': 'two-vault',
-                    'var1': 'one-data',
-                    'var2': 2.5
-                });
-            `, { context: sampleContextData }, done);
-        });
-        it('should propagate updated vault secrets from inside sandbox', function (done) {
-            context.execute(`
-                var assert = require('assert');
-
-                pm.vault.set('var1', 'one-one-vault');
-                assert.strictEqual(pm.vault.get('var1'), 'one-one-vault');
-            `, { context: sampleContextData }, function (err, exec) {
-                expect(err).to.be.null;
-                expect(exec).to.be.ok;
-                expect(exec).to.deep.nested.include({ 'vaultSecrets.values': [
-                    { type: 'string', value: 'one-one-vault', key: 'vault:var1' },
-                    { type: 'string', value: 'two-vault', key: 'vault:var2' }
-                ] });
+                const val = await pm.vault.get('key1');
+                assert.equal(val, "value2");
+            `, {
+                id: executionId
+            }, function () {
+                expect(executionError.calledOnce).to.be.true;
+                expect(executionError.firstCall.args[0]).to.eql([
+                    {
+                        execution: '2'
+                    },
+                    {
+                        message: 'Vault access denied',
+                        name: 'Error',
+                        type: 'Error'
+                    }
+                ]);
                 done();
             });
         });
