@@ -177,11 +177,24 @@ declare interface Info {
     requestId: string;
 }
 
-declare type Vault = {
-    get: VariableScope.get;
-    set: VariableScope.set;
-    unset: VariableScope.unset;
-};
+declare interface Vault {
+    /**
+     * Get a value from the vault.
+     * @param key - -
+     */
+    get(key: string): Promise;
+    /**
+     * Set a value in the vault.
+     * @param key - -
+     * @param value - -
+     */
+    set(key: string, value: string): Promise;
+    /**
+     * Unset a value in the vault.
+     * @param key - -
+     */
+    unset(key: string): Promise;
+}
 
 declare interface Visualizer {
     /**
