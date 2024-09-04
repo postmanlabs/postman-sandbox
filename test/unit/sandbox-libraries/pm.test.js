@@ -267,71 +267,111 @@ describe('sandbox library - pm api', function () {
     describe('vault', function () {
         it('should only have get, set and unset properties', function (done) {
             context.execute(`
-                var assert = require('assert');
-                assert.deepEqual(Object.keys(pm.vault), ['get', 'set', 'unset']);
-            `, {}, done);
-        });
-        it('should send correct events and receive data for pm.vault operations', function (done) {
-            const executionId = '2',
-
-                getErrorEventHandler = function (callback) {
-                // errors from the execute callback are catched here as well
-                // so, call mocha `done` callback with an error
-                // @todo this is not supposed to happen, fix this
-                    return function () {
-                        callback(new Error('Assertion Error'));
-                    };
-                },
-                executionError = sinon.spy(getErrorEventHandler(done));
-
-            context.on('execution.error', executionError);
-            // eslint-disable-next-line no-unused-vars
-            context.on('execution.vault.' + executionId, (eventId, _cmd, ..._args) => {
-                context.dispatch(`execution.vault.${executionId}`, eventId, null, 'value2');
-            });
-            context.execute(`
-                var assert = require('assert');
-                const val = await pm.vault.get('key1');
-                assert.equal(val, "value2");
-            `, {
-                id: executionId
-            }, function (err) {
-                if (err) {
-                    return done(err);
+                const assert = require('assert');
+                function allKeys(obj) {
+                    if (!Object.isObject(obj)) return [];
+                    const keys = [];
+                    for (var key in obj) keys.push(key);
+                    return keys;
                 }
 
+                assert.deepEqual(allKeys(pm.vault), ['get', 'set', 'unset']);
+                assert.deepEqual(typeof pm.vault.get, 'function');
+                assert.deepEqual(typeof pm.vault.set, 'function');
+                assert.deepEqual(typeof pm.vault.unset, 'function');
+            `, {}, done);
+        });
+
+        it('should be a readonly property', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    _vault;
+
+                _vault = pm.vault;
+                pm.vault = [];
+
+                assert.strictEqual(pm.vault, _vault, 'property stays unchanged');
+            `, done);
+        });
+
+        it('should dispatch and wait for `execution.vault.id` event when pm.vault.get is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
                 done();
             });
+            context.on('execution.vault.' + executionId, (eventId, cmd, k) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('get');
+                expect(k).to.eql('key');
+
+                context.dispatch(`execution.vault.${executionId}`, eventId, null, 'value');
+            });
+            context.execute(`
+                const val = await pm.vault.get('key');
+                pm.test('vault.get', function () {
+                    pm.expect(val).to.equal('value');
+                });
+            `, { id: executionId });
         });
-        it('should throw error if pm.vault.<operation> promise rejects', function (done) {
+
+        it('should dispatch and wait for `execution.vault.id` event when pm.vault.set is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.vault.' + executionId, (eventId, cmd, k, v) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('set');
+                expect(k).to.eql('key');
+                expect(v).to.eql('val');
+
+                context.dispatch(`execution.vault.${executionId}`, eventId, null);
+            });
+            context.execute(`
+                await pm.vault.set('key', 'val');
+            `, { id: executionId }, done);
+        });
+
+        it('should dispatch and wait for `execution.vault.id` event when pm.vault.unset called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.vault.' + executionId, (eventId, cmd, k) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('unset');
+                expect(k).to.eql('key');
+
+                context.dispatch(`execution.vault.${executionId}`, eventId, null);
+            });
+            context.execute(`
+                const val = await pm.vault.unset('key');
+            `, { id: executionId }, done);
+        });
+
+        it('should trigger `execution.error` event if pm.vault.<operation> promise rejects', function (done) {
             const executionId = '2',
                 executionError = sinon.spy();
 
             context.on('execution.error', (...args) => {
                 executionError(args);
             });
-            // eslint-disable-next-line no-unused-vars
-            context.on('execution.vault.' + executionId, (eventId, _cmd, ..._args) => {
+            context.on('execution.vault.' + executionId, (eventId) => {
                 context.dispatch(`execution.vault.${executionId}`, eventId, new Error('Vault access denied'));
             });
             context.execute(`
-                var assert = require('assert');
                 const val = await pm.vault.get('key1');
-                assert.equal(val, "value2");
             `, {
                 id: executionId
             }, function () {
                 expect(executionError.calledOnce).to.be.true;
-                expect(executionError.firstCall.args[0]).to.eql([
-                    {
-                        execution: '2'
-                    },
-                    {
-                        message: 'Vault access denied',
-                        name: 'Error',
-                        type: 'Error'
-                    }
-                ]);
+                expect(executionError.firstCall.args[0][1]).to.have.property('message', 'Vault access denied');
                 done();
             });
         });

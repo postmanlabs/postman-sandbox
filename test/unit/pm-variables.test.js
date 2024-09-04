@@ -28,6 +28,19 @@ describe('pm.variables', function () {
         `, done);
     });
 
+    it('should not respect variables set using pm.vault', function (done) {
+        const executionId = '1';
+
+        ctx.on('execution.vault.' + executionId, (id, _, k, v) => {
+            ctx.dispatch('execution.vault.' + executionId, id, k, v);
+        });
+        ctx.execute(`
+            var assert = require('assert');
+            await pm.vault.set('key-1', 'value-1');
+            assert.strictEqual(pm.variables.get('key-1'), undefined);
+        `, { id: executionId }, done);
+    });
+
     describe('.set', function () {
         before(function (done) {
             var globalVarList = new sdk.VariableList(null, { key: 'key-1', value: 'value-1' }),
