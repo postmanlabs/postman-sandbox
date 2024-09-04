@@ -1,4 +1,5 @@
-unreleased:
+5.1.2:
+  date: 2024-09-04
   fixed bugs:
     - GH-1040 Only allow `set`, `get` and `unset` operations on `pm.vault`
 
