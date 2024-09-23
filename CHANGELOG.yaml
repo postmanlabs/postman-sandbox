@@ -1,6 +1,6 @@
 unreleased:
   chores:
-    - Update ci.yml to run coverage on latest node version
+    - GH-1033 Update ci.yml to run coverage on latest node version
 5.1.1:
   date: 2024-08-01
   fixed bugs:
