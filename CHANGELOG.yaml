@@ -1,6 +1,12 @@
 unreleased:
   fixed bugs:
     - GH-1034 Fixed an issue where sandbox crashes for large response body
+
+5.1.2:
+  date: 2024-09-04
+  fixed bugs:
+    - GH-1040 Only allow `set`, `get` and `unset` operations on `pm.vault`
+
 5.1.1:
   date: 2024-08-01
   fixed bugs:
