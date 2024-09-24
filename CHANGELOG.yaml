@@ -1,6 +1,7 @@
 unreleased:
   fixed bugs:
     - GH-1036 Fixed `uncaughtException` event listener not being removed
+    - GH-1034 Fixed an issue where sandbox crashes for large response body
 
 5.1.2:
   date: 2024-09-04
