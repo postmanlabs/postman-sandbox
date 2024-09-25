@@ -243,8 +243,31 @@ describe('sandbox library - buffer', function () {
                 buffer = require('buffer');
 
             assert.strictEqual(typeof buffer.kMaxLength, 'number');
+            assert.strictEqual(typeof buffer.kStringMaxLength, 'number');
+            assert.strictEqual(typeof buffer.constants.MAX_LENGTH, 'number');
+            assert.strictEqual(typeof buffer.constants.MAX_STRING_LENGTH, 'number');
             assert.strictEqual(typeof buffer.INSPECT_MAX_BYTES, 'number');
 
+        `, done);
+    });
+
+    it('should expose File class', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                buffer = require('buffer');
+            const lastModified = Date.now();
+            const file = new buffer.File([], 'filename.txt', { type: 'text/plain', lastModified });
+            assert.strictEqual(file.name, 'filename.txt');
+            assert.strictEqual(file.lastModified, lastModified);
+        `, done);
+    });
+
+    it('should expose Blob class', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                buffer = require('buffer');
+            const blob = new buffer.Blob(['hello world'], { type: 'text/plain' });
+            assert.strictEqual(blob.size, 11);
         `, done);
     });
 });

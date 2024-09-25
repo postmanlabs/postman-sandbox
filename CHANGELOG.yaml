@@ -6,6 +6,7 @@ unreleased:
   fixed bugs:
     - GH-1036 Fixed `uncaughtException` event listener not being removed
     - GH-1034 Fixed an issue where sandbox crashes for large response body
+    - GH-1035 Added missing buffer APIs to expose a uniform interface across environments
   chores:
     - GH-1033 Update ci.yml to run coverage on latest node version
     - GH-1032 Add support for configuring module resolver based on environment
