@@ -175,6 +175,16 @@ describe('sandbox', function () {
                 // Temporarily added to fix browser tests
                 !propNames.includes('SharedArrayBuffer') && propNames.push('SharedArrayBuffer');
 
+                // Make sure all allowed globals exists
+                const context = Function('return this;')();
+                for (const prop of allowedGlobals) {
+                    if (prop === 'undefined' || prop === 'SharedArrayBuffer') {
+                        continue;
+                    }
+
+                    assert.equal(context[prop] !== undefined, true, 'prop ' + prop + ' does not exist');
+                }
+
                 // make sure both propNames and allowedGlobals are same
                 assert.equal(JSON.stringify(propNames.sort()), JSON.stringify(allowedGlobals.sort()));
 
