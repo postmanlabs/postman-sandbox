@@ -45,7 +45,7 @@
     "lodash": "4.17.21",
     "postman-collection": "4.5.0",
     "teleport-javascript": "1.0.0",
-    "uvm": "3.0.0"
+    "uvm": "4.0.0"
   },
   "devDependencies": {
     "@postman/shipit": "^0.4.0",
@@ -53,7 +53,7 @@
     "@stylistic/eslint-plugin-js": "^1.8.0",
     "ajv": "6.12.5",
     "assert": "2.0.0",
-    "async": "^3.2.5",
+    "async": "^3.2.6",
     "atob": "2.1.2",
     "backbone": "1.6.0",
     "browserify": "^16.5.2",
@@ -82,7 +82,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "liquid-json": "0.3.1",
     "lodash3": "3.10.2",
-    "mocha": "^10.7.0",
+    "mocha": "^10.7.3",
     "moment": "2.30.1",
     "nyc": "^15.1.0",
     "packity": "^0.3.5",
@@ -91,14 +91,14 @@
     "shelljs": "^0.8.5",
     "sinon": "^18.0.0",
     "sinon-chai": "^3.7.0",
-    "terser": "^5.31.3",
+    "terser": "^5.33.0",
     "tsd-jsdoc": "^2.5.0",
     "tv4": "1.3.0",
-    "uniscope": "2.2.0",
+    "uniscope": "3.0.0",
     "watchify": "^4.0.0",
     "xml2js": "0.6.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
