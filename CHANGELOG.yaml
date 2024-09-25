@@ -1,4 +1,9 @@
 unreleased:
+  breaking changes:
+    - GH-1052 Dropped support for Node < v18
+  fixed bugs:
+    - GH-1036 Fixed `uncaughtException` event listener not being removed
+    - GH-1034 Fixed an issue where sandbox crashes for large response body
   chores:
     - GH-1033 Update ci.yml to run coverage on latest node version
 
