@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 5.0.0
+// Type definitions for postman-sandbox 5.1.1
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -161,12 +161,13 @@ declare function createPostmanRequire(fileCache: FileCache, scope: any): (...par
  * @param onSkipRequest - callback to execute when pm.execution.skipRequest() called
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
+ * @param vault - vault
  * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, requireFn: (...params: any[]) => any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -175,7 +176,7 @@ declare class Postman {
      * stored inside of this object.
      */
     info: Info;
-    vault: VariableScope;
+    vault: Vault;
     globals: VariableScope;
     environment: VariableScope;
     collectionVariables: VariableScope;
@@ -245,6 +246,25 @@ declare interface Info {
      * The unique guid that identifies the request being run.
      */
     requestId: string;
+}
+
+declare interface Vault {
+    /**
+     * Get a value from the vault.
+     * @param key - -
+     */
+    get(key: string): Promise;
+    /**
+     * Set a value in the vault.
+     * @param key - -
+     * @param value - -
+     */
+    set(key: string, value: string): Promise;
+    /**
+     * Unset a value in the vault.
+     * @param key - -
+     */
+    unset(key: string): Promise;
 }
 
 declare interface Visualizer {
