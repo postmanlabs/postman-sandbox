@@ -18,10 +18,7 @@ function createBundle (options, file, done) {
         },
 
         function (codeString, next) {
-            // @note: we are appending "require=null;" here to avoid access to
-            // node's require function when running sandbox in worker_threads.
-            // This does not affect the require function injected by browserify.
-            fs.writeFile(file, `module.exports=c=>c(null,${JSON.stringify('require=null;' + codeString)})`, next);
+            fs.writeFile(file, `module.exports=c=>c(null,${JSON.stringify(codeString)})`, next);
         },
 
         function (next) {
@@ -48,10 +45,12 @@ module.exports = function (exit) {
     async.parallel([
         async.apply(createBundle, _.merge({
             compress: true,
+            preferBrowserResolver: false,
             bundler: { browserField: false }
         }, options), './.cache/bootcode.js'),
         async.apply(createBundle, _.merge({
             compress: true,
+            preferBrowserResolver: true,
             bundler: { browserField: true }
         }, options), './.cache/bootcode.browser.js')
     ], function (err) {

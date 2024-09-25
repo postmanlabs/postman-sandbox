@@ -114,12 +114,137 @@ describe('sandbox library - buffer', function () {
         context.execute(`
             var assert = require('assert'),
                 buf1 = new Buffer('buffer'),
-                buf2 = new Buffer(buf1);
+                buf2 = new Buffer(buf1),
+                buf3 = Buffer(1);
 
             buf1[0] = 0x61;
+            buf3[0] = 0x61;
 
             assert.strictEqual(buf1.toString(), 'auffer');
             assert.strictEqual(buf2.toString(), 'buffer');
+            assert.strictEqual(buf3.toString(), 'a');
     `, done);
+    });
+
+    it('should be able to detect Buffer instances using isBuffer', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+
+                bufUsingFrom = Buffer.from('test'),
+                bufUsingNew = new Buffer('test'),
+                buf = Buffer(1);
+
+            assert.strictEqual(Buffer.isBuffer(bufUsingFrom), true);
+            assert.strictEqual(Buffer.isBuffer(bufUsingNew), true);
+            assert.strictEqual(Buffer.isBuffer(buf), true);
+        `, done);
+    });
+
+    it('should be able to detect Buffer instances using Symbol.hasInstance', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+
+                bufUsingFrom = Buffer.from('test'),
+                bufUsingNew = new Buffer('test');
+                buf = Buffer(1);
+
+            assert.strictEqual(bufUsingFrom instanceof Buffer, true);
+            assert.strictEqual(bufUsingNew instanceof Buffer, true);
+            assert.strictEqual(buf instanceof Buffer, true);
+        `, done);
+    });
+
+    it('should be able to convert large buffer to string', function (done) {
+        // For native buffer, the max string length is ~512MB
+        // For browser buffer, the max string length is ~100MB
+        const SIZE = (typeof window === 'undefined' ? 511 : 100) * 1024 * 1024;
+
+        context.execute(`
+            const assert = require('assert'),
+                buf = Buffer.alloc(${SIZE}, 'a');
+
+            assert.strictEqual(buf.toString().length, ${SIZE});
+        `, done);
+    });
+
+    it('should implement Buffer.compare', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+
+                buf1 = Buffer.from('abc'),
+                buf2 = Buffer.from('abc'),
+                buf3 = Buffer.from('abd');
+
+            assert.strictEqual(Buffer.compare(buf1, buf2), 0);
+            assert.strictEqual(Buffer.compare(buf1, buf3), -1);
+            assert.strictEqual(Buffer.compare(buf3, buf1), 1);
+        `, done);
+    });
+
+    it('should implement Buffer.byteLength', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                buf = Buffer.from('abc');
+
+            assert.strictEqual(Buffer.byteLength(buf), 3);
+        `, done);
+    });
+
+    it('should implement Buffer.concat', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+
+                buf1 = Buffer.from('abc'),
+                buf2 = Buffer.from('def');
+
+            assert.strictEqual(Buffer.concat([buf1, buf2]).toString(), 'abcdef');
+        `, done);
+    });
+
+    it('should implement Buffer.isEncoding', function (done) {
+        context.execute(`
+            const assert = require('assert');
+
+            assert.strictEqual(Buffer.isEncoding('utf8'), true);
+            assert.strictEqual(Buffer.isEncoding('hex'), true);
+            assert.strictEqual(Buffer.isEncoding('ascii'), true);
+            assert.strictEqual(Buffer.isEncoding('utf16le'), true);
+            assert.strictEqual(Buffer.isEncoding('ucs2'), true);
+            assert.strictEqual(Buffer.isEncoding('base64'), true);
+            assert.strictEqual(Buffer.isEncoding('binary'), true);
+
+            assert.strictEqual(Buffer.isEncoding('utf-8'), true);
+            assert.strictEqual(Buffer.isEncoding('utf/8'), false);
+            assert.strictEqual(Buffer.isEncoding(''), false);
+        `, done);
+    });
+
+    it('should expose Buffer.poolSize', function (done) {
+        context.execute(`
+            const assert = require('assert');
+
+            assert.strictEqual(typeof Buffer.poolSize, 'number');
+        `, done);
+    });
+
+    it('should expose SlowBuffer', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                buffer = require('buffer');
+
+            const buf = new buffer.SlowBuffer(10);
+            assert.strictEqual(buf.length, 10);
+        `, done);
+    });
+
+    it('should expose constants', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                buffer = require('buffer');
+
+            assert.strictEqual(typeof buffer.kMaxLength, 'number');
+            assert.strictEqual(typeof buffer.INSPECT_MAX_BYTES, 'number');
+
+        `, done);
     });
 });
