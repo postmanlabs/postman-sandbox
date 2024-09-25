@@ -536,8 +536,6 @@ describe('sandbox library - pm.require api', function () {
                         // scope libraries
                         '_',
                         'CryptoJS',
-                        'atob',
-                        'btoa',
                         'tv4',
                         'xml2Json',
                         'Backbone',

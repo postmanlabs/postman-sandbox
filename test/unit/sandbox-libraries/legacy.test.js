@@ -55,7 +55,7 @@ describe('sandbox library - legacy', function () {
 
         context.on('console', consoleSpy);
         context.execute(`
-            atob('a');
+           CryptoJS.AES.encrypt('my message', 'secret key 123')
         `, function (err) {
             if (err) {
                 return done(err);
@@ -64,7 +64,7 @@ describe('sandbox library - legacy', function () {
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
             expect(consoleSpy.firstCall.args[2])
-                .to.equal('Using "atob" is deprecated. Use "require(\'atob\')" instead.');
+                .to.equal('Using "CryptoJS" is deprecated. Use "require(\'crypto-js\')" instead.');
             done();
         });
     });
