@@ -116,4 +116,46 @@ describe('sandbox library - legacy', function () {
             done();
         });
     });
+
+    it('should support "responseBody" with size upto 50MB', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert');
+                assert.strictEqual(
+                    responseBody,
+                    Buffer.alloc(50 * 1024 * 1024, 'a').toString(),
+                    'responseBody <= 50MB should be available'
+                );
+            `
+        }, {
+            context: {
+                response: {
+                    stream: {
+                        type: 'Base64',
+                        data: Buffer.alloc(50 * 1024 * 1024, 'a').toString('base64')
+                    }
+                }
+            }
+        }, done);
+    });
+
+    it('should truncate "responseBody" with size > 50MB', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert');
+                assert.strictEqual(typeof responseBody, 'undefined', 'responseBody > 50MB should not be available');
+            `
+        }, {
+            context: {
+                response: {
+                    stream: {
+                        type: 'Base64',
+                        data: Buffer.alloc(51 * 1024 * 1024, 'a').toString('base64')
+                    }
+                }
+            }
+        }, done);
+    });
 });
