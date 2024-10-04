@@ -84,7 +84,7 @@
     "lodash3": "3.10.2",
     "mocha": "^10.7.3",
     "moment": "2.30.1",
-    "nyc": "^15.1.0",
+    "nyc": "^17.1.0",
     "packity": "^0.3.5",
     "parse-gitignore": "^2.0.0",
     "recursive-readdir": "^2.2.3",
