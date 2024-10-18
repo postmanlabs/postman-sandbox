@@ -399,6 +399,61 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    it('should return undefined for null values in get method', function (done) {
+        const executionId = '3';
+
+        context.on('execution.vault.' + executionId, (eventId, cmd, k) => {
+            expect(eventId).to.be.ok;
+            expect(cmd).to.eql('get');
+            expect(k).to.eql('nullKey');
+
+            context.dispatch(`execution.vault.${executionId}`, eventId, null, null);
+        });
+        context.execute(`
+            const val = await pm.vault.get('nullKey');
+            pm.test('vault.get with null value', function () {
+                pm.expect(val).to.be.undefined;
+            });
+        `, { id: executionId }, done);
+    });
+
+    it('should return the value for non-null values in get method', function (done) {
+        const executionId = '4';
+
+        context.on('execution.vault.' + executionId, (eventId, cmd, k) => {
+            expect(eventId).to.be.ok;
+            expect(cmd).to.eql('get');
+            expect(k).to.eql('nonNullKey');
+
+            context.dispatch(`execution.vault.${executionId}`, eventId, null, 'nonNullValue');
+        });
+        context.execute(`
+            const val = await pm.vault.get('nonNullKey');
+            pm.test('vault.get with non-null value', function () {
+                pm.expect(val).to.equal('nonNullValue');
+            });
+        `, { id: executionId }, done);
+    });
+
+    it('should return the set value in set method', function (done) {
+        const executionId = '5';
+
+        context.on('execution.vault.' + executionId, (eventId, cmd, k, v) => {
+            expect(eventId).to.be.ok;
+            expect(cmd).to.eql('set');
+            expect(k).to.eql('testKey');
+            expect(v).to.eql('testValue');
+
+            context.dispatch(`execution.vault.${executionId}`, eventId, null);
+        });
+        context.execute(`
+            const val = await pm.vault.set('testKey', 'testValue');
+            pm.test('vault.set return value', function () {
+                pm.expect(val).to.equal('testValue');
+            });
+        `, { id: executionId }, done);
+    });
+
     describe('request', function () {
         it('should be defined as sdk Request object', function (done) {
             context.execute(`
