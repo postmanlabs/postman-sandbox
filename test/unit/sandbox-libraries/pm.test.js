@@ -322,6 +322,28 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        it('should return a promise for all vault operations', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.vault.get('key') instanceof Promise, true);
+                assert.strictEqual(pm.vault.set('key', 'value') instanceof Promise, true);
+                assert.strictEqual(pm.vault.unset('key') instanceof Promise, true);
+            `, {
+                context: {
+                    vaultSecrets: {}
+                }
+            }, done);
+        });
+
+        it('should not allow access to pm.vault when vaultSecrets is not set', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(typeof pm.vault, 'undefined');
+            `, {
+                context: {}
+            }, done);
+        });
+
         it('should dispatch and wait for `execution.vault.id` event when pm.vault.set is called', function (done) {
             const executionId = '2';
 
