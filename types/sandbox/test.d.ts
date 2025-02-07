@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 5.1.1
+// Type definitions for postman-sandbox 5.1.2
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -88,16 +88,6 @@ declare var _;
  * @deprecated Use global "crypto" object instead
  */
 declare var CryptoJS;
-
-/**
- * @deprecated Use global "atob" function instead
- */
-declare var atob;
-
-/**
- * @deprecated Use global "btoa" function instead
- */
-declare var btoa;
 
 /**
  * @deprecated Use require('ajv') instead

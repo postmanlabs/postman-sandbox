@@ -98,16 +98,6 @@ declare var _;
 declare var CryptoJS;
 
 /**
- * @deprecated Use global "atob" function instead
- */
-declare var atob;
-
-/**
- * @deprecated Use global "btoa" function instead
- */
-declare var btoa;
-
-/**
  * @deprecated Use require('ajv') instead
  */
 declare var tv4;
