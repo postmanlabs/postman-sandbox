@@ -55,7 +55,7 @@ describe('sandbox library - legacy', function () {
 
         context.on('console', consoleSpy);
         context.execute(`
-           CryptoJS.AES.encrypt('my message', 'secret key 123')
+           cheerio.load('foo');
         `, function (err) {
             if (err) {
                 return done(err);
@@ -64,7 +64,7 @@ describe('sandbox library - legacy', function () {
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
             expect(consoleSpy.firstCall.args[2])
-                .to.equal('Using "CryptoJS" is deprecated. Use "require(\'crypto-js\')" instead.');
+                .to.equal('Using "cheerio" is deprecated. Use "require(\'cheerio\')" instead.');
             done();
         });
     });
