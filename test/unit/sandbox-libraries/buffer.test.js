@@ -262,12 +262,28 @@ describe('sandbox library - buffer', function () {
         `, done);
     });
 
+    it('should have same File implementation as global', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                bufferFile = require('buffer').File;
+            assert.strictEqual(File === bufferFile, true);
+        `, done);
+    });
+
     it('should expose Blob class', function (done) {
         context.execute(`
             const assert = require('assert'),
                 buffer = require('buffer');
             const blob = new buffer.Blob(['hello world'], { type: 'text/plain' });
             assert.strictEqual(blob.size, 11);
+        `, done);
+    });
+
+    it('should have same Blob implementation as global', function (done) {
+        context.execute(`
+            const assert = require('assert'),
+                bufferBlob = require('buffer').Blob;
+            assert.strictEqual(Blob === bufferBlob, true);
         `, done);
     });
 });
