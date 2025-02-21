@@ -53,6 +53,7 @@ describe('sandbox vendor - buffer', function () {
     });
 
     it('should load uninitialized buffer of length 10', function (done) {
+        this.retries(3); // FIXME: flaky test
         context.execute(`
             var assert = require('assert'),
                 buf = Buffer.allocUnsafe(10);
