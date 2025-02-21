@@ -10,6 +10,7 @@ unreleased:
     - |
       GH-1066 Added support for AbortController, AbortSignal, AggregateError,
       DOMException, Event, EventTarget, Intl, structuredClone and queueMicrotask globals
+    - GH-1051 Added support for File global
   fixed bugs:
     - GH-1036 Fixed `uncaughtException` event listener not being removed
     - GH-1034 Fixed an issue where sandbox crashes for large response body
