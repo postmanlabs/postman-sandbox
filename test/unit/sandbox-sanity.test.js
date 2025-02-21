@@ -1,3 +1,67 @@
+const Mocha = require('mocha'),
+    IS_NODE = typeof window === 'undefined',
+    TEST_ENV_GLOBALS = [
+        ...Object.getOwnPropertyNames(Mocha),
+
+        // Following are Mocha's properties that
+        // for some reason are not enumerable
+        'context',
+        'xcontext',
+        'specify',
+        'xspecify',
+
+        // nyc,
+        '__coverage__',
+
+        // sinon
+        'sinon',
+
+        // chai
+        'expect'
+    ],
+    IGNORED_GLOBALS = [
+        // Not required
+        'BroadcastChannel',
+        'FinalizationRegistry',
+        'FormData',
+        'Headers',
+        'MessageChannel',
+        'MessageEvent',
+        'MessagePort',
+        'Performance',
+        'PerformanceEntry',
+        'PerformanceMark',
+        'PerformanceMeasure',
+        'PerformanceObserver',
+        'PerformanceObserverEntryList',
+        'PerformanceResourceTiming',
+        'Request',
+        'Response',
+        'WeakRef',
+        'WebAssembly',
+        'fetch',
+        'global',
+        'globalThis',
+        'performance',
+
+        // No browser support
+        'process',
+
+        // requires node>=v19
+        'CustomEvent',
+
+        // requires node>=v21
+        'navigator',
+
+        // requires node>=22
+        'Iterator',
+        'Navigator',
+        'WebSocket',
+
+        // requires node>=23
+        'CloseEvent'
+    ];
+
 describe('sandbox', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../lib');
@@ -300,6 +364,40 @@ describe('sandbox', function () {
                 expect(err).to.have.property('message', 'Cannot find module \'child_process\'');
                 done();
             });
+        });
+    });
+
+    (IS_NODE ? it : it.skip)('should have missing globals as subset of explicitly ignored globals', function (done) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            const nodeGlobals = Object.getOwnPropertyNames(this).filter((prop) => {
+                return !TEST_ENV_GLOBALS.includes(prop);
+            });
+
+            ctx.execute(`
+                var assert = require('assert');
+                var sandboxGlobals = Object.getOwnPropertyNames(this);
+                var contextObject = Function('return this;')();
+
+                do {
+                    sandboxGlobals = sandboxGlobals.concat(Object.getOwnPropertyNames(contextObject));
+                    contextObject = Object.getPrototypeOf(contextObject);
+                    // traverse until Object prototype
+                    // @note since we mutated the scope already, don't check using the constructor
+                    // instead, check for hasOwnProperty existence on the contextObject.
+                } while (contextObject && !Object.hasOwnProperty.call(contextObject, 'hasOwnProperty'));
+
+            const diffWithNode = ${JSON.stringify(nodeGlobals)}
+                .filter((nodeGlobal) => !sandboxGlobals.includes(nodeGlobal))
+                .sort();
+
+            const isDiffSubsetOfIgnoredGlobals = diffWithNode
+                .every((v) => ${JSON.stringify(IGNORED_GLOBALS)}.includes(v));
+
+            assert.equal(isDiffSubsetOfIgnoredGlobals, true);
+            `, done);
         });
     });
 });
