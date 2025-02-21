@@ -1,4 +1,6 @@
-describe('sandbox library - buffer', function () {
+const isNode = typeof window === 'undefined';
+
+describe('sandbox vendor - buffer', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
         context;
@@ -157,7 +159,7 @@ describe('sandbox library - buffer', function () {
     it('should be able to convert large buffer to string', function (done) {
         // For native buffer, the max string length is ~512MB
         // For browser buffer, the max string length is ~100MB
-        const SIZE = (typeof window === 'undefined' ? 511 : 100) * 1024 * 1024;
+        const SIZE = (isNode ? 511 : 100) * 1024 * 1024;
 
         context.execute(`
             const assert = require('assert'),
@@ -284,6 +286,35 @@ describe('sandbox library - buffer', function () {
             const assert = require('assert'),
                 bufferBlob = require('buffer').Blob;
             assert.strictEqual(Blob === bufferBlob, true);
+        `, done);
+    });
+
+    (isNode ? it : it.skip)('should be in sync with latest available `buffer` module', function (done) {
+        const buffer = require('buffer'),
+            expectedProps = Object.getOwnPropertyNames(buffer).sort();
+
+        context.execute(`
+            const assert = require('assert');
+            const buffer = require('buffer');
+            const actualProps = Object.getOwnPropertyNames(buffer).sort();
+
+            assert.deepStrictEqual(actualProps, ${JSON.stringify(expectedProps)});
+        `, done);
+    });
+
+    (isNode ? it : it.skip)('should be in sync with latest available `Buffer` class', function (done) {
+        const fnProps = Object.getOwnPropertyNames(function () { return 0; }).sort(),
+            expectedProps = Object.getOwnPropertyNames(Buffer).sort().filter((prop) => {
+                return !fnProps.includes(prop);
+            });
+
+        context.execute(`
+            const assert = require('assert');
+            const actualProps = Object.getOwnPropertyNames(Buffer).sort().filter((prop) => {
+                return !${JSON.stringify(fnProps)}.includes(prop);
+            });
+
+            assert.deepStrictEqual(actualProps, ${JSON.stringify(expectedProps)});
         `, done);
     });
 });
