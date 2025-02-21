@@ -1,3 +1,34 @@
+6.0.0:
+  date: 2025-02-21
+  breaking changes:
+    - GH-1052 Dropped support for Node < v18
+  new features:
+    - GH-1032 Enhanced performance when operating on buffers in Node environment
+    - >-
+      GH-1035 Added missing buffer APIs to expose a uniform interface across
+      environments
+    - >-
+      GH-1052 Added support URL, Encoding, File, Cryptography, and Stream
+      globals
+    - GH-1049 Replaced shims for atob and btoa with native implementations
+    - >-
+      GH-1050 Deprecated `atob`, `btoa`, `backbone`, 'crypto-js' and `tv4`
+      libraries
+    - >
+      GH-1066 Added support for AbortController, AbortSignal, AggregateError,
+
+      DOMException, Event, EventTarget, Intl, structuredClone and queueMicrotask
+      globals
+    - GH-1051 Added support for File global
+  fixed bugs:
+    - GH-1036 Fixed `uncaughtException` event listener not being removed
+    - GH-1034 Fixed an issue where sandbox crashes for large response body
+    - GH-1052 Fixed an issue where script execution failed on Node > v22.3
+  chores:
+    - GH-1033 Update ci.yml to run coverage on latest node version
+    - GH-1032 Add support for configuring module resolver based on environment
+    - GH-1066 Update dependencies
+
 5.1.2:
   date: 2024-09-04
   fixed bugs:

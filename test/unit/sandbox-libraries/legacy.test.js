@@ -55,7 +55,7 @@ describe('sandbox library - legacy', function () {
 
         context.on('console', consoleSpy);
         context.execute(`
-            atob('a');
+           cheerio.load('foo');
         `, function (err) {
             if (err) {
                 return done(err);
@@ -64,7 +64,7 @@ describe('sandbox library - legacy', function () {
             expect(consoleSpy).to.be.calledOnce;
             expect(consoleSpy.firstCall.args[1]).to.equal('warn');
             expect(consoleSpy.firstCall.args[2])
-                .to.equal('Using "atob" is deprecated. Use "require(\'atob\')" instead.');
+                .to.equal('Using "cheerio" is deprecated. Use "require(\'cheerio\')" instead.');
             done();
         });
     });
@@ -115,5 +115,47 @@ describe('sandbox library - legacy', function () {
                 .to.equal('Using "postman.setEnvironmentVariable" is deprecated. Use "pm.environment.set()" instead.');
             done();
         });
+    });
+
+    it('should support "responseBody" with size upto 50MB', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert');
+                assert.strictEqual(
+                    responseBody,
+                    Buffer.alloc(50 * 1024 * 1024, 'a').toString(),
+                    'responseBody <= 50MB should be available'
+                );
+            `
+        }, {
+            context: {
+                response: {
+                    stream: {
+                        type: 'Base64',
+                        data: Buffer.alloc(50 * 1024 * 1024, 'a').toString('base64')
+                    }
+                }
+            }
+        }, done);
+    });
+
+    it('should truncate "responseBody" with size > 50MB', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert');
+                assert.strictEqual(typeof responseBody, 'undefined', 'responseBody > 50MB should not be available');
+            `
+        }, {
+            context: {
+                response: {
+                    stream: {
+                        type: 'Base64',
+                        data: Buffer.alloc(51 * 1024 * 1024, 'a').toString('base64')
+                    }
+                }
+            }
+        }, done);
     });
 });

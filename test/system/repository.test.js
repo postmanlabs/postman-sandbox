@@ -75,7 +75,7 @@ describe('project repository', function () {
 
             it('should point to specific package version for bundled packages; (*, ^, ~) not expected', function () {
                 [
-                    'ajv', 'assert', 'atob', 'backbone', 'btoa', 'buffer', 'chai',
+                    'ajv', 'assert', 'backbone', 'buffer', 'chai',
                     'chai-postman', 'cheerio', 'crypto-js', 'csv-parse', 'liquid-json',
                     'lodash3', 'moment', '@postman/tough-cookie', 'tv4',
                     'uniscope', 'xml2js'

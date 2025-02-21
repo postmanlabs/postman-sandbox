@@ -93,19 +93,9 @@ declare var iteration;
 declare var _;
 
 /**
- * @deprecated Use require('crypto-js') instead
+ * @deprecated Use global "crypto" object instead
  */
 declare var CryptoJS;
-
-/**
- * @deprecated Use require('atob') instead
- */
-declare var atob;
-
-/**
- * @deprecated Use require('btoa') instead
- */
-declare var btoa;
 
 /**
  * @deprecated Use require('ajv') instead
@@ -118,7 +108,7 @@ declare var tv4;
 declare var xml2Json;
 
 /**
- * @deprecated Use require('backbone') instead
+ * @deprecated
  */
 declare var Backbone;
 
