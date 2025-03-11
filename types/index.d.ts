@@ -293,7 +293,6 @@ declare interface Visualizer {
 declare interface Execution {
     request: any;
     response: any;
-    message: any;
     /**
      * Stops the current request and its scripts from executing.
      */
