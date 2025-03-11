@@ -307,6 +307,9 @@ describe('sandbox', function () {
                         },
                         response: {
                             type: 'grpc-response'
+                        },
+                        message: {
+                            type: 'grpc-message'
                         }
                     }
                 };
@@ -324,6 +327,12 @@ describe('sandbox', function () {
                         this.assert(this._obj.type === 'grpc-response',
                           'expecting a gRPC response but got #{this}',
                           'not expecting a gRPC response object');
+                      });
+
+                     Assertion.addProperty('grpcMessage', function () {
+                        this.assert(this._obj.type === 'grpc-message',
+                          'expecting a gRPC message but got #{this}',
+                          'not expecting a gRPC message object');
                       });
                 }
 
@@ -348,6 +357,7 @@ describe('sandbox', function () {
                     pm.test('Should be gRPC request and response', () => {
                         pm.request.to.be.grpcRequest;
                         pm.response.to.be.grpcResponse;
+                        pm.message.to.be.grpcMessage;
                     });
                 `, done);
             });
