@@ -197,15 +197,6 @@ declare class Postman {
      */
     response: Response;
     /**
-     * Only available in on message sent and received scripts. pm.message contains information about
-     * an individual message (varies by protocol) received from a server or sent from the client
-     * that the script is being run on.
-     *
-     * TODO: define message type
-     * @type {Object}
-     */
-    message: any;
-    /**
      * The cookies object contains a list of cookies that are associated with the domain
      * to which the request was made.
      */
