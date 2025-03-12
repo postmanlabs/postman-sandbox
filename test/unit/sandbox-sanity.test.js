@@ -329,11 +329,11 @@ describe('sandbox', function () {
                           'not expecting a gRPC response object');
                       });
 
-                     Assertion.addProperty('grpcMessage', function () {
+                    Assertion.addProperty('grpcMessage', function () {
                         this.assert(this._obj.type === 'grpc-message',
                           'expecting a gRPC message but got #{this}',
                           'not expecting a gRPC message object');
-                      });
+                    });
                 }
 
                 module.exports = { initializeExecution, chaiPlugin };
@@ -354,7 +354,7 @@ describe('sandbox', function () {
                 });
 
                 ctx.execute(`
-                    pm.test('Should be gRPC request and response', () => {
+                    pm.test('Should be gRPC request, response, and message', () => {
                         pm.request.to.be.grpcRequest;
                         pm.response.to.be.grpcResponse;
                         pm.message.to.be.grpcMessage;
