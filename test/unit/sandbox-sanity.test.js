@@ -300,6 +300,18 @@ describe('sandbox', function () {
     it('should return the correct context for the given template name', function (done) {
         Sandbox.createContextFleet({
             grpc: `
+                const chai = require('chai');
+
+                class Message {
+                    constructor () {
+                        this.type = 'grpc-message';
+                    }
+
+                    get to() {
+                        return chai.expect(this).to;
+                    }
+                }
+
                 function initializeExecution () {
                     return {
                         request: {
@@ -308,9 +320,7 @@ describe('sandbox', function () {
                         response: {
                             type: 'grpc-response'
                         },
-                        message: {
-                            type: 'grpc-message'
-                        }
+                        message: new Message(),
                     }
                 };
 
