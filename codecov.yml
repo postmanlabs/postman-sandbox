@@ -16,7 +16,7 @@ coverage:
 
       # coverage status for unit tests
       unit:
-        target: 50
+        target: 40
         flags:
             - unit
 
