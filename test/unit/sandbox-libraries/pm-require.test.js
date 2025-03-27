@@ -37,7 +37,7 @@ describe('sandbox library - pm.require api', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             context = ctx;
             done(err);
         });

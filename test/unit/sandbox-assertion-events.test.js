@@ -7,7 +7,7 @@ describe('sandbox assertion events', function () {
         var contextsExecuted = 0,
             doneCalled = false;
 
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.on('execution.assertion', function (cursor, results) {

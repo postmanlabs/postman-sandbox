@@ -4,7 +4,7 @@ describe('sandbox library - postman legacy', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             context = ctx;
             done(err);
         });

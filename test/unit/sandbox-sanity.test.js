@@ -210,7 +210,7 @@ describe('sandbox', function () {
     });
 
     it('should not have access to global properties', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
@@ -349,7 +349,7 @@ describe('sandbox', function () {
                 module.exports = { initializeExecution, chaiPlugin };
             `,
             websocket: ''
-        }, {}, { debug: true }, (err, fleet) => {
+        }, {}, {}, (err, fleet) => {
             if (err) { return done(err); }
 
             fleet.getContext('grpc', (err, ctx) => {
@@ -375,7 +375,7 @@ describe('sandbox', function () {
     });
 
     it('should not be able to access NodeJS\'s `require`', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
@@ -388,7 +388,7 @@ describe('sandbox', function () {
     });
 
     (IS_NODE ? it : it.skip)('should have missing globals as subset of explicitly ignored globals', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
