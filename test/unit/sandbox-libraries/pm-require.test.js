@@ -1,3 +1,5 @@
+const { LEGACY_GLOBS } = require('../../../lib/sandbox/postman-legacy-interface');
+
 describe('sandbox library - pm.require api', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
@@ -35,7 +37,7 @@ describe('sandbox library - pm.require api', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -572,5 +574,25 @@ describe('sandbox library - pm.require api', function () {
             expect(errorSpy).to.not.have.been.called;
             done();
         });
+    });
+
+    it('should have access to complete context (expect legacy globals)', function (done) {
+        context.execute(`
+            const assert = require('assert');
+            const test = pm.require('test');
+
+            outsideContext =  Object.getOwnPropertyNames(this);
+
+            const diff = outsideContext.filter(x => !insideContext.includes(x));
+            assert.ok(diff.every((key) => '${LEGACY_GLOBS.toString()}'.split(',').includes(key) ));
+
+        `, {
+            context: sampleContextData,
+            resolvedPackages: {
+                test: {
+                    data: 'insideContext = Object.getOwnPropertyNames(this);'
+                }
+            }
+        }, done);
     });
 });

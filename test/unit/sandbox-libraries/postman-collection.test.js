@@ -4,7 +4,7 @@ describe('sandbox library - postman-collection', function () {
         context;
 
     beforeEach(function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             context = ctx;
             done(err);
         });
@@ -114,6 +114,6 @@ describe('sandbox library - postman-collection', function () {
             assert.ok(replaceIn('{{$randomPhoneNumber}}').length === 12);
             assert.ok(replaceIn('{{$randomBankAccount}}').length === 8);
             assert.strictEqual(replaceIn('{{$randomImageUrl}}'), 'http://placeimg.com/640/480');
-        `, { debug: true }, done);
+        `, done);
     });
 });

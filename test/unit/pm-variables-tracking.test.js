@@ -5,7 +5,7 @@ describe('pm api variables', function () {
     this.timeout(1000 * 60);
 
     it('should have tracking enabled by default', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.execute(`
@@ -33,7 +33,7 @@ describe('pm api variables', function () {
     });
 
     it('should bubble mutations in result', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.execute(`

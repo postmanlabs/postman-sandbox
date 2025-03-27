@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Sandbox for Postman Scripts to run in Node.js or browser",
   "author": "Postman Inc.",
   "license": "Apache-2.0",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "postman-collection": "5.0.0",
+    "postman-collection": "5.0.2",
     "teleport-javascript": "1.0.0",
     "uvm": "4.0.0"
   },

@@ -8,7 +8,7 @@ describe('pm.variables', function () {
     this.timeout(1000 * 60);
 
     before(function (done) {
-        Sandbox.createContext({ debug: true }, function (err, context) {
+        Sandbox.createContext(function (err, context) {
             if (err) { return done(err); }
             ctx = context;
             done();
