@@ -1,4 +1,5 @@
-unreleased:
+6.1.0:
+  date: 2025-03-27
   new features:
     - GH-1078 Added support for `pm.message` via template
   fixed bugs:
