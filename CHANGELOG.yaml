@@ -1,3 +1,11 @@
+unreleased:
+  new features:
+    - GH-1078 Added support for `pm.message` via template
+  fixed bugs:
+    - GH-1083 Fixed context inside `pm.require`
+  chores:
+    - Updated dependencies
+
 6.0.0:
   date: 2025-02-21
   breaking changes:
