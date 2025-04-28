@@ -387,6 +387,41 @@ describe('sandbox', function () {
         });
     });
 
+    it('should  persist overridden `require` across executions', function (done) {
+        const consoleSpy = sinon.spy();
+
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+            ctx.on('console', consoleSpy);
+
+            ctx.execute(`
+                require = (...args) => {
+                    if (args[0] === 'utils') {
+                        return () => console.log('utils');
+                    }
+
+                    return require(...args);
+                }
+
+                require('utils')();
+            `, function (err) {
+                if (err) { return done(err); }
+
+                ctx.execute('require(\'utils\')();', function (err) {
+                    if (err) { return done(err); }
+
+                    expect(consoleSpy).to.be.calledTwice;
+                    expect(consoleSpy.firstCall.args[2]).to.equal('utils');
+                    expect(consoleSpy.secondCall.args[2]).to.equal('utils');
+
+                    done();
+                });
+            });
+        });
+    });
+
     (IS_NODE ? it : it.skip)('should have missing globals as subset of explicitly ignored globals', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }

@@ -1,7 +1,9 @@
 const env = require('../../../lib/environment'),
     DEPRECATED_LIBS = ['atob', 'btoa', 'crypto-js', 'tv4', 'backbone'];
 
-describe('sandbox library - deprecation', function () {
+// TODO: Restore this once the deprecation warnings are added back
+// Revert PR:https://github.com/postmanlabs/postman-sandbox/pull/1086
+describe.skip('sandbox library - deprecation', function () {
     this.timeout(1000 * 60);
     var Sandbox = require('../../../'),
         context;
