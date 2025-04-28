@@ -1280,6 +1280,42 @@ describe('sandbox library - pm api', function () {
             });
         });
 
+        describe('.locationIds', function () {
+            it('should return the correct path of the request', function (done) {
+                context.execute({
+                    script: `
+                        var assert = require('assert');
+                        assert.deepEqual(Array.from(pm.execution.locationIds), ['collection-id', 'request-id']);
+                    ` }, {
+                    legacy: {
+                        _itemName: 'request-name',
+                        _itemId: 'request-id',
+                        _itemPath: ['C1', 'R1'],
+                        _itemPathIds: ['collection-id', 'request-id'],
+                        _eventItemName: 'R1'
+                    }
+                }, done);
+            });
+
+            describe('.current ', function () {
+                it('should return the correct current item', function (done) {
+                    context.execute({
+                        script: `
+                            var assert = require('assert');
+                            assert.deepEqual(pm.execution.locationIds.current, 'request-id');
+                        ` }, {
+                        legacy: {
+                            _itemName: 'request-name',
+                            _itemId: 'request-id',
+                            _itemPath: ['C1', 'R1'],
+                            _itemPathIds: ['collection-id', 'request-id'],
+                            _eventItemName: 'R1'
+                        }
+                    }, done);
+                });
+            });
+        });
+
         describe('.setNextRequest', function () {
             it('should have the next request in result.nextRequest', function (done) {
                 context.execute({
