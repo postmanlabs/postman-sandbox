@@ -1,3 +1,8 @@
+unreleased:
+  fixed bugs:
+    - GH-1087 Restrict access to `pm` API in external packages
+    - GH-1086 Revert deprecation warnings for legacy packages
+
 6.1.0:
   date: 2025-03-27
   new features:

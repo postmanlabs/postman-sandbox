@@ -595,4 +595,19 @@ describe('sandbox library - pm.require api', function () {
             }
         }, done);
     });
+
+    it('should not have access to pm object for external packages', function (done) {
+        context.execute('const pkg = pm.require(\'npm:pkg1\');', {
+            context: sampleContextData,
+            resolvedPackages: {
+                'npm:pkg1': { data: `
+                    const assert = require('assert');
+                    assert.strictEqual(pm, undefined);
+                ` }
+            }
+        }, function (err) {
+            if (err) { return done(err); }
+            done();
+        });
+    });
 });
