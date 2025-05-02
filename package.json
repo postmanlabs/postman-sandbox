@@ -54,7 +54,7 @@
     "ajv": "6.12.5",
     "assert": "2.0.0",
     "async": "^3.2.6",
-    "backbone": "1.6.0",
+    "backbone": "1.6.1",
     "browserify": "^16.5.2",
     "buffer": "6.0.3",
     "chai": "4.4.1",
