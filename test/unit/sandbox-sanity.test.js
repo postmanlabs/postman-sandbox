@@ -387,6 +387,29 @@ describe('sandbox', function () {
         });
     });
 
+    it('should not allow dynamic import', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                const mod = await import("child_process");
+                (async () => { const mod = await import("child_process"); })();
+            `, function (err) {
+                expect(err).to.be.ok;
+
+                if (IS_NODE) {
+                    expect(err).to.have.property('message', 'A dynamic import callback was not specified.');
+                }
+                else {
+                    expect(err).to.have.property('message', 'Failed to resolve module specifier \'child_process\'');
+                }
+
+                done();
+            });
+        });
+    });
+
     it('should  persist overridden `require` across executions', function (done) {
         const consoleSpy = sinon.spy();
 
