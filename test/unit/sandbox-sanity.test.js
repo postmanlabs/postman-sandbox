@@ -66,7 +66,7 @@ const Mocha = require('mocha'),
 
         // requires node>=24
         'Float16Array',
-        'URLPattern', // This is experimental in browser at the time of writing this test
+        'URLPattern' // This is experimental in browser at the time of writing this test
     ];
 
 describe('sandbox', function () {
