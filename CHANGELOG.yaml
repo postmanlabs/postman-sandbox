@@ -1,8 +1,9 @@
-unreleased:
-    fixed bugs:
-      - GH-1092 Disabled support for dynamic imports in Node environment
-    chores:
-      - Updated dependencies
+6.1.2:
+  date: 2025-06-12
+  fixed bugs:
+    - GH-1092 Disabled support for dynamic imports in Node environment
+  chores:
+    - Updated dependencies
 
 6.1.1:
   date: 2025-04-28
