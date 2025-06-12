@@ -43,6 +43,9 @@ const Mocha = require('mocha'),
         'global',
         'globalThis',
         'performance',
+        'AsyncDisposableStack',
+        'DisposableStack',
+        'SuppressedError',
 
         // No browser support
         'process',
@@ -59,7 +62,11 @@ const Mocha = require('mocha'),
         'WebSocket',
 
         // requires node>=23
-        'CloseEvent'
+        'CloseEvent',
+
+        // requires node>=24
+        'Float16Array',
+        'URLPattern' // This is experimental in browser at the time of writing this test
     ];
 
 describe('sandbox', function () {
@@ -382,6 +389,29 @@ describe('sandbox', function () {
             ctx.execute('const childProcess = require("child_process");', function (err) {
                 expect(err).to.be.ok;
                 expect(err).to.have.property('message', 'Cannot find module \'child_process\'');
+                done();
+            });
+        });
+    });
+
+    it('should not allow dynamic import', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+            ctx.on('error', done);
+
+            ctx.execute(`
+                const mod = await import("child_process");
+                (async () => { const mod = await import("child_process"); })();
+            `, function (err) {
+                expect(err).to.be.ok;
+
+                if (IS_NODE) {
+                    expect(err).to.have.property('message', 'A dynamic import callback was not specified.');
+                }
+                else {
+                    expect(err).to.have.property('message', 'Failed to resolve module specifier \'child_process\'');
+                }
+
                 done();
             });
         });
