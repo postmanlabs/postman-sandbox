@@ -248,6 +248,11 @@ declare interface Execution {
      * @param request - name of the request to run next
      */
     setNextRequest(request: string | null): void;
+
+    /**
+     * TODO copy the documentation from postman
+     */ 
+    skipRequest(): void
 }
 
 declare interface ExecutionLocation extends Array {
