@@ -1294,5 +1294,100 @@ describe('sandbox library - pm api', function () {
                 });
             });
         });
+
+        describe('.runRequest', function () {
+            it('should be a function exposed', function (done) {
+                context.execute(`
+                    var assert = require('assert');
+                    assert.strictEqual((typeof pm.execution.runRequest), 'function');
+                `, {}, done);
+            });
+
+            it('should dispatch an `execution.run_collection_request.id` event when called', function (done) {
+                const executionId = '1',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, requestId, requestToRunId, requestOptions) {
+                        expect(requestToRunId).to.eql(sampleRequestToRunId);
+                        expect(requestOptions).to.eql({ variables: { test_var: 'test_val' } });
+                        done();
+                    });
+
+                context.execute(`
+                    pm.execution.runRequest('${sampleRequestToRunId}', { variables: { test_var: 'test_val' } });
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should forward response received from req execution to supplied callback', function (done) {
+                const executionId = '2',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('error', done);
+
+                context.on('execution.error', function (cur, err) {
+                    expect(err).to.not.be.ok;
+                    done();
+                });
+
+                context.on('execution.assertion', function (cursor, assertion) {
+                    assertion.forEach(function (assertionResult) {
+                        expect(assertionResult).to.deep.include({ passed: true, error: null });
+                    });
+                    done();
+                });
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, requestId) {
+                        context.dispatch(`execution.response.${id}`, requestId, null, {
+                            code: 200,
+                            body: '{"i am": "a json"}'
+                        });
+                    });
+
+                context.execute(`
+                    pm.execution.runRequest('${sampleRequestToRunId}', {}, function (err, res) {
+                        pm.test('response', function () {
+                            pm.expect(res).to.have.property('code', 200);
+                            pm.expect(res.json()).to.have.property('i am', 'a json');
+                        });
+                    });
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should return a promise when no callback is provided', function (done) {
+                const executionId = '4',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('error', done);
+
+                context.on('execution.error', function (cur, err) {
+                    expect(err).to.not.be.ok;
+                    done();
+                });
+
+                context.on('execution.assertion', function (cursor, assertion) {
+                    assertion.forEach(function (assertionResult) {
+                        expect(assertionResult).to.deep.include({ passed: true, error: null });
+                    });
+                    done();
+                });
+
+                context.on('execution.run_collection_request.' + executionId, function (cursor, id, requestId) {
+                    context.dispatch(`execution.response.${id}`, requestId, null, {
+                        code: 200,
+                        body: '{"i am": "a json"}'
+                    });
+                });
+
+                context.execute(`
+                    const res = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    pm.test('response', function () {
+                        pm.expect(res).to.have.property('code', 200);
+                        pm.expect(res.json())x.to.have.property('i am', 'a json');
+                    });
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+        });
     });
 });
