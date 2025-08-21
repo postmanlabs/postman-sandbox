@@ -1293,6 +1293,18 @@ describe('sandbox library - pm api', function () {
                     done();
                 });
             });
+
+            it('should be a noOp if executeOptions.disabledAPIs includes execution.setNextRequest' +
+                '(In the case of nested requests)', function (done) {
+                context.execute({
+                    listen: 'test',
+                    script: 'pm.execution.setNextRequest("R2");'
+                }, { disabledAPIs: ['execution.setNextRequest'] }, function (err, result) {
+                    expect(err).to.be.null;
+                    expect(result).not.to.have.nested.property('return.nextRequest');
+                    done();
+                });
+            });
         });
 
         describe('.runRequest', function () {
@@ -1384,7 +1396,7 @@ describe('sandbox library - pm api', function () {
                     const res = await pm.execution.runRequest('${sampleRequestToRunId}');
                     pm.test('response', function () {
                         pm.expect(res).to.have.property('code', 200);
-                        pm.expect(res.json())x.to.have.property('i am', 'a json');
+                        pm.expect(res.json()).to.have.property('i am', 'a json');
                     });
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
             });
