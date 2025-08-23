@@ -640,7 +640,7 @@ describe('sandbox library - pm api', function () {
                 // assert for findCookie event
                 expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
                 expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookie');
+                    .calledWith(`${executionId}.1`, 'store', 'findCookie');
 
                 methodArgs = executionCookies.getCall(0).args[3];
 
@@ -651,7 +651,7 @@ describe('sandbox library - pm api', function () {
                 // assert for updateCookie event
                 expect(executionCookies.getCall(1).args).to.have.lengthOf(4);
                 expect(executionCookies.getCall(1)).to.have.been
-                    .calledWith(2, 'store', 'updateCookie');
+                    .calledWith(`${executionId}.2`, 'store', 'updateCookie');
 
                 methodArgs = executionCookies.getCall(1).args[3];
 
@@ -692,7 +692,7 @@ describe('sandbox library - pm api', function () {
                 // assert for findCookies event
                 expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
                 expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookies');
+                    .calledWith(`${executionId}.1`, 'store', 'findCookies');
 
                 methodArgs = executionCookies.getCall(0).args[3];
 
@@ -729,7 +729,7 @@ describe('sandbox library - pm api', function () {
                 // assert for findCookies event
                 expect(executionCookies.getCall(0).args).to.have.lengthOf(4);
                 expect(executionCookies.getCall(0)).to.have.been
-                    .calledWith(1, 'store', 'findCookies');
+                    .calledWith(`${executionId}.1`, 'store', 'findCookies');
 
                 methodArgs = executionCookies.getCall(0).args[3];
 
