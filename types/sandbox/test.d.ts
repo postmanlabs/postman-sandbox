@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 5.1.2
+// Type definitions for postman-sandbox 6.2.0
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -116,12 +116,13 @@ declare var cheerio;
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
  * @param vault - vault
+ * @param onRunRequest - callback to execute when pm.execution.runRequest is encountered in the script
  * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, requireFn: (...params: any[]) => any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, onRunRequest: (...params: any[]) => any, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -151,6 +152,10 @@ declare class Postman {
      * @excludeFromPrerequestScript
      */
     response: import("postman-collection").Response;
+    /**
+     * pm.message is an object with information pertaining to a part of a response in certain protocols.
+     */
+    message: any;
     /**
      * The cookies object contains a list of cookies that are associated with the domain
      * to which the request was made.
@@ -234,6 +239,18 @@ declare interface Visualizer {
      * Clear all visualizer data
      */
     clear(): void;
+}
+
+declare namespace Execution {
+    /**
+     * Allows one to run a collection request in the same workspace from script asynchronously.
+     * @param requestId - id of the collection request to run
+     * @param options - Options,
+     *  can include variable specifications and overrides
+     * @returns - Promise that resolves to a PostmanCollection.Response
+     * instance or null
+     */
+    function runRequest(requestId: string, options: any): Promise;
 }
 
 declare interface Execution {
