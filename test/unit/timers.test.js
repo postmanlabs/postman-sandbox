@@ -3,12 +3,11 @@ describe('timers module', function () {
     var Timers = require('../../lib/sandbox/timers');
 
     it('should be able to set an event', function (done) {
-        var executionId = '1',
-            status = 'uneventful',
+        var status = 'uneventful',
             timers,
             id;
 
-        timers = new Timers(executionId, null, done, null, function () {
+        timers = new Timers(null, done, null, function () {
             expect(status).to.eql('eventful');
             done();
         });
