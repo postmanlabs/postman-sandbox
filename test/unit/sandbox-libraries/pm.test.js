@@ -1319,43 +1319,7 @@ describe('sandbox library - pm api', function () {
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
             });
 
-            it('should forward response received from req execution to supplied callback', function (done) {
-                const executionId = '2',
-                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
-
-                context.on('error', done);
-
-                context.on('execution.error', function (cur, err) {
-                    expect(err).to.not.be.ok;
-                    done();
-                });
-
-                context.on('execution.assertion', function (cursor, assertion) {
-                    assertion.forEach(function (assertionResult) {
-                        expect(assertionResult).to.deep.include({ passed: true, error: null });
-                    });
-                    done();
-                });
-
-                context.on('execution.run_collection_request.' + executionId,
-                    function (cursor, id, requestId) {
-                        context.dispatch(`execution.response.${id}`, requestId, null, {
-                            code: 200,
-                            body: '{"i am": "a json"}'
-                        });
-                    });
-
-                context.execute(`
-                    pm.execution.runRequest('${sampleRequestToRunId}', {}, function (err, res) {
-                        pm.test('response', function () {
-                            pm.expect(res).to.have.property('code', 200);
-                            pm.expect(res.json()).to.have.property('i am', 'a json');
-                        });
-                    });
-                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
-            });
-
-            it('should return a promise when no callback is provided', function (done) {
+            it('should return a promise', function (done) {
                 const executionId = '4',
                     sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
 
