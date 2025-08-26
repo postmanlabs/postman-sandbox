@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 6.2.0
+// Type definitions for postman-sandbox 6.1.2
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -241,18 +241,6 @@ declare interface Visualizer {
     clear(): void;
 }
 
-declare namespace Execution {
-    /**
-     * Allows one to run a collection request in the same workspace from script asynchronously.
-     * @param requestId - id of the collection request to run
-     * @param options - Options,
-     *  can include variable specifications and overrides
-     * @returns - Promise that resolves to a PostmanCollection.Response
-     * instance or null
-     */
-    function runRequest(requestId: string, options: any): Promise;
-}
-
 declare interface Execution {
     /**
      * The path of the current request.
@@ -265,6 +253,34 @@ declare interface Execution {
      * @param request - name of the request to run next
      */
     setNextRequest(request: string | null): void;
+    /**
+     * Executes a collection request asynchronously.
+     *
+     * This function allows you to programmatically run any request that is part of an existing collection.
+     * The request will be executed within the current execution context.
+     * @example
+     * // Run a request by its ID
+     * try {
+     *   const response = await pm.execution.runRequest('request-id');
+     *   console.log('Status:', response.code);
+     *   console.log('Response:', response.text());
+     * } catch (error) {
+     *   console.error('Request failed:', error);
+     * }
+     * @param requestId - The UUID of the request to execute.
+     *                             This can be found in the request's metadata or corresponding collection JSON.
+     * @param [options] - Configuration options for the request execution
+     * @param [options.variables] - Key-value pairs of variables to override during
+     *                                       request execution. These will act as temporary
+     *                                       overrides for the this specific request run.
+     * @returns A Promise that resolves to:
+     *                                     - A Postman Response object if the request executes successfully
+     *                                     - null if the request execution is skipped
+     *                                       (e.g., via pm.execution.skipRequest)
+     */
+    runRequest(requestId: string, options?: {
+        variables?: any;
+    }): Promise;
 }
 
 declare interface ExecutionLocation extends Array {
