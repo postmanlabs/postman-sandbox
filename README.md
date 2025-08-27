@@ -72,8 +72,8 @@ The following section outlines the API available inside sandbox scripts
 - execute
 - execution.abort.*
 - execution.response.*
+- execution.run_collection_request_response.*
 - execution.cookies.*
-- execution.sync_variables_from_another_execution.*
 - execution.get_variables_from_this_execution.*
 
 ## Contributing
