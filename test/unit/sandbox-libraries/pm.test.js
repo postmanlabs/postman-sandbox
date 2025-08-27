@@ -1338,7 +1338,7 @@ describe('sandbox library - pm api', function () {
                 });
 
                 context.on('execution.run_collection_request.' + executionId, function (cursor, id, requestId) {
-                    context.dispatch(`execution.response.${id}`, requestId, null, {
+                    context.dispatch(`execution.run_collection_request_response.${id}`, requestId, null, {
                         code: 200,
                         body: '{"i am": "a json"}'
                     });
@@ -1349,6 +1349,50 @@ describe('sandbox library - pm api', function () {
                     pm.test('response', function () {
                         pm.expect(res).to.have.property('code', 200);
                         pm.expect(res.json()).to.have.property('i am', 'a json');
+                    });
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should handle for variable mutations coming in from consumer', function (done) {
+                const executionId = '5',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.assertion', function (cursor, assertion) {
+                    assertion.forEach(function (assertionResult) {
+                        expect(assertionResult).to.deep.include({ passed: true, error: null });
+                    });
+                    done();
+                });
+
+                context.on('execution.run_collection_request.' + executionId, function (cursor, id, requestId) {
+                    context.dispatch(`execution.run_collection_request_response.${id}`, requestId, null, {
+                        code: 200, body: '{}'
+                    },
+                    {
+                        variableMutationStages: {
+                            prerequest: {
+                                environment: {
+                                    autoCompact: true,
+                                    stream: [],
+                                    compacted: { api_method: ['api_method', 'post'] }
+                                }
+                            },
+                            test: {
+                                globals: {
+                                    autoCompact: true,
+                                    stream: [],
+                                    compacted: { api_url: ['api_url', 'postman-echo.com'] }
+                                }
+                            }
+                        }
+                    });
+                });
+
+                context.execute(`
+                    const res = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    pm.test('variables updated from inside nested request', function () {
+                        pm.expect(pm.environment.get('api_method')).to.eql('post');
+                        pm.expect(pm.globals.get('api_url')).to.eql('postman-echo.com');
                     });
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
             });
