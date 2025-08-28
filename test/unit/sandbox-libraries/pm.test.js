@@ -1310,7 +1310,15 @@ describe('sandbox library - pm api', function () {
                 context.on('execution.run_collection_request.' + executionId,
                     function (cursor, id, requestId, requestToRunId, requestOptions) {
                         expect(requestToRunId).to.eql(sampleRequestToRunId);
-                        expect(requestOptions).to.eql({ variables: { test_var: 'test_val' } });
+                        expect(requestOptions).to.eql({
+                            currentScopeVariableValues: {
+                                _variables: [],
+                                collectionVariables: [],
+                                environment: [],
+                                globals: []
+                            },
+                            variables: { test_var: 'test_val' }
+                        });
                         done();
                     });
 
@@ -1369,21 +1377,17 @@ describe('sandbox library - pm api', function () {
                         code: 200, body: '{}'
                     },
                     {
-                        variableMutationStages: {
-                            prerequest: {
-                                environment: {
-                                    autoCompact: true,
-                                    stream: [],
-                                    compacted: { api_method: ['api_method', 'post'] }
-                                }
-                            },
-                            test: {
-                                globals: {
-                                    autoCompact: true,
-                                    stream: [],
-                                    compacted: { api_url: ['api_url', 'postman-echo.com'] }
-                                }
-                            }
+                        variableMutations: {
+                            environment: [{
+                                autoCompact: true,
+                                stream: [],
+                                compacted: { api_method: ['api_method', 'post'] }
+                            }],
+                            globals: [{
+                                autoCompact: true,
+                                stream: [],
+                                compacted: { api_url: ['api_url', 'postman-echo.com'] }
+                            }]
                         }
                     });
                 });
@@ -1394,6 +1398,50 @@ describe('sandbox library - pm api', function () {
                         pm.expect(pm.environment.get('api_method')).to.eql('post');
                         pm.expect(pm.globals.get('api_url')).to.eql('postman-echo.com');
                     });
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should handle for current variable values internally and dispatch them to consumer', function (done) {
+                const executionId = '6',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, reqId, reqToRunId, opts) {
+                        expect(opts.currentScopeVariableValues).to.be.ok;
+
+                        // Validate that we're sending all values in scope currently
+                        expect(opts.currentScopeVariableValues.collectionVariables).to.be.ok;
+                        expect(opts.currentScopeVariableValues._variables).to.be.ok;
+                        expect(opts.currentScopeVariableValues.globals).to.be.ok;
+                        expect(opts.currentScopeVariableValues.environment).to.be.ok;
+
+                        expect(opts.currentScopeVariableValues.environment.length).to.equal(1);
+                        expect(opts.currentScopeVariableValues.collectionVariables.length).to.equal(1);
+                        expect(opts.currentScopeVariableValues._variables.length).to.equal(1);
+                        expect(opts.currentScopeVariableValues.globals.length).to.equal(0);
+
+                        expect(opts.currentScopeVariableValues._variables[0].key).to.equal('api_timeout');
+                        expect(opts.currentScopeVariableValues._variables[0].value).to.equal(5000);
+
+                        expect(opts.currentScopeVariableValues.collectionVariables[0].key).to.equal('api_method');
+                        expect(opts.currentScopeVariableValues.collectionVariables[0].value).to.equal('get');
+
+                        expect(opts.currentScopeVariableValues.environment[0].key).to.equal('api_url');
+                        expect(opts.currentScopeVariableValues.environment[0].value).to.equal('postman-echo.com');
+
+                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
+                            code: 200, body: '{}'
+                        });
+
+                        done();
+                    });
+
+                context.execute(`
+                    pm.environment.set("api_url", "postman-echo.com");
+                    pm.collectionVariables.set("api_method", "get");
+                    pm.variables.set("api_timeout", 5000);
+
+                    const res = await pm.execution.runRequest('${sampleRequestToRunId}');
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
             });
         });

@@ -65,7 +65,6 @@ The following section outlines the API available inside sandbox scripts
 - execution.result.*
 - execution.cookies.*
 - execution.skipRequest.*
-- execution.response_to_variables_request.*
 
 ## Events responded to
 - ping
@@ -74,7 +73,6 @@ The following section outlines the API available inside sandbox scripts
 - execution.response.*
 - execution.run_collection_request_response.*
 - execution.cookies.*
-- execution.get_variables_from_this_execution.*
 
 ## Contributing
 
