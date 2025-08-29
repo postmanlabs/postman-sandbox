@@ -1314,12 +1314,10 @@ describe('sandbox library - pm api', function () {
                             variables: { test_var: 'test_val' }
                         });
                         expect(context).to.eql({
-                            currentScopeVariableValues: {
-                                _variables: [],
-                                collectionVariables: [],
-                                environment: [],
-                                globals: []
-                            }
+                            _variables: [],
+                            collectionVariables: [],
+                            environment: [],
+                            globals: []
                         });
                         done();
                     });
@@ -1409,27 +1407,27 @@ describe('sandbox library - pm api', function () {
 
                 context.on('execution.run_collection_request.' + executionId,
                     function (cursor, id, reqId, reqToRunId, opts, reqContext) {
-                        expect(reqContext.currentScopeVariableValues).to.be.ok;
+                        expect(reqContext).to.be.ok;
 
                         // Validate that we're sending all values in scope currently
-                        expect(reqContext.currentScopeVariableValues.collectionVariables).to.be.ok;
-                        expect(reqContext.currentScopeVariableValues._variables).to.be.ok;
-                        expect(reqContext.currentScopeVariableValues.globals).to.be.ok;
-                        expect(reqContext.currentScopeVariableValues.environment).to.be.ok;
+                        expect(reqContext.collectionVariables).to.be.ok;
+                        expect(reqContext._variables).to.be.ok;
+                        expect(reqContext.globals).to.be.ok;
+                        expect(reqContext.environment).to.be.ok;
 
-                        expect(reqContext.currentScopeVariableValues.environment.length).to.equal(1);
-                        expect(reqContext.currentScopeVariableValues.collectionVariables.length).to.equal(1);
-                        expect(reqContext.currentScopeVariableValues._variables.length).to.equal(1);
-                        expect(reqContext.currentScopeVariableValues.globals.length).to.equal(0);
+                        expect(reqContext.environment.length).to.equal(1);
+                        expect(reqContext.collectionVariables.length).to.equal(1);
+                        expect(reqContext._variables.length).to.equal(1);
+                        expect(reqContext.globals.length).to.equal(0);
 
-                        expect(reqContext.currentScopeVariableValues._variables[0].key).to.equal('api_timeout');
-                        expect(reqContext.currentScopeVariableValues._variables[0].value).to.equal(5000);
+                        expect(reqContext._variables[0].key).to.equal('api_timeout');
+                        expect(reqContext._variables[0].value).to.equal(5000);
 
-                        expect(reqContext.currentScopeVariableValues.collectionVariables[0].key).to.equal('api_method');
-                        expect(reqContext.currentScopeVariableValues.collectionVariables[0].value).to.equal('get');
+                        expect(reqContext.collectionVariables[0].key).to.equal('api_method');
+                        expect(reqContext.collectionVariables[0].value).to.equal('get');
 
-                        expect(reqContext.currentScopeVariableValues.environment[0].key).to.equal('api_url');
-                        expect(reqContext.currentScopeVariableValues.environment[0].value).to.equal('postman-echo.com');
+                        expect(reqContext.environment[0].key).to.equal('api_url');
+                        expect(reqContext.environment[0].value).to.equal('postman-echo.com');
 
                         context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
                             code: 200, body: '{}'
