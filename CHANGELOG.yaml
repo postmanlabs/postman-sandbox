@@ -1,3 +1,7 @@
+unreleased:
+  new features:
+    - GH-1094 Add support for referencing pre-defined collection requests using `pm.execution.runRequest`
+
 6.1.2:
   date: 2025-06-12
   fixed bugs:
