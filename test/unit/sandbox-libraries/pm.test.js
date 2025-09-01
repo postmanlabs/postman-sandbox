@@ -1303,6 +1303,13 @@ describe('sandbox library - pm api', function () {
                 `, {}, done);
             });
 
+            it('should not be a function if `executeOptions.disabledAPIs` has `execution.runRequest`', function (done) {
+                context.execute(`
+                    var assert = require('assert');
+                    assert.strictEqual((typeof pm.execution.runRequest), 'undefined');
+                `, { disabledAPIs: ['execution.runRequest'] }, done);
+            });
+
             it('should dispatch an `execution.run_collection_request.id` event when called', function (done) {
                 const executionId = '1',
                     sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
