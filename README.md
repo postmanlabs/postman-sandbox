@@ -61,6 +61,7 @@ The following section outlines the API available inside sandbox scripts
 - execution.error
 - execution.error.*
 - execution.request.*
+- execution.run_collection_request.*
 - execution.result.*
 - execution.cookies.*
 - execution.skipRequest.*
@@ -70,6 +71,7 @@ The following section outlines the API available inside sandbox scripts
 - execute
 - execution.abort.*
 - execution.response.*
+- execution.run_collection_request_response.*
 - execution.cookies.*
 
 ## Contributing
