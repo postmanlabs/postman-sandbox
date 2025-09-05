@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - GH-1095 Scrub `process` object in Node environment
+
 6.1.2:
   date: 2025-06-12
   fixed bugs:
