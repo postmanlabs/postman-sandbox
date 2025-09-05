@@ -1,3 +1,14 @@
+6.2.0:
+  date: 2025-09-05
+  new features:
+    - >-
+      GH-1094 Add support for referencing pre-defined collection requests using
+      `pm.execution.runRequest`
+  fixed bugs:
+    - GH-1095 Scrub `process` object in Node environment
+  chores:
+    - Updated dependencies
+
 6.1.2:
   date: 2025-06-12
   fixed bugs:

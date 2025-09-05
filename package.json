@@ -1,6 +1,6 @@
 {
   "name": "postman-sandbox",
-  "version": "6.1.2",
+  "version": "6.2.0",
   "description": "Sandbox for Postman Scripts to run in Node.js or browser",
   "author": "Postman Inc.",
   "license": "Apache-2.0",
@@ -29,6 +29,7 @@
     "build-sandbox-types": "node npm/build-sandbox-types.js",
     "build-types": "npm run build-common-types && npm run build-sandbox-types",
     "cache": "node npm/cache.js $1",
+    "cache:watch": "nodemon --watch lib/sandbox npm/cache.js $1",
     "codecov": "node npm/publish-coverage.js",
     "prepublishOnly": "node npm/prepublish.js",
     "pretest": "npm run cache",
@@ -43,7 +44,7 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "postman-collection": "5.0.2",
+    "postman-collection": "5.1.1",
     "teleport-javascript": "1.0.0",
     "uvm": "4.0.1"
   },
@@ -82,6 +83,7 @@
     "lodash3": "3.10.2",
     "mocha": "^11.1.0",
     "moment": "2.30.1",
+    "nodemon": "^3.1.10",
     "nyc": "^17.1.0",
     "packity": "^0.3.5",
     "parse-gitignore": "^2.0.0",

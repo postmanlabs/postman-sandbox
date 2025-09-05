@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 5.1.2
+// Type definitions for postman-sandbox 6.1.2
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -86,12 +86,13 @@ declare var cheerio;
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
  * @param vault - vault
+ * @param onRunRequest - callback to execute when pm.execution.runRequest is encountered in the script
  * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, requireFn: (...params: any[]) => any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, onRunRequest: (...params: any[]) => any, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: string[];
     });
     /**
@@ -115,6 +116,10 @@ declare class Postman {
      * this is the representation of the request that was sent.
      */
     request: import("postman-collection").Request;
+    /**
+     * pm.message is an object with information pertaining to a part of a response in certain protocols.
+     */
+    message: any;
     /**
      * The cookies object contains a list of cookies that are associated with the domain
      * to which the request was made.
@@ -217,6 +222,34 @@ declare interface Execution {
      * @param request - name of the request to run next
      */
     setNextRequest(request: string | null): void;
+    /**
+     * Executes a collection request asynchronously.
+     *
+     * This function allows you to programmatically run any request that is part of an existing collection.
+     * The request will be executed within the current execution context.
+     * @example
+     * // Run a request by its ID
+     * try {
+     *   const response = await pm.execution.runRequest('request-id');
+     *   console.log('Status:', response.code);
+     *   console.log('Response:', response.text());
+     * } catch (error) {
+     *   console.error('Request failed:', error);
+     * }
+     * @param requestId - The UUID of the request to execute.
+     *                             This can be found in the request's metadata or corresponding collection JSON.
+     * @param [options] - Configuration options for the request execution
+     * @param [options.variables] - Key-value pairs of variables to override during
+     *                                       request execution. These will act as temporary
+     *                                       overrides for the this specific request run.
+     * @returns A Promise that resolves to:
+     *                                     - A Postman Response object if the request executes successfully
+     *                                     - null if the request execution is skipped
+     *                                       (e.g., via pm.execution.skipRequest)
+     */
+    runRequest(requestId: string, options?: {
+        variables?: any;
+    }): Promise;
 }
 
 declare interface ExecutionLocation extends Array {
