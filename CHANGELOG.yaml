@@ -1,6 +1,6 @@
 unreleased:
   fixed bugs:
-    - GH-1097 Scrub `process` object in Node environmen
+    - GH-1097 Scrub `process` object in Node environment
 
 6.2.1:
   date: 2025-09-19

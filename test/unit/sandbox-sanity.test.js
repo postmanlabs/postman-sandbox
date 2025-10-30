@@ -459,7 +459,7 @@ describe('sandbox', function () {
     });
 
     (IS_NODE ? it : it.skip)('should have missing globals as subset of explicitly ignored globals', function (done) {
-        Sandbox.createContext({ debug: true }, function (err, ctx) {
+        Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
