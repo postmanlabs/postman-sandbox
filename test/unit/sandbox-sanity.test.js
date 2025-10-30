@@ -46,6 +46,9 @@ const Mocha = require('mocha'),
         'AsyncDisposableStack',
         'DisposableStack',
         'SuppressedError',
+        'localStorage',
+        'sessionStorage',
+        'Storage',
 
         // No browser support
         'process',
@@ -66,7 +69,10 @@ const Mocha = require('mocha'),
 
         // requires node>=24
         'Float16Array',
-        'URLPattern' // This is experimental in browser at the time of writing this test
+        'URLPattern', // This is experimental in browser at the time of writing this test
+
+        // requires node>=25
+        'ErrorEvent'
     ];
 
 describe('sandbox', function () {
@@ -453,7 +459,7 @@ describe('sandbox', function () {
     });
 
     (IS_NODE ? it : it.skip)('should have missing globals as subset of explicitly ignored globals', function (done) {
-        Sandbox.createContext(function (err, ctx) {
+        Sandbox.createContext({ debug: true }, function (err, ctx) {
             if (err) { return done(err); }
             ctx.on('error', done);
 
