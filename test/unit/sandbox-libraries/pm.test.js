@@ -1451,6 +1451,56 @@ describe('sandbox library - pm api', function () {
                     const res = await pm.execution.runRequest('${sampleRequestToRunId}');
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
             });
+
+            it('should handle response types for multi-protocol:http', function (done) {
+                const executionId = '7',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, reqId) {
+                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
+                            _type: 'http-request', code: 200, body: '{ "field_from": "server" }'
+                        });
+
+                        done();
+                    });
+
+                context.on('execution.console', (_cursor, _level, message) => {
+                    expect(message).to.include('statusCode');
+                    expect(message).to.include('field_from');
+                    expect(message).to.include('server');
+                });
+
+                context.execute(`
+                    const res = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    console.log(res.json());
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should handle response types for multi-protocol:others', function (done) {
+                const executionId = '7',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, reqId) {
+                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
+                            _type: 'grpc-request', statusCode: 0, responseTime: 100
+                        });
+
+                        done();
+                    });
+
+                context.on('execution.console', (_cursor, _level, message) => {
+                    // No processing for non-http protocol responses, logged as is
+                    expect(message).to.include('statusCode');
+                    expect(message).to.include('responseTime');
+                });
+
+                context.execute(`
+                    const grpcRequestResponse = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    console.log(grpcRequestResponse);
+                `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
         });
     });
 });
