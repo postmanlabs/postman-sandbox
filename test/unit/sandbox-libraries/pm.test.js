@@ -1459,7 +1459,7 @@ describe('sandbox library - pm api', function () {
                 context.on('execution.run_collection_request.' + executionId,
                     function (cursor, id, reqId) {
                         context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
-                            code: 200, body: '{ "field_from": "server" }'
+                            _type: 'http-request', code: 200, body: '{ "field_from": "server" }'
                         });
                     });
 
@@ -1478,64 +1478,30 @@ describe('sandbox library - pm api', function () {
                 });
             });
 
-            it('should handle response types for multi-protocol:others defined by execution template', function (done) {
-                Sandbox.createContextFleet({
-                    grpc: `
-                        function initializeExecution () {
-                            return {
-                                request: { type: 'grpc-request' },
-                                response: { type: 'grpc-response' }
-                            }
-                        };
+            it('should handle response types for multi-protocol:others', function (done) {
+                const executionId = '7',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
 
-                        function chaiPlugin (chai) {
-                        }
-
-                        class Response {
-                            constructor(options = {}) {
-                                this.statusCode = options.statusCode;
-                                this.responseTime = options.responseTime;
-                                this.isGRPCResponse = true;
-                            }
-
-                            static isResponse (obj) { return (obj instanceof Response) }
-                        }
-
-                        module.exports = { initializeExecution, chaiPlugin, Response };
-                    `
-                }, (err, fleet) => {
-                    if (err) { return done(err); }
-
-                    fleet.getContext('grpc', (err, ctx) => {
-                        if (err) { return done(err); }
-
-                        ctx.on('error', done);
-
-                        const executionId = '8',
-                            sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
-
-                        ctx.on('execution.run_collection_request.' + executionId,
-                            function (_cursor, id, reqId) {
-                                ctx.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
-                                    statusCode: 0, responseTime: 100
-                                });
-                            });
-
-                        let consoleMessage = '';
-
-                        ctx.on('console', (_cursor, _level, message) => {
-                            consoleMessage = message;
-                        });
-
-                        ctx.execute(`
-                            const grpcRequestResponse = await pm.execution.runRequest('${sampleRequestToRunId}');
-                            console.log(grpcRequestResponse, grpcRequestResponse.isGRPCResponse);
-                        `, { id: executionId }, function () {
-                            // No processing for non-http protocol responses, logged as is
-                            expect(consoleMessage).to.eql({ statusCode: 0, responseTime: 100, isGRPCResponse: true });
-                            done();
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, reqId) {
+                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
+                            _type: 'grpc-request', statusCode: 0, responseTime: 100
                         });
                     });
+
+                let consoleMessage = '';
+
+                context.on('console', (_cursor, _level, message) => {
+                    consoleMessage = message;
+                });
+
+                context.execute(`
+                    const grpcRequestResponse = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    console.log(grpcRequestResponse);
+                `, { id: executionId }, function () {
+                    // No processing for non-http protocol responses, logged as is
+                    expect(consoleMessage).to.eql({ statusCode: 0, responseTime: 100 });
+                    done();
                 });
             });
         });
