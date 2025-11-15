@@ -1479,14 +1479,14 @@ describe('sandbox library - pm api', function () {
             });
 
             it('should handle response types for multi-protocol:others', function (done) {
-                const executionId = '7',
+                const executionId = '8',
                     sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
 
                 context.on('execution.run_collection_request.' + executionId,
                     function (cursor, id, reqId) {
                         context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
-                            _type: 'grpc-request', statusCode: 0, responseTime: 100
-                        });
+                            statusCode: 0, responseTime: 100
+                        }, { skipResponseCasting: true });
                     });
 
                 let consoleMessage = '';
