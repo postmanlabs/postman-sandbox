@@ -29,6 +29,15 @@ describe('sandbox library - pm api', function () {
                 value: 2.9,
                 type: 'number'
             }],
+            requestVariables: [{
+                key: 'var1',
+                value: 'request-var1',
+                type: 'string'
+            }, {
+                key: 'var2',
+                value: 3.5,
+                type: 'number'
+            }],
             data: {
                 var1: 'one-data'
             }
@@ -259,6 +268,67 @@ describe('sandbox library - pm api', function () {
                 assert.deepEqual(pm.collectionVariables.toObject(), {
                     var1: 'collection-var1',
                     var2: 2.9
+                });
+            `, { context: sampleContextData }, done);
+        });
+    });
+
+    describe('requestVariables', function () {
+        it('should be defined as VariableScope', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    VariableScope = require('postman-collection').VariableScope;
+                assert.strictEqual(VariableScope.isVariableScope(pm.requestVariables), true);
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should be a readonly property', function (done) {
+            context.execute(`
+                var assert = require('assert'),
+                    _requestVariables;
+
+                _requestVariables = pm.requestVariables;
+                pm.requestVariables = [];
+
+                assert.strictEqual(pm.requestVariables, _requestVariables, 'property stays unchanged');
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should forward request variables forwarded during execution', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                assert.strictEqual(pm.requestVariables.get('var1'), 'request-var1');
+                assert.strictEqual(pm.requestVariables.get('var2'), 3.5);
+            `, { context: sampleContextData }, done);
+        });
+
+        it('should propagate updated request variables from inside sandbox', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.requestVariables.get('var1'), 'request-var1');
+                pm.requestVariables.set('var1', 'updated-request-var');
+                assert.strictEqual(pm.requestVariables.get('var1'), 'updated-request-var');
+
+            `, { context: sampleContextData }, function (err, exec) {
+                expect(err).to.be.null;
+                expect(exec).to.be.ok;
+                expect(exec).to.deep.nested.include({ 'requestVariables.values': [
+                    { type: 'string', value: 'updated-request-var', key: 'var1' },
+                    { type: 'number', value: 3.5, key: 'var2' }
+                ] });
+                done();
+            });
+        });
+
+        it('pm.requestVariables.toObject must return a pojo', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(_.isPlainObject(pm.requestVariables.toObject()), true);
+                assert.deepEqual(pm.requestVariables.toObject(), {
+                    var1: 'request-var1',
+                    var2: 3.5
                 });
             `, { context: sampleContextData }, done);
         });
