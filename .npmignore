@@ -52,3 +52,5 @@ codecov.yml
 .jsdoc-config.json
 .jsdoc-config-type-def.json
 .jsdoc-config-type-def-sandbox.json
+.kiro/*
+test-request-vars.js

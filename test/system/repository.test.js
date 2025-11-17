@@ -34,8 +34,8 @@ describe('project repository', function () {
         describe('package.json JSON data', function () {
             it('should have valid name, description, author and license', function () {
                 expect(json).to.deep.include({
-                    name: 'postman-sandbox',
-                    description: 'Sandbox for Postman Scripts to run in Node.js or browser',
+                    name: 'relay-sandbox',
+                    description: 'Sandbox for Postman Scripts to run in Node.js or browser (fork with requestVariables support)',
                     author: 'Postman Inc.',
                     license: 'Apache-2.0'
                 });

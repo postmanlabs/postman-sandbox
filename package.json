@@ -1,7 +1,7 @@
 {
-  "name": "postman-sandbox",
+  "name": "relay-sandbox",
   "version": "6.2.2",
-  "description": "Sandbox for Postman Scripts to run in Node.js or browser",
+  "description": "Sandbox for Postman Scripts to run in Node.js or browser (fork with requestVariables support)",
   "author": "Postman Inc.",
   "license": "Apache-2.0",
   "main": "index.js",
