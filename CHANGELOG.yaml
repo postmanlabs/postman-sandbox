@@ -1,3 +1,8 @@
+unreleased:
+  new features:
+    - GH-1098 Add support for avoiding default response-class
+      casting in `pm.execution.runRequest` return-value
+
 6.2.2:
   date: 2025-10-30
   fixed bugs:
