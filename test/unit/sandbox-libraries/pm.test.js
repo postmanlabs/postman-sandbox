@@ -1493,7 +1493,7 @@ describe('sandbox library - pm api', function () {
                     `;
 
                 Sandbox.createContext({
-                    template: { grpc: individualTemplate },
+                    templates: { grpc: individualTemplate },
                     chaiPlugin: ' '
                 }, (errorInitializingSandbox, sandboxContext) => {
                     if (errorInitializingSandbox) { return done(errorInitializingSandbox); }

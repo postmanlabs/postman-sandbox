@@ -529,7 +529,7 @@ describe('sandbox', function () {
             `
         };
 
-        Sandbox.createContext({ template: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.on('error', done);
@@ -601,7 +601,7 @@ describe('sandbox', function () {
             `
         };
 
-        Sandbox.createContext({ template: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
             if (err) { return done(err); }
 
             ctx.on('error', done);
@@ -670,7 +670,7 @@ describe('sandbox', function () {
         `;
 
         Sandbox.createContext({
-            template: templatesMap,
+            templates: templatesMap,
             chaiPlugin: chaiPlugin,
             disableLegacyAPIs: true
         }, function (err, ctx) {
