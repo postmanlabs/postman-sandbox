@@ -1504,7 +1504,7 @@ describe('sandbox library - pm api', function () {
                                 reqId,
                                 null,
                                 { statusCode: 0, responseTime: 100 },
-                                { responseType: 'grpc-request' });
+                                { responseType: 'grpc' });
                         });
 
                     let consoleMessage = '';

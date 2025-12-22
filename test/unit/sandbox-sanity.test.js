@@ -552,6 +552,7 @@ describe('sandbox', function () {
                     `
                 }
             },
+            { templateName: 'graphql' },
             function (err) {
                 if (err) { return done(err); }
 
@@ -568,6 +569,7 @@ describe('sandbox', function () {
                         `
                     }
                 },
+                { templateName: 'grpc' },
                 function (err) {
                     done(err);
                 });
@@ -621,6 +623,7 @@ describe('sandbox', function () {
                     `
                 }
             },
+            { templateName: 'grpc' },
             function (err) {
                 done(err);
             });
@@ -693,6 +696,7 @@ describe('sandbox', function () {
                     `
                 }
             },
+            { templateName: 'grpc' },
             function (err) {
                 done(err);
             });
