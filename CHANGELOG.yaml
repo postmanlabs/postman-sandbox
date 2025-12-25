@@ -1,3 +1,8 @@
+unreleased:
+  new features:
+    - GH-1101 Add support for multiple item-type templates and explicitly passed
+       chai plugin in one sandbox instance
+
 6.3.0:
   date: 2025-12-01
   new features:
