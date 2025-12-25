@@ -1489,12 +1489,13 @@ describe('sandbox library - pm api', function () {
                             }
                         }
 
-                        module.exports = { Response };
+                        function chaiPlugin() {}
+
+                        module.exports = { Response, chaiPlugin };
                     `;
 
                 Sandbox.createContext({
-                    templates: { grpc: individualTemplate },
-                    chaiPlugin: ' '
+                    templates: { grpc: individualTemplate }
                 }, (errorInitializingSandbox, sandboxContext) => {
                     if (errorInitializingSandbox) { return done(errorInitializingSandbox); }
 
@@ -1521,7 +1522,7 @@ describe('sandbox library - pm api', function () {
                     sandboxContext.execute(`
                         const grpcRequestResponse = await pm.execution.runRequest('sample-request-id');
                         console.log(grpcRequestResponse);`,
-                    { id: executionId },
+                    { id: executionId, templateName: 'grpc' },
                     function (err) {
                         done(err);
                         sandboxContext.dispose();
