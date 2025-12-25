@@ -577,6 +577,43 @@ describe('sandbox', function () {
         });
     });
 
+    it('should throw an error if multiple templates have been passed but not a template name', function (done) {
+        const templatesMap = {
+            grpc: `
+                function initializeExecution () {
+                    return {
+                        request: { type: 'grpc-request' },
+                        response: { type: 'grpc-response' }
+                    }
+                }
+
+                function chaiPlugin (chai) {
+                }
+
+                module.exports = { initializeExecution, chaiPlugin };
+            `
+        };
+
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', (err) => {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'sandbox: template name parameter is missing from options');
+                done();
+            });
+
+            ctx.execute({
+                listen: 'grpc:beforeInvoke',
+                script: { type: 'text/javascript', exec: '' }
+            },
+            {},
+            function () {
+                //
+            });
+        });
+    });
+
     it('should work with multiple templates and an included chai plugin', function (done) {
         const templatesMap = {
             grpc: `
