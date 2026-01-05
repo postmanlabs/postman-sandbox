@@ -1489,9 +1489,7 @@ describe('sandbox library - pm api', function () {
                             }
                         }
 
-                        function chaiPlugin() {}
-
-                        module.exports = { Response, chaiPlugin };
+                        module.exports = { Response };
                     `;
 
                 Sandbox.createContext({
