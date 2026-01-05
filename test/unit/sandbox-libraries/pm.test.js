@@ -1479,29 +1479,52 @@ describe('sandbox library - pm api', function () {
             });
 
             it('should handle response types for multi-protocol:others', function (done) {
-                const executionId = '8',
-                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+                const executionId = '1',
+                    individualTemplate = `
+                        class Response {
+                            constructor(response) {
+                                this.statusCode = response.statusCode;
+                                this.responseTime = response.responseTime;
+                                this.isCustomGRPCResponseClass = true;
+                            }
+                        }
 
-                context.on('execution.run_collection_request.' + executionId,
-                    function (cursor, id, reqId) {
-                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
-                            statusCode: 0, responseTime: 100
-                        }, { skipResponseCasting: true });
+                        module.exports = { Response };
+                    `;
+
+                Sandbox.createContext({
+                    templates: { grpc: individualTemplate }
+                }, (errorInitializingSandbox, sandboxContext) => {
+                    if (errorInitializingSandbox) { return done(errorInitializingSandbox); }
+
+                    sandboxContext.on('execution.run_collection_request.' + executionId,
+                        function (_cursor, id, reqId) {
+                            sandboxContext.dispatch(`execution.run_collection_request_response.${id}`,
+                                reqId,
+                                null,
+                                { statusCode: 0, responseTime: 100 },
+                                { responseType: 'grpc' });
+                        });
+
+                    let consoleMessage = '';
+
+                    sandboxContext.on('console', (_cursor, _level, message) => {
+                        consoleMessage = message;
+                        expect(consoleMessage).to.eql({
+                            statusCode: 0,
+                            responseTime: 100,
+                            isCustomGRPCResponseClass: true
+                        });
                     });
 
-                let consoleMessage = '';
-
-                context.on('console', (_cursor, _level, message) => {
-                    consoleMessage = message;
-                });
-
-                context.execute(`
-                    const grpcRequestResponse = await pm.execution.runRequest('${sampleRequestToRunId}');
-                    console.log(grpcRequestResponse);
-                `, { id: executionId }, function () {
-                    // No processing for non-http protocol responses, logged as is
-                    expect(consoleMessage).to.eql({ statusCode: 0, responseTime: 100 });
-                    done();
+                    sandboxContext.execute(`
+                        const grpcRequestResponse = await pm.execution.runRequest('sample-request-id');
+                        console.log(grpcRequestResponse);`,
+                    { id: executionId, templateName: 'grpc' },
+                    function (err) {
+                        done(err);
+                        sandboxContext.dispose();
+                    });
                 });
             });
         });
