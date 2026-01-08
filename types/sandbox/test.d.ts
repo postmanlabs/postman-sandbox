@@ -283,7 +283,7 @@ declare interface Execution {
     }): Promise;
 }
 
-declare interface ExecutionLocation extends Array {
+declare interface ExecutionLocation extends Array<string> {
     /**
      * The item name whose script is currently being executed.
      */
