@@ -1487,6 +1487,10 @@ describe('sandbox library - pm api', function () {
                                 this.responseTime = response.responseTime;
                                 this.isCustomGRPCResponseClass = true;
                             }
+
+                            static isResponse (obj) {
+                                return obj instanceof Response;
+                            }
                         }
 
                         module.exports = { Response };
@@ -1497,6 +1501,19 @@ describe('sandbox library - pm api', function () {
                 }, (errorInitializingSandbox, sandboxContext) => {
                     if (errorInitializingSandbox) { return done(errorInitializingSandbox); }
 
+                    sandboxContext.on(`execution.error.${executionId}`, (_exec, err) => {
+                        done(new Error(err.message));
+                    });
+
+                    sandboxContext.on('console', (_cursor, _level, grpcRequestResponse) => {
+                        expect(grpcRequestResponse).to.have.property('statusCode', 0);
+                        expect(grpcRequestResponse).to.have.property('responseTime', 100);
+                        // Custom class property
+                        expect(grpcRequestResponse).to.have.property('isCustomGRPCResponseClass', true);
+
+                        done();
+                    });
+
                     sandboxContext.on('execution.run_collection_request.' + executionId,
                         function (_cursor, id, reqId) {
                             sandboxContext.dispatch(`execution.run_collection_request_response.${id}`,
@@ -1506,24 +1523,14 @@ describe('sandbox library - pm api', function () {
                                 { responseType: 'grpc' });
                         });
 
-                    let consoleMessage = '';
-
-                    sandboxContext.on('console', (_cursor, _level, message) => {
-                        consoleMessage = message;
-                        expect(consoleMessage).to.eql({
-                            statusCode: 0,
-                            responseTime: 100,
-                            isCustomGRPCResponseClass: true
-                        });
-                    });
-
                     sandboxContext.execute(`
                         const grpcRequestResponse = await pm.execution.runRequest('sample-request-id');
+
                         console.log(grpcRequestResponse);`,
                     { id: executionId, templateName: 'grpc' },
                     function (err) {
-                        done(err);
                         sandboxContext.dispose();
+                        if (err) { done(err); }
                     });
                 });
             });
