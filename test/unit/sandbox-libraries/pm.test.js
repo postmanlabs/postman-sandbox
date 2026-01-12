@@ -1501,18 +1501,17 @@ describe('sandbox library - pm api', function () {
                 }, (errorInitializingSandbox, sandboxContext) => {
                     if (errorInitializingSandbox) { return done(errorInitializingSandbox); }
 
-                    let erroredTest = false;
-
                     sandboxContext.on(`execution.error.${executionId}`, (_exec, err) => {
-                        erroredTest = true;
                         done(new Error(err.message));
                     });
 
-                    sandboxContext.on('console' + executionId, (_cursor, _level, grpcRequestResponse) => {
+                    sandboxContext.on('console', (_cursor, _level, grpcRequestResponse) => {
                         expect(grpcRequestResponse).to.have.property('statusCode', 0);
                         expect(grpcRequestResponse).to.have.property('responseTime', 100);
                         // Custom class property
                         expect(grpcRequestResponse).to.have.property('isCustomGRPCResponseClass', true);
+
+                        done();
                     });
 
                     sandboxContext.on('execution.run_collection_request.' + executionId,
@@ -1531,7 +1530,7 @@ describe('sandbox library - pm api', function () {
                     { id: executionId, templateName: 'grpc' },
                     function (err) {
                         sandboxContext.dispose();
-                        if (!erroredTest) { done(err); }
+                        if (err) { done(err); }
                     });
                 });
             });
