@@ -739,4 +739,42 @@ describe('sandbox', function () {
             });
         });
     });
+
+    it('should allow disabling or enabling legacy APIs per execution as well', function (done) {
+        // Legacy APIs disabled at the top level
+        Sandbox.createContext({ disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            const assertions = [];
+
+            ctx.on('execution.assertion', (_, assertionListFromExecution) => {
+                assertionListFromExecution.forEach((a) => {
+                    assertions.push(a);
+                });
+
+                if (assertions.length === 2) {
+                    assertions.forEach((a) => {
+                        expect(a.passed).to.be.true;
+                    });
+
+                    done();
+                }
+            });
+
+            // Legacy APIs enabled for this execution
+            ctx.execute('pm.test("Should be true", () => { pm.expect(typeof tv4).not.to.eql("undefined"); });',
+                { disableLegacyAPIs: false },
+                (err) => {
+                    if (err) { return done(err); }
+                });
+
+            // but disabled for this execution on the same sandbox instance
+            ctx.execute('pm.test("Should be false", () => { pm.expect(typeof tv4).to.eql("undefined"); });',
+                (err) => {
+                    if (err) { return done(err); }
+                });
+        });
+    });
 });
