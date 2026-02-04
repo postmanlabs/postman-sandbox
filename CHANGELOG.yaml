@@ -1,8 +1,10 @@
-unreleased:
+6.5.0:
+  date: 2026-02-04
   new features:
     - >-
-      GH-1103 Add support for sandbox-execution-level disabling & enabling of legacy APIs
-      while respecting the top-level disableLegacyAPIs option if not passed
+      GH-1103 Add support for sandbox-execution-level disabling & enabling of
+      legacy APIs while respecting the top-level disableLegacyAPIs option if not
+      passed
 
 6.4.0:
   date: 2026-01-14
