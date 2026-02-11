@@ -1244,6 +1244,31 @@ describe('sandbox library - pm api', function () {
                     }
                 });
             });
+
+            it('via options.allowSkipRequest: should throw if called from a skip-request-not-allowed script',
+                function (done) {
+                    Sandbox.createContext({}, function (err, ctx) {
+                        if (err) { return done(err); }
+
+                        ctx.on('error', done);
+
+                        // For this execution, skip-request is not allowed
+                        ctx.execute('pm.execution.skipRequest();',
+                            { allowSkipRequest: false },
+                            (err) => {
+                                expect(err).to.be.ok;
+                                expect(err.message).to.eql('pm.execution.skipRequest is not a function');
+
+                                // For this execution, skip-request is allowed
+                                ctx.execute('pm.execution.skipRequest();',
+                                    { allowSkipRequest: true },
+                                    (err) => {
+                                        expect(err).not.to.be.ok;
+                                        done(err);
+                                    });
+                            });
+                    });
+                });
         });
 
         describe('.location', function () {
