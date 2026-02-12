@@ -1269,6 +1269,42 @@ describe('sandbox library - pm api', function () {
                             });
                     });
                 });
+
+            it('should not skip if options.allowSkipRequest=false even if prerequest script',
+                function (done) {
+                    Sandbox.createContext({ debug: true }, function (err, ctx) {
+                        if (err) { return done(err); }
+
+                        ctx.on('error', done);
+
+                        ctx.on('execution.assertion', function (cursor, assertion) {
+                            assertion.forEach(function (assertion) {
+                                expect(assertion.passed).to.be.true;
+                            });
+                            done();
+                        });
+
+                        ctx.execute({
+                            listen: 'prerequest',
+                            script: `
+                                try {
+                                    pm.execution.skipRequest();
+                                } catch (err) {
+                                    pm.test("should have thrown error", function () {
+                                        pm.expect(err).to.be.ok;
+                                        pm.expect(err.message).to.eql('pm.execution.skipRequest is not a function');
+                                    });
+                                }
+                            `
+                        },
+                        { allowSkipRequest: false, debug: true },
+                        (err) => {
+                            if (err) {
+                                done(err);
+                            }
+                        });
+                    });
+                });
         });
 
         describe('.location', function () {
