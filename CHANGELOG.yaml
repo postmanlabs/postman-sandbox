@@ -1,7 +1,9 @@
 unreleased:
   new features:
+    - GH-1104 Add support for legacy response APIs without an explicit "test" target
     - >-
-      GH-1104 Add support for legacy response APIs without an explicit "test" target
+      GH-1105 Add support for options.allowSkipRequest at execution-level and decouple
+      skipRequest from a fixed "prerequest" target
 
 6.5.0:
   date: 2026-02-04
