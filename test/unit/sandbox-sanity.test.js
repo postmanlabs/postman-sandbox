@@ -777,4 +777,51 @@ describe('sandbox', function () {
                 });
         });
     });
+
+    it('should allow using legacy response APIs without an explicit "test" target', function (done) {
+        const templatesMap = {
+            http: `
+                function initializeExecution () {
+                    const sdk = require('postman-collection');
+                    return { response: new sdk.Response() }
+                }
+
+                module.exports = { initializeExecution };
+            `
+        };
+
+        Sandbox.createContext({
+            templates: templatesMap,
+            disableLegacyAPIs: true,
+            debug: true
+        }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.on('execution.assertion', (_, assertions) => {
+                assertions.forEach((a) => {
+                    expect(a.passed).to.be.true;
+                });
+            });
+
+            ctx.execute({
+                listen: 'http:afterResponse',
+                script: {
+                    type: 'text/javascript',
+                    exec: `
+                        pm.test('Should assert HTTP response via legacy APIs', () => {
+                            pm.expect(responseHeaders).not.to.be.undefined;
+                            pm.expect(responseCookies).not.to.be.undefined;
+                            pm.expect(responseCode).not.to.be.undefined;
+                        });
+                    `
+                }
+            },
+            { debug: true, disableLegacyAPIs: false, templateName: 'http' },
+            function (err) {
+                done(err);
+            });
+        });
+    });
 });
