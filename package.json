@@ -43,7 +43,7 @@
     "test-vm": "node npm/test-vm.js"
   },
   "dependencies": {
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "postman-collection": "5.3.0",
     "teleport-javascript": "1.0.0",
     "uvm": "4.0.1"
