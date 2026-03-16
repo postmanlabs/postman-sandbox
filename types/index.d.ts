@@ -291,6 +291,10 @@ declare interface Execution {
      */
     location: ExecutionLocation;
     /**
+     * The path of the current request by Ids
+     */
+    locationIds: ExecutionLocation;
+    /**
      * Sets the next request to be run after the current request, when
      * running the collection. Passing `null` stops the collection run
      * after the current request is executed.
@@ -329,7 +333,7 @@ declare interface Execution {
 
 declare interface ExecutionLocation extends Array<string> {
     /**
-     * The item name whose script is currently being executed.
+     * The item name or id whose script is currently being executed.
      */
     current: string;
 }
