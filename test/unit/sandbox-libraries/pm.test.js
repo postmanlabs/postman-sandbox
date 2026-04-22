@@ -377,6 +377,127 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('datasets', function () {
+        // eslint-disable-next-line mocha/max-top-level-suites
+        it('should dispatch execution.datasets event when pm.datasets(id).executeQuery is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeQuery');
+                expect(datasetId).to.eql('ds-123');
+                expect(sql).to.eql('SELECT * FROM users');
+                expect(params).to.eql(['param1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { rows: [{ id: 1, name: 'Alice' }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM users', ['param1']);
+                pm.test('datasets.executeQuery', function () {
+                    pm.expect(result).to.have.property('rows');
+                    pm.expect(result.rows[0].name).to.equal('Alice');
+                });
+            `, { id: executionId });
+        });
+
+        it('should dispatch execution.datasets event when pm.datasets(id).addView is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, options) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('addView');
+                expect(datasetId).to.eql('ds-456');
+                expect(options).to.eql({ name: 'myView', sql: 'SELECT 1' });
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { id: 'view-1', name: 'myView', query: 'SELECT 1' });
+            });
+            context.execute(`
+                await pm.datasets('ds-456').addView({ name: 'myView', sql: 'SELECT 1' });
+            `, { id: executionId }, done);
+        });
+
+        it('should dispatch execution.datasets event when pm.datasets(id).removeView is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('removeView');
+                expect(datasetId).to.eql('ds-789');
+                expect(viewId).to.eql('view-1');
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null);
+            });
+            context.execute(`
+                await pm.datasets('ds-789').removeView('view-1');
+            `, { id: executionId }, done);
+        });
+
+        it('should dispatch execution.datasets event when pm.datasets(id).executeView is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeView');
+                expect(datasetId).to.eql('ds-123');
+                expect(viewId).to.eql('view-1');
+                expect(params).to.eql(['p1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { rows: [{ count: 42 }] });
+            });
+            context.execute(`
+                await pm.datasets('ds-123').executeView('view-1', ['p1']);
+            `, { id: executionId }, done);
+        });
+
+        it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
+            const executionId = '2',
+                executionError = sinon.spy();
+
+            context.on('execution.error', (...args) => {
+                executionError(args);
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, new Error('Dataset not found'));
+            });
+            context.execute(`
+                await pm.datasets('ds-missing').executeQuery('SELECT 1');
+            `, {
+                id: executionId
+            }, function () {
+                expect(executionError.calledOnce).to.be.true;
+                expect(executionError.firstCall.args[0][1]).to.have.property('message', 'Dataset not found');
+                done();
+            });
+        });
+
+        it('should not be defined when datasets is in disabledAPIs', function (done) {
+            context.execute(`
+                pm.test('datasets is undefined', function () {
+                    pm.expect(pm.datasets).to.be.undefined;
+                });
+            `, {
+                id: '2',
+                disabledAPIs: ['datasets']
+            }, done);
+        });
+    });
+
     describe('request', function () {
         it('should be defined as sdk Request object', function (done) {
             context.execute(`
