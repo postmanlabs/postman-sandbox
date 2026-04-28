@@ -400,13 +400,15 @@ describe('sandbox library - pm api', function () {
                 expect(params).to.eql(['param1']);
 
                 context.dispatch(`execution.datasets.${executionId}`, eventId, null,
-                    { rows: [{ id: 1, name: 'Alice' }] });
+                    { columns: ['id', 'name'], rows: [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }] });
             });
             context.execute(`
                 const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM users', ['param1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
                 pm.test('datasets.executeQuery', function () {
-                    pm.expect(result).to.have.property('rows');
-                    pm.expect(result.rows[0].name).to.equal('Alice');
+                    pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(collected).to.eql([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
                 });
             `, { id: executionId });
         });
@@ -429,27 +431,33 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId }, done);
         });
 
-        it('should dispatch execution.datasets event when pm.datasets(id).removeView is called', function (done) {
+        it('should not expose removeView on the pm.datasets handle', function (done) {
             const executionId = '2';
 
             context.on('execution.error', done);
-            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId) => {
-                expect(eventId).to.be.ok;
-                expect(cmd).to.eql('removeView');
-                expect(datasetId).to.eql('ds-789');
-                expect(viewId).to.eql('view-1');
-
-                context.dispatch(`execution.datasets.${executionId}`, eventId, null);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
             });
             context.execute(`
-                await pm.datasets('ds-789').removeView('view-1');
-            `, { id: executionId }, done);
+                pm.test('removeView is not a function', function () {
+                    pm.expect(pm.datasets('ds-789').removeView).to.be.undefined;
+                });
+            `, { id: executionId });
         });
 
         it('should dispatch execution.datasets event when pm.datasets(id).executeView is called', function (done) {
             const executionId = '2';
 
             context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
             context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId, params) => {
                 expect(eventId).to.be.ok;
                 expect(cmd).to.eql('executeView');
@@ -458,11 +466,46 @@ describe('sandbox library - pm api', function () {
                 expect(params).to.eql(['p1']);
 
                 context.dispatch(`execution.datasets.${executionId}`, eventId, null,
-                    { rows: [{ count: 42 }] });
+                    { columns: ['count'], rows: [{ count: 42 }, { count: 99 }],
+                        staleDatasources: [{ name: 'src1', reason: 'unrefreshed' }] });
             });
             context.execute(`
-                await pm.datasets('ds-123').executeView('view-1', ['p1']);
-            `, { id: executionId }, done);
+                const result = await pm.datasets('ds-123').executeView('view-1', ['p1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets.executeView shape', function () {
+                    pm.expect(result.columns).to.eql(['count']);
+                    pm.expect(result.staleDatasources).to.eql([{ name: 'src1', reason: 'unrefreshed' }]);
+                    pm.expect(collected).to.eql([{ count: 42 }, { count: 99 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should expose result.rows as a single-pass async iterable', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['x'], rows: [{ x: 1 }, { x: 2 }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT 1');
+                const first = [];
+                for await (const row of result.rows) { first.push(row); }
+                const second = [];
+                for await (const row of result.rows) { second.push(row); }
+                pm.test('iterator is single-pass', function () {
+                    pm.expect(first).to.eql([{ x: 1 }, { x: 2 }]);
+                    pm.expect(second).to.eql([]);
+                });
+            `, { id: executionId });
         });
 
         it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
