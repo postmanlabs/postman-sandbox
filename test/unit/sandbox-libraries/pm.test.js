@@ -413,25 +413,7 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
-        it('should dispatch execution.datasets event when pm.datasets(id).addView is called', function (done) {
-            const executionId = '2';
-
-            context.on('execution.error', done);
-            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, options) => {
-                expect(eventId).to.be.ok;
-                expect(cmd).to.eql('addView');
-                expect(datasetId).to.eql('ds-456');
-                expect(options).to.eql({ name: 'myView', sql: 'SELECT 1' });
-
-                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
-                    { id: 'view-1', name: 'myView', query: 'SELECT 1' });
-            });
-            context.execute(`
-                await pm.datasets('ds-456').addView({ name: 'myView', sql: 'SELECT 1' });
-            `, { id: executionId }, done);
-        });
-
-        it('should not expose removeView on the pm.datasets handle', function (done) {
+        it('should not expose addView or removeView on the pm.datasets handle', function (done) {
             const executionId = '2';
 
             context.on('execution.error', done);
@@ -442,7 +424,8 @@ describe('sandbox library - pm api', function () {
                 done();
             });
             context.execute(`
-                pm.test('removeView is not a function', function () {
+                pm.test('addView and removeView are not functions', function () {
+                    pm.expect(pm.datasets('ds-789').addView).to.be.undefined;
                     pm.expect(pm.datasets('ds-789').removeView).to.be.undefined;
                 });
             `, { id: executionId });
