@@ -543,6 +543,77 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        it('should stream rows row-by-row through the async iterable while host dispatches happen in setTimeout', function (done) {
+            const executionId = '2',
+                // Distinct row shapes per query so cross-contamination is detectable.
+                firstRows = Array.from({ length: 25 }, (_, i) => ({ idx: i, source: 'first' })),
+                secondRows = Array.from({ length: 10 }, (_, i) => ({ idx: i, source: 'second' }));
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // 'fast' resolves quickly; 'slow' resolves while the sandbox
+                // is already mid-iteration of the first iterable. Both go
+                // through setTimeout so dispatches happen on a later
+                // host-side tick than the corresponding script-side request.
+                const payload = sql === 'fast' ?
+                    { columns: ['idx', 'source'], rows: firstRows } :
+                    { columns: ['idx', 'source'], rows: secondRows };
+                const delay = sql === 'fast' ? 1 : 30;
+
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`, eventId, null, payload);
+                }, delay);
+            });
+            context.execute(`
+                // Resolve the first query; its iterable will be drained row-by-row.
+                const r1 = await pm.datasets('ds').executeQuery('fast');
+
+                // Issue the second query but DON'T await it yet — its host
+                // dispatch (in setTimeout, ~30ms) must arrive while we are
+                // already suspended inside the first iterator's for-await
+                // loop.
+                const r2Promise = pm.datasets('ds').executeQuery('slow');
+
+                // Stream rows one-by-one with an explicit await between each
+                // iteration. This forces the async generator to suspend and
+                // resume across event-loop ticks while another in-flight
+                // query is mid-flight.
+                const collectedFirst = [];
+                for await (const row of r1.rows) {
+                    collectedFirst.push(row);
+                    await new Promise((resolve) => setTimeout(resolve, 2));
+                }
+
+                // The second query's response was dispatched at ~30ms — well
+                // before the first iterable finished (25 rows x 2ms = 50ms+).
+                // Awaiting it now should resolve immediately.
+                const r2 = await r2Promise;
+                const collectedSecond = [];
+                for await (const row of r2.rows) {
+                    collectedSecond.push(row);
+                }
+
+                pm.test('streaming rows survives per-row suspension and parallel in-flight query', function () {
+                    // First iterable — drained row-by-row across event-loop ticks.
+                    pm.expect(collectedFirst).to.have.lengthOf(25);
+                    pm.expect(collectedFirst[0]).to.eql({ idx: 0, source: 'first' });
+                    pm.expect(collectedFirst[24]).to.eql({ idx: 24, source: 'first' });
+                    pm.expect(collectedFirst.every((r) => r.source === 'first')).to.be.true;
+                    // Second iterable — its host dispatch arrived mid-stream; rows
+                    // didn't bleed into the first iterable.
+                    pm.expect(collectedSecond).to.have.lengthOf(10);
+                    pm.expect(collectedSecond[0]).to.eql({ idx: 0, source: 'second' });
+                    pm.expect(collectedSecond.every((r) => r.source === 'second')).to.be.true;
+                });
+            `, { id: executionId });
+        });
+
         it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
             const executionId = '2',
                 executionError = sinon.spy();
