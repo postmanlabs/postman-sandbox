@@ -377,6 +377,135 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('datasets', function () {
+        // eslint-disable-next-line mocha/max-top-level-suites
+        it('should dispatch execution.datasets event when pm.datasets(id).executeQuery is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeQuery');
+                expect(datasetId).to.eql('ds-123');
+                expect(sql).to.eql('SELECT * FROM users');
+                expect(params).to.eql(['param1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['id', 'name'], rows: [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM users', ['param1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets.executeQuery', function () {
+                    pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(collected).to.eql([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should dispatch execution.datasets event when pm.datasets(id).executeView is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeView');
+                expect(datasetId).to.eql('ds-123');
+                expect(viewId).to.eql('view-1');
+                expect(params).to.eql(['p1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['count'], rows: [{ count: 42 }, { count: 99 }],
+                        staleDatasources: [{ name: 'src1', reason: 'unrefreshed' }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeView('view-1', ['p1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets.executeView shape', function () {
+                    pm.expect(result.columns).to.eql(['count']);
+                    pm.expect(result.staleDatasources).to.eql([{ name: 'src1', reason: 'unrefreshed' }]);
+                    pm.expect(collected).to.eql([{ count: 42 }, { count: 99 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should expose result.rows as a single-pass async iterable', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['x'], rows: [{ x: 1 }, { x: 2 }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT 1');
+                const first = [];
+                for await (const row of result.rows) { first.push(row); }
+                const second = [];
+                for await (const row of result.rows) { second.push(row); }
+                pm.test('iterator is single-pass', function () {
+                    pm.expect(first).to.eql([{ x: 1 }, { x: 2 }]);
+                    pm.expect(second).to.eql([]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
+            const executionId = '2',
+                executionError = sinon.spy();
+
+            context.on('execution.error', (...args) => {
+                executionError(args);
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, new Error('Dataset not found'));
+            });
+            context.execute(`
+                await pm.datasets('ds-missing').executeQuery('SELECT 1');
+            `, {
+                id: executionId
+            }, function () {
+                expect(executionError.calledOnce).to.be.true;
+                expect(executionError.firstCall.args[0][1]).to.have.property('message', 'Dataset not found');
+                done();
+            });
+        });
+
+        it('should not be defined when datasets is in disabledAPIs', function (done) {
+            context.execute(`
+                pm.test('datasets is undefined', function () {
+                    pm.expect(pm.datasets).to.be.undefined;
+                });
+            `, {
+                id: '2',
+                disabledAPIs: ['datasets']
+            }, done);
+        });
+    });
+
     describe('request', function () {
         it('should be defined as sdk Request object', function (done) {
             context.execute(`
