@@ -543,11 +543,12 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        // eslint-disable-next-line @stylistic/js/max-len
         it('should stream rows row-by-row through the async iterable while host dispatches happen in setTimeout', function (done) {
             const executionId = '2',
                 // Distinct row shapes per query so cross-contamination is detectable.
-                firstRows = Array.from({ length: 25 }, (_, i) => ({ idx: i, source: 'first' })),
-                secondRows = Array.from({ length: 10 }, (_, i) => ({ idx: i, source: 'second' }));
+                firstRows = Array.from({ length: 25 }, function (_, i) { return { idx: i, source: 'first' }; }),
+                secondRows = Array.from({ length: 10 }, function (_, i) { return { idx: i, source: 'second' }; });
 
             context.on('execution.error', done);
             context.on('execution.assertion', function (cursor, assertion) {
@@ -562,9 +563,9 @@ describe('sandbox library - pm api', function () {
                 // through setTimeout so dispatches happen on a later
                 // host-side tick than the corresponding script-side request.
                 const payload = sql === 'fast' ?
-                    { columns: ['idx', 'source'], rows: firstRows } :
-                    { columns: ['idx', 'source'], rows: secondRows };
-                const delay = sql === 'fast' ? 1 : 30;
+                        { columns: ['idx', 'source'], rows: firstRows } :
+                        { columns: ['idx', 'source'], rows: secondRows },
+                    delay = sql === 'fast' ? 1 : 30;
 
                 setTimeout(() => {
                     context.dispatch(`execution.datasets.${executionId}`, eventId, null, payload);
