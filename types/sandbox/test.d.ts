@@ -261,8 +261,8 @@ declare type DatasetQueryResult = {
  */
 declare interface DatasetHandle {
     /**
-     * Execute a named view defined in the dataset's YAML.
-     * @param viewId - View ID or name as defined in the dataset YAML.
+     * Execute a named view defined for the dataset.
+     * @param viewId - View ID or name.
      * @param [params] - Optional parameter overrides for parameterized views.
      */
     executeView(viewId: string, params?: string[]): Promise;
