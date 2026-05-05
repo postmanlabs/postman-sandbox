@@ -155,13 +155,14 @@ declare function createPostmanRequire(fileCache: FileCache, scope: any): (...par
  * @param onAssertion - callback to execute when pm.expect() called
  * @param cookieStore - cookie store
  * @param vault - vault
+ * @param datasets - datasets interface function, called as datasets(datasetId) returning a handle
  * @param onRunRequest - callback to execute when pm.execution.runRequest is encountered in the script
  * @param requireFn - requireFn
  * @param [options] - options
  * @param [options.disabledAPIs] - list of disabled APIs
  */
 declare class Postman {
-    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, onRunRequest: (...params: any[]) => any, requireFn: (...params: any[]) => any, options?: {
+    constructor(execution: Execution, onRequest: (...params: any[]) => any, onSkipRequest: (...params: any[]) => any, onAssertion: (...params: any[]) => any, cookieStore: any, vault: Vault, datasets: (...params: any[]) => any, onRunRequest: (...params: any[]) => any, requireFn: (...params: any[]) => any, options?: {
         disabledAPIs?: String[];
     });
     /**
@@ -171,6 +172,11 @@ declare class Postman {
      */
     info: Info;
     vault: Vault;
+    /**
+     * Access a dataset by ID. Returns a handle with methods for executing
+     * named views or ad-hoc SQL against the dataset.
+     */
+    datasets: Datasets;
     globals: VariableScope;
     environment: VariableScope;
     collectionVariables: VariableScope;
@@ -265,6 +271,53 @@ declare interface Vault {
     unset(key: string): Promise<void>;
 }
 
+/**
+ * @property name - Name of the datasource that could not be refreshed.
+ * @property reason - Human-readable reason it is stale.
+ */
+declare type DatasetStaleDatasource = {
+    name: string;
+    reason: string;
+};
+
+/**
+ * Result of a dataset view or ad-hoc query execution.
+ * @property columns - Ordered column names.
+ * @property rows - Single-pass async iterable of result rows.
+ *   Iterate with `for await (const row of result.rows)`. Once exhausted it yields nothing.
+ * @property [staleDatasources] - Datasources whose underlying file or database could not be refreshed.
+ *   Surface as a soft warning, not a failure.
+ */
+declare type DatasetQueryResult = {
+    columns: string[];
+    rows: AsyncIterable<object>;
+    staleDatasources?: DatasetStaleDatasource[];
+};
+
+/**
+ * Read-only handle for a single dataset, returned by `pm.datasets(datasetId)`.
+ */
+declare interface DatasetHandle {
+    /**
+     * Execute a named view defined in the dataset's YAML.
+     * @param viewId - View ID or name as defined in the dataset YAML.
+     * @param [params] - Optional parameter overrides for parameterized views.
+     */
+    executeView(viewId: string, params?: string[]): Promise<DatasetQueryResult>;
+    /**
+     * Run an arbitrary SQL query against the dataset.
+     * @param sql - SQL query string. `?` placeholders bind to `params` in order.
+     * @param [params] - Optional parameter values for `?` placeholders.
+     */
+    executeQuery(sql: string, params?: string[]): Promise<DatasetQueryResult>;
+}
+
+/**
+ * Factory that returns a DatasetHandle for a given dataset ID.
+ * @param datasetId - The dataset ID.
+ */
+declare type Datasets = (datasetId: string) => DatasetHandle;
+
 declare interface Visualizer {
     /**
      * Set visualizer template and its options
@@ -313,8 +366,8 @@ declare interface Execution {
      * }
      * @param requestId - The UUID of the request to execute.
      *                             This can be found in the request's metadata or corresponding collection JSON.
-     * @param [options] - Configuration options for the request execution
-     * @param [options.variables] - Key-value pairs of variables to override during
+     * @param [runRequestOptions] - Configuration options for the request execution
+     * @param [runRequestOptions.variables] - Key-value pairs of variables to override during
      *                                       request execution. These will act as temporary
      *                                       overrides for the this specific request run.
      * @returns A Promise that resolves to:
@@ -322,7 +375,7 @@ declare interface Execution {
      *                                     - null if the request execution is skipped
      *                                       (e.g., via pm.execution.skipRequest)
      */
-    runRequest(requestId: string, options?: {
+    runRequest(requestId: string, runRequestOptions?: {
         variables?: any;
     }): Promise<Response | null>;
 }
