@@ -35,8 +35,10 @@ const Mocha = require('mocha'),
         'PerformanceObserver',
         'PerformanceObserverEntryList',
         'PerformanceResourceTiming',
+        'QuotaExceededError',
         'Request',
         'Response',
+        'Temporal',
         'WeakRef',
         'WebAssembly',
         'fetch',
@@ -487,6 +489,8 @@ describe('sandbox', function () {
             const isDiffSubsetOfIgnoredGlobals = diffWithNode
                 .every((v) => ${JSON.stringify(IGNORED_GLOBALS)}.includes(v));
 
+                // log diff between node globals and IGNORED_GLOBALS
+                console.log(diffWithNode.filter((v) => !${JSON.stringify(IGNORED_GLOBALS)}.includes(v)));
             assert.equal(isDiffSubsetOfIgnoredGlobals, true);
             `, done);
         });
