@@ -491,6 +491,58 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        it('should multiplex multiple in-flight queries when host dispatches in setTimeout', function (done) {
+            const executionId = '2',
+                // SQL string -> result. Used to (a) decide what to dispatch back
+                // and (b) decide how long to delay so responses arrive in a
+                // different order than they were issued from the script.
+                responses = {
+                    q1: { columns: ['x'], rows: [{ x: 1 }, { x: 2 }, { x: 3 }] },
+                    q2: { columns: ['y'], rows: [{ y: 'a' }, { y: 'b' }] },
+                    q3: { columns: ['z'], rows: [{ z: true }] }
+                },
+                delays = { q1: 30, q2: 5, q3: 15 };
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // Stagger the host-side dispatches via setTimeout so responses
+                // arrive out of issue order. Verifies that:
+                //   1. Each promise resolves with its own result (eventId
+                //      correlation works under concurrency).
+                //   2. The async iterable inside each result is independent —
+                //      consuming r2.rows doesn't interfere with r1.rows etc.
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`,
+                        eventId, null, responses[sql]);
+                }, delays[sql]);
+            });
+            context.execute(`
+                const [r1, r2, r3] = await Promise.all([
+                    pm.datasets('ds-123').executeQuery('q1'),
+                    pm.datasets('ds-123').executeQuery('q2'),
+                    pm.datasets('ds-123').executeQuery('q3')
+                ]);
+                const c1 = [], c2 = [], c3 = [];
+                for await (const row of r1.rows) { c1.push(row); }
+                for await (const row of r2.rows) { c2.push(row); }
+                for await (const row of r3.rows) { c3.push(row); }
+                pm.test('multiple in-flight queries each get their own iterable', function () {
+                    pm.expect(r1.columns).to.eql(['x']);
+                    pm.expect(c1).to.eql([{ x: 1 }, { x: 2 }, { x: 3 }]);
+                    pm.expect(r2.columns).to.eql(['y']);
+                    pm.expect(c2).to.eql([{ y: 'a' }, { y: 'b' }]);
+                    pm.expect(r3.columns).to.eql(['z']);
+                    pm.expect(c3).to.eql([{ z: true }]);
+                });
+            `, { id: executionId });
+        });
+
         it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
             const executionId = '2',
                 executionError = sinon.spy();
