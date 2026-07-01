@@ -473,6 +473,173 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        it('should multiplex multiple in-flight queries when host dispatches in setTimeout', function (done) {
+            const executionId = '2',
+                // SQL string -> result. Used to (a) decide what to dispatch back
+                // and (b) decide how long to delay so responses arrive in a
+                // different order than they were issued from the script.
+                responses = {
+                    q1: { columns: ['x'], rows: [{ x: 1 }, { x: 2 }, { x: 3 }] },
+                    q2: { columns: ['y'], rows: [{ y: 'a' }, { y: 'b' }] },
+                    q3: { columns: ['z'], rows: [{ z: true }] }
+                },
+                delays = { q1: 30, q2: 5, q3: 15 };
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // Stagger the host-side dispatches via setTimeout so responses
+                // arrive out of issue order. Verifies that:
+                //   1. Each promise resolves with its own result (eventId
+                //      correlation works under concurrency).
+                //   2. The async iterable inside each result is independent —
+                //      consuming r2.rows doesn't interfere with r1.rows etc.
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`,
+                        eventId, null, responses[sql]);
+                }, delays[sql]);
+            });
+            context.execute(`
+                const [r1, r2, r3] = await Promise.all([
+                    pm.datasets('ds-123').executeQuery('q1'),
+                    pm.datasets('ds-123').executeQuery('q2'),
+                    pm.datasets('ds-123').executeQuery('q3')
+                ]);
+                const c1 = [], c2 = [], c3 = [];
+                for await (const row of r1.rows) { c1.push(row); }
+                for await (const row of r2.rows) { c2.push(row); }
+                for await (const row of r3.rows) { c3.push(row); }
+                pm.test('multiple in-flight queries each get their own iterable', function () {
+                    pm.expect(r1.columns).to.eql(['x']);
+                    pm.expect(c1).to.eql([{ x: 1 }, { x: 2 }, { x: 3 }]);
+                    pm.expect(r2.columns).to.eql(['y']);
+                    pm.expect(c2).to.eql([{ y: 'a' }, { y: 'b' }]);
+                    pm.expect(r3.columns).to.eql(['z']);
+                    pm.expect(c3).to.eql([{ z: true }]);
+                });
+            `, { id: executionId });
+        });
+
+        // eslint-disable-next-line @stylistic/js/max-len
+        it('should stream rows row-by-row through the async iterable while host dispatches happen in setTimeout', function (done) {
+            const executionId = '2',
+                // Distinct row shapes per query so cross-contamination is detectable.
+                firstRows = Array.from({ length: 25 }, function (_, i) { return { idx: i, source: 'first' }; }),
+                secondRows = Array.from({ length: 10 }, function (_, i) { return { idx: i, source: 'second' }; });
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // 'fast' resolves quickly; 'slow' resolves while the sandbox
+                // is already mid-iteration of the first iterable. Both go
+                // through setTimeout so dispatches happen on a later
+                // host-side tick than the corresponding script-side request.
+                const payload = sql === 'fast' ?
+                        { columns: ['idx', 'source'], rows: firstRows } :
+                        { columns: ['idx', 'source'], rows: secondRows },
+                    delay = sql === 'fast' ? 1 : 30;
+
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`, eventId, null, payload);
+                }, delay);
+            });
+            context.execute(`
+                // Resolve the first query; its iterable will be drained row-by-row.
+                const r1 = await pm.datasets('ds').executeQuery('fast');
+
+                // Issue the second query but DON'T await it yet — its host
+                // dispatch (in setTimeout, ~30ms) must arrive while we are
+                // already suspended inside the first iterator's for-await
+                // loop.
+                const r2Promise = pm.datasets('ds').executeQuery('slow');
+
+                // Stream rows one-by-one with an explicit await between each
+                // iteration. This forces the async generator to suspend and
+                // resume across event-loop ticks while another in-flight
+                // query is mid-flight.
+                const collectedFirst = [];
+                for await (const row of r1.rows) {
+                    collectedFirst.push(row);
+                    await new Promise((resolve) => setTimeout(resolve, 2));
+                }
+
+                // The second query's response was dispatched at ~30ms — well
+                // before the first iterable finished (25 rows x 2ms = 50ms+).
+                // Awaiting it now should resolve immediately.
+                const r2 = await r2Promise;
+                const collectedSecond = [];
+                for await (const row of r2.rows) {
+                    collectedSecond.push(row);
+                }
+
+                pm.test('streaming rows survives per-row suspension and parallel in-flight query', function () {
+                    // First iterable — drained row-by-row across event-loop ticks.
+                    pm.expect(collectedFirst).to.have.lengthOf(25);
+                    pm.expect(collectedFirst[0]).to.eql({ idx: 0, source: 'first' });
+                    pm.expect(collectedFirst[24]).to.eql({ idx: 24, source: 'first' });
+                    pm.expect(collectedFirst.every((r) => r.source === 'first')).to.be.true;
+                    // Second iterable — its host dispatch arrived mid-stream; rows
+                    // didn't bleed into the first iterable.
+                    pm.expect(collectedSecond).to.have.lengthOf(10);
+                    pm.expect(collectedSecond[0]).to.eql({ idx: 0, source: 'second' });
+                    pm.expect(collectedSecond.every((r) => r.source === 'second')).to.be.true;
+                });
+            `, { id: executionId });
+        });
+
+        it('should stream rows via the pull protocol (head frame + __pull batches)', function (done) {
+            const executionId = '2',
+                batches = [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }], [{ id: 3, name: 'C' }]];
+
+            let pull = 0;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, arg) => {
+                const ev = 'execution.datasets.' + executionId;
+
+                if (cmd === 'executeQuery') {
+                    // Head frame: columns up front + streaming marker; rows follow via __pull.
+                    context.dispatch(ev, eventId, null,
+                        { columns: ['id', 'name'], streaming: true, streamId: 's1' });
+                }
+                else if (cmd === '__pull') {
+                    expect(arg).to.eql('s1');
+                    const idx = pull++,
+                        batch = batches[idx] || [];
+
+                    // done:true on the frame after the last batch.
+                    context.dispatch(ev, eventId, null, { rows: batch, done: idx >= batches.length });
+                }
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets streaming pull', function () {
+                    pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(collected).to.eql([
+                        { id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }
+                    ]);
+                });
+            `, { id: executionId });
+        });
+
         it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
             const executionId = '2',
                 executionError = sinon.spy();
