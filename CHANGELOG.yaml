@@ -1,3 +1,9 @@
+unreleased:
+  fixed bugs:
+    - >-
+      GH-1109 Canonicalized `pm.require` package names and fixed external
+      package classification for multi-colon package names
+
 6.7.0:
   date: 2026-05-05
   new features:
