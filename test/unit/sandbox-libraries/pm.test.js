@@ -610,7 +610,7 @@ describe('sandbox library - pm api', function () {
                 });
                 done();
             });
-            context.on('execution.datasets.' + executionId, (eventId, cmd, arg) => {
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, streamId) => {
                 const ev = 'execution.datasets.' + executionId;
 
                 if (cmd === 'executeQuery') {
@@ -619,7 +619,8 @@ describe('sandbox library - pm api', function () {
                         { columns: ['id', 'name'], streaming: true, streamId: 's1' });
                 }
                 else if (cmd === '__pull') {
-                    expect(arg).to.eql('s1');
+                    // streamId now rides in its own arg, not the datasetId slot.
+                    expect(streamId).to.eql('s1');
                     const idx = pull++,
                         batch = batches[idx] || [];
 
