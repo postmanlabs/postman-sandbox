@@ -8,7 +8,8 @@ const _ = require('lodash'),
     fs = require('fs'),
     chalk = require('chalk'),
     async = require('async'),
-    { test, exec, rm, mkdir } = require('shelljs'),
+    { test, rm, mkdir } = require('shelljs'),
+    { execFile } = require('child_process'),
     typescript = require('typescript'),
     templates = require('./utils/templates'),
 
@@ -100,8 +101,13 @@ module.exports = function (exit) {
         return exit(e ? 1 : 0);
     }
 
-    exec(`${IS_WINDOWS ? '' : 'node'} ${path.join('node_modules', '.bin', 'jsdoc')}${IS_WINDOWS ? '.cmd' : ''}` +
-        ' -c .jsdoc-config-type-def-sandbox.json -p', function (code) {
+    var jsdocBin = path.join('node_modules', '.bin', IS_WINDOWS ? 'jsdoc.cmd' : 'jsdoc'),
+        jsdocArgs = ['-c', '.jsdoc-config-type-def-sandbox.json', '-p'],
+        jsdocExecutable = IS_WINDOWS ? jsdocBin : process.execPath,
+        jsdocExecArgs = IS_WINDOWS ? jsdocArgs : [jsdocBin, ...jsdocArgs];
+
+    execFile(jsdocExecutable, jsdocExecArgs, function (err, _stdout, _stderr) {
+        var code = err ? (err.code || 1) : 0;
         if (code) {
             // output status
             console.info(chalk.red.bold('unable to generate type-definition'));
