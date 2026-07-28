@@ -1,3 +1,69 @@
+unreleased:
+  chores:
+    - GH-1110 Added support for streaming `pm.datasets` results
+    - Updated dependencies
+
+6.7.2:
+  date: 2026-07-21
+  chores:
+    - Updated dependencies
+
+6.7.1:
+  date: 2026-07-21
+  fixed bugs:
+    - >-
+      GH-1109 Canonicalized `pm.require` package names and fixed external
+      package classification for multi-colon package names
+
+6.7.0:
+  date: 2026-05-05
+  new features:
+    - GH-1106 Added support for `pm.datasets`
+
+6.6.1:
+  date: 2026-02-24
+  chores:
+    - Updated dependencies
+
+6.6.0:
+  date: 2026-02-17
+  new features:
+    - >-
+      GH-1104 Add support for legacy response APIs without an explicit "test"
+      target
+    - >-
+      GH-1105 Add support for options.allowSkipRequest at execution-level and
+      decouple skipRequest from a fixed "prerequest" target
+  chores:
+    - Updated dependencies
+
+6.5.0:
+  date: 2026-02-04
+  new features:
+    - >-
+      GH-1103 Add support for sandbox-execution-level disabling & enabling of
+      legacy APIs while respecting the top-level disableLegacyAPIs option if not
+      passed
+
+6.4.0:
+  date: 2026-01-14
+  new features:
+    - >-
+      GH-1101 Add support for multiple item-type templates and explicitly passed
+      chai plugin in one sandbox instance
+
+6.3.0:
+  date: 2025-12-01
+  new features:
+    - >-
+      GH-1098 Add support for avoiding default response-class casting in
+      `pm.execution.runRequest` return-value
+
+6.2.2:
+  date: 2025-10-30
+  fixed bugs:
+    - GH-1097 Scrub `process` object in Node environment
+
 6.2.1:
   date: 2025-09-19
   chores:

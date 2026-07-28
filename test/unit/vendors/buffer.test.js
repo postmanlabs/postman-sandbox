@@ -293,7 +293,12 @@ describe('sandbox vendor - buffer', function () {
 
     (isNode ? it : it.skip)('should be in sync with latest available `buffer` module', function (done) {
         const buffer = require('buffer'),
-            expectedProps = Object.getOwnPropertyNames(buffer).sort();
+            expectedProps = Object.getOwnPropertyNames(buffer);
+
+        // SlowBuffer is discontinued in Node.js v25, but sandbox still exposes it for backward compatibility
+        !expectedProps.includes('SlowBuffer') && expectedProps.push('SlowBuffer');
+        expectedProps.sort();
+
 
         context.execute(`
             const assert = require('assert');

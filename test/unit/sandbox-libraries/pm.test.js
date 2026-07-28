@@ -377,6 +377,380 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('datasets', function () {
+        // eslint-disable-next-line mocha/max-top-level-suites
+        it('should dispatch execution.datasets event when pm.datasets(id).executeQuery is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({
+                        passed: true,
+                        error: null
+                    });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeQuery');
+                expect(datasetId).to.eql('ds-123');
+                expect(sql).to.eql('SELECT * FROM users');
+                expect(params).to.eql(['param1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['id', 'name'], rows: [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM users', ['param1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets.executeQuery', function () {
+                    pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(collected).to.eql([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should dispatch execution.datasets event when pm.datasets(id).executeView is called', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, viewId, params) => {
+                expect(eventId).to.be.ok;
+                expect(cmd).to.eql('executeView');
+                expect(datasetId).to.eql('ds-123');
+                expect(viewId).to.eql('view-1');
+                expect(params).to.eql(['p1']);
+
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['count'], rows: [{ count: 42 }, { count: 99 }],
+                        staleDatasources: [{ name: 'src1', reason: 'unrefreshed' }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeView('view-1', ['p1']);
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets.executeView shape', function () {
+                    pm.expect(result.columns).to.eql(['count']);
+                    pm.expect(result.staleDatasources).to.eql([{ name: 'src1', reason: 'unrefreshed' }]);
+                    pm.expect(collected).to.eql([{ count: 42 }, { count: 99 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should expose result.rows as a single-pass async iterable', function (done) {
+            const executionId = '2';
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, null,
+                    { columns: ['x'], rows: [{ x: 1 }, { x: 2 }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT 1');
+                const first = [];
+                for await (const row of result.rows) { first.push(row); }
+                const second = [];
+                for await (const row of result.rows) { second.push(row); }
+                pm.test('iterator is single-pass', function () {
+                    pm.expect(first).to.eql([{ x: 1 }, { x: 2 }]);
+                    pm.expect(second).to.eql([]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should multiplex multiple in-flight queries when host dispatches in setTimeout', function (done) {
+            const executionId = '2',
+                // SQL string -> result. Used to (a) decide what to dispatch back
+                // and (b) decide how long to delay so responses arrive in a
+                // different order than they were issued from the script.
+                responses = {
+                    q1: { columns: ['x'], rows: [{ x: 1 }, { x: 2 }, { x: 3 }] },
+                    q2: { columns: ['y'], rows: [{ y: 'a' }, { y: 'b' }] },
+                    q3: { columns: ['z'], rows: [{ z: true }] }
+                },
+                delays = { q1: 30, q2: 5, q3: 15 };
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // Stagger the host-side dispatches via setTimeout so responses
+                // arrive out of issue order. Verifies that:
+                //   1. Each promise resolves with its own result (eventId
+                //      correlation works under concurrency).
+                //   2. The async iterable inside each result is independent —
+                //      consuming r2.rows doesn't interfere with r1.rows etc.
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`,
+                        eventId, null, responses[sql]);
+                }, delays[sql]);
+            });
+            context.execute(`
+                const [r1, r2, r3] = await Promise.all([
+                    pm.datasets('ds-123').executeQuery('q1'),
+                    pm.datasets('ds-123').executeQuery('q2'),
+                    pm.datasets('ds-123').executeQuery('q3')
+                ]);
+                const c1 = [], c2 = [], c3 = [];
+                for await (const row of r1.rows) { c1.push(row); }
+                for await (const row of r2.rows) { c2.push(row); }
+                for await (const row of r3.rows) { c3.push(row); }
+                pm.test('multiple in-flight queries each get their own iterable', function () {
+                    pm.expect(r1.columns).to.eql(['x']);
+                    pm.expect(c1).to.eql([{ x: 1 }, { x: 2 }, { x: 3 }]);
+                    pm.expect(r2.columns).to.eql(['y']);
+                    pm.expect(c2).to.eql([{ y: 'a' }, { y: 'b' }]);
+                    pm.expect(r3.columns).to.eql(['z']);
+                    pm.expect(c3).to.eql([{ z: true }]);
+                });
+            `, { id: executionId });
+        });
+
+        // eslint-disable-next-line @stylistic/js/max-len
+        it('should stream rows row-by-row through the async iterable while host dispatches happen in setTimeout', function (done) {
+            const executionId = '2',
+                // Distinct row shapes per query so cross-contamination is detectable.
+                firstRows = Array.from({ length: 25 }, function (_, i) { return { idx: i, source: 'first' }; }),
+                secondRows = Array.from({ length: 10 }, function (_, i) { return { idx: i, source: 'second' }; });
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, sql) => {
+                // 'fast' resolves quickly; 'slow' resolves while the sandbox
+                // is already mid-iteration of the first iterable. Both go
+                // through setTimeout so dispatches happen on a later
+                // host-side tick than the corresponding script-side request.
+                const payload = sql === 'fast' ?
+                        { columns: ['idx', 'source'], rows: firstRows } :
+                        { columns: ['idx', 'source'], rows: secondRows },
+                    delay = sql === 'fast' ? 1 : 30;
+
+                setTimeout(() => {
+                    context.dispatch(`execution.datasets.${executionId}`, eventId, null, payload);
+                }, delay);
+            });
+            context.execute(`
+                // Resolve the first query; its iterable will be drained row-by-row.
+                const r1 = await pm.datasets('ds').executeQuery('fast');
+
+                // Issue the second query but DON'T await it yet — its host
+                // dispatch (in setTimeout, ~30ms) must arrive while we are
+                // already suspended inside the first iterator's for-await
+                // loop.
+                const r2Promise = pm.datasets('ds').executeQuery('slow');
+
+                // Stream rows one-by-one with an explicit await between each
+                // iteration. This forces the async generator to suspend and
+                // resume across event-loop ticks while another in-flight
+                // query is mid-flight.
+                const collectedFirst = [];
+                for await (const row of r1.rows) {
+                    collectedFirst.push(row);
+                    await new Promise((resolve) => setTimeout(resolve, 2));
+                }
+
+                // The second query's response was dispatched at ~30ms — well
+                // before the first iterable finished (25 rows x 2ms = 50ms+).
+                // Awaiting it now should resolve immediately.
+                const r2 = await r2Promise;
+                const collectedSecond = [];
+                for await (const row of r2.rows) {
+                    collectedSecond.push(row);
+                }
+
+                pm.test('streaming rows survives per-row suspension and parallel in-flight query', function () {
+                    // First iterable — drained row-by-row across event-loop ticks.
+                    pm.expect(collectedFirst).to.have.lengthOf(25);
+                    pm.expect(collectedFirst[0]).to.eql({ idx: 0, source: 'first' });
+                    pm.expect(collectedFirst[24]).to.eql({ idx: 24, source: 'first' });
+                    pm.expect(collectedFirst.every((r) => r.source === 'first')).to.be.true;
+                    // Second iterable — its host dispatch arrived mid-stream; rows
+                    // didn't bleed into the first iterable.
+                    pm.expect(collectedSecond).to.have.lengthOf(10);
+                    pm.expect(collectedSecond[0]).to.eql({ idx: 0, source: 'second' });
+                    pm.expect(collectedSecond.every((r) => r.source === 'second')).to.be.true;
+                });
+            `, { id: executionId });
+        });
+
+        it('should stream rows via the pull protocol (head frame + pull batches)', function (done) {
+            const executionId = '2',
+                batches = [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }], [{ id: 3, name: 'C' }]],
+                COMMAND_EVENT = 'execution.datasets.' + executionId,
+                STREAM_EVENT = 'execution.datasets.stream.' + executionId;
+
+            let pull = 0;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId, cmd, datasetId, sql) => {
+                expect(cmd).to.equal('executeQuery');
+                expect(datasetId).to.equal('ds-123');
+                expect(sql).to.equal('SELECT * FROM t');
+
+                // Head frame: columns up front + streaming marker; rows follow on the
+                // stream channel. `staleDatasources` rides along like any other field.
+                context.dispatch(COMMAND_EVENT, eventId, null,
+                    { columns: ['id', 'name'], streaming: true, streamId: 's1', staleDatasources: ['ds-9'] });
+            });
+            // Stream control has its own channel and its own `(action, streamId)`
+            // shape — no placeholder for the unused datasetId slot.
+            context.on(STREAM_EVENT, (eventId, action, streamId) => {
+                expect(action).to.equal('pull');
+                expect(streamId).to.equal('s1');
+
+                const idx = pull++,
+                    batch = batches[idx] || [];
+
+                // done:true on the frame after the last batch.
+                context.dispatch(STREAM_EVENT, eventId, null, { rows: batch, done: idx >= batches.length });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('datasets streaming pull', function () {
+                    pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(result.staleDatasources).to.eql(['ds-9']);
+                    pm.expect(collected).to.eql([
+                        { id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }
+                    ]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should cancel the host-side stream when the script stops iterating early', function (done) {
+            const executionId = '2',
+                COMMAND_EVENT = 'execution.datasets.' + executionId,
+                STREAM_EVENT = 'execution.datasets.stream.' + executionId,
+                actions = [];
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // the `break` must have released the host-side cursor
+                expect(actions).to.eql(['pull', 'cancel']);
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId) => {
+                context.dispatch(COMMAND_EVENT, eventId, null,
+                    { columns: ['id'], streaming: true, streamId: 's1' });
+            });
+            context.on(STREAM_EVENT, (eventId, action, streamId) => {
+                actions.push(action);
+                expect(streamId).to.equal('s1');
+
+                // never `done`, so only an explicit cancel can end this stream
+                if (action === 'pull') {
+                    return context.dispatch(STREAM_EVENT, eventId, null,
+                        { rows: [{ id: 1 }, { id: 2 }, { id: 3 }], done: false });
+                }
+
+                context.dispatch(STREAM_EVENT, eventId, null, { ok: true });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                const collected = [];
+                for await (const row of result.rows) {
+                    collected.push(row);
+                    if (collected.length === 2) { break; }
+                }
+                pm.test('datasets streaming early break', function () {
+                    pm.expect(collected).to.eql([{ id: 1 }, { id: 2 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should error when a streaming reply carries no stream id', function (done) {
+            const executionId = '2',
+                COMMAND_EVENT = 'execution.datasets.' + executionId;
+
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId) => {
+                // malformed head frame — streaming, but nothing to pull from
+                context.dispatch(COMMAND_EVENT, eventId, null, { columns: ['id'], streaming: true });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                let message;
+                try { for await (const row of result.rows) { void row; } }
+                catch (e) { message = e.message; }
+                pm.test('datasets streaming without a stream id', function () {
+                    pm.expect(message).to.include('missing a stream id');
+                });
+            `, { id: executionId });
+        });
+
+        it('should trigger `execution.error` event if pm.datasets promise rejects', function (done) {
+            const executionId = '2',
+                executionError = sinon.spy();
+
+            context.on('execution.error', (...args) => {
+                executionError(args);
+            });
+            context.on('execution.datasets.' + executionId, (eventId) => {
+                context.dispatch(`execution.datasets.${executionId}`, eventId, new Error('Dataset not found'));
+            });
+            context.execute(`
+                await pm.datasets('ds-missing').executeQuery('SELECT 1');
+            `, {
+                id: executionId
+            }, function () {
+                expect(executionError.calledOnce).to.be.true;
+                expect(executionError.firstCall.args[0][1]).to.have.property('message', 'Dataset not found');
+                done();
+            });
+        });
+
+        it('should not be defined when datasets is in disabledAPIs', function (done) {
+            context.execute(`
+                pm.test('datasets is undefined', function () {
+                    pm.expect(pm.datasets).to.be.undefined;
+                });
+            `, {
+                id: '2',
+                disabledAPIs: ['datasets']
+            }, done);
+        });
+    });
+
     describe('request', function () {
         it('should be defined as sdk Request object', function (done) {
             context.execute(`
@@ -1244,6 +1618,67 @@ describe('sandbox library - pm api', function () {
                     }
                 });
             });
+
+            it('via options.allowSkipRequest: should throw if called from a skip-request-not-allowed script',
+                function (done) {
+                    Sandbox.createContext({}, function (err, ctx) {
+                        if (err) { return done(err); }
+
+                        ctx.on('error', done);
+
+                        // For this execution, skip-request is not allowed
+                        ctx.execute('pm.execution.skipRequest();',
+                            { allowSkipRequest: false },
+                            (err) => {
+                                expect(err).to.be.ok;
+                                expect(err.message).to.eql('pm.execution.skipRequest is not a function');
+
+                                // For this execution, skip-request is allowed
+                                ctx.execute('pm.execution.skipRequest();',
+                                    { allowSkipRequest: true },
+                                    (err) => {
+                                        expect(err).not.to.be.ok;
+                                        done(err);
+                                    });
+                            });
+                    });
+                });
+
+            it('should not skip if options.allowSkipRequest=false even if prerequest script',
+                function (done) {
+                    Sandbox.createContext({ debug: true }, function (err, ctx) {
+                        if (err) { return done(err); }
+
+                        ctx.on('error', done);
+
+                        ctx.on('execution.assertion', function (cursor, assertion) {
+                            assertion.forEach(function (assertion) {
+                                expect(assertion.passed).to.be.true;
+                            });
+                            done();
+                        });
+
+                        ctx.execute({
+                            listen: 'prerequest',
+                            script: `
+                                try {
+                                    pm.execution.skipRequest();
+                                } catch (err) {
+                                    pm.test("should have thrown error", function () {
+                                        pm.expect(err).to.be.ok;
+                                        pm.expect(err.message).to.eql('pm.execution.skipRequest is not a function');
+                                    });
+                                }
+                            `
+                        },
+                        { allowSkipRequest: false, debug: true },
+                        (err) => {
+                            if (err) {
+                                done(err);
+                            }
+                        });
+                    });
+                });
         });
 
         describe('.location', function () {
@@ -1450,6 +1885,89 @@ describe('sandbox library - pm api', function () {
 
                     const res = await pm.execution.runRequest('${sampleRequestToRunId}');
                 `, { id: executionId }, function () {}); // eslint-disable-line no-empty-function
+            });
+
+            it('should handle response types for multi-protocol:http', function (done) {
+                const executionId = '7',
+                    sampleRequestToRunId = '5d559eb8-cd89-43a3-b93c-1e398d79c670';
+
+                context.on('execution.run_collection_request.' + executionId,
+                    function (cursor, id, reqId) {
+                        context.dispatch(`execution.run_collection_request_response.${id}`, reqId, null, {
+                            _type: 'http-request', code: 200, body: '{ "field_from": "server" }'
+                        });
+                    });
+
+                let consoleMessage = '';
+
+                context.on('console', (_cursor, _level, message) => {
+                    consoleMessage = message;
+                });
+
+                context.execute(`
+                    const res = await pm.execution.runRequest('${sampleRequestToRunId}');
+                    console.log(res.json());
+                `, { id: executionId }, function () {
+                    expect(consoleMessage).to.eql({ field_from: 'server' });
+                    done();
+                });
+            });
+
+            it('should handle response types for multi-protocol:others', function (done) {
+                const executionId = '1',
+                    individualTemplate = `
+                        class Response {
+                            constructor(response) {
+                                this.statusCode = response.statusCode;
+                                this.responseTime = response.responseTime;
+                                this.isCustomGRPCResponseClass = true;
+                            }
+
+                            static isResponse (obj) {
+                                return obj instanceof Response;
+                            }
+                        }
+
+                        module.exports = { Response };
+                    `;
+
+                Sandbox.createContext({
+                    templates: { grpc: individualTemplate }
+                }, (errorInitializingSandbox, sandboxContext) => {
+                    if (errorInitializingSandbox) { return done(errorInitializingSandbox); }
+
+                    sandboxContext.on(`execution.error.${executionId}`, (_exec, err) => {
+                        done(new Error(err.message));
+                    });
+
+                    sandboxContext.on('console', (_cursor, _level, grpcRequestResponse) => {
+                        expect(grpcRequestResponse).to.have.property('statusCode', 0);
+                        expect(grpcRequestResponse).to.have.property('responseTime', 100);
+                        // Custom class property
+                        expect(grpcRequestResponse).to.have.property('isCustomGRPCResponseClass', true);
+
+                        done();
+                    });
+
+                    sandboxContext.on('execution.run_collection_request.' + executionId,
+                        function (_cursor, id, reqId) {
+                            sandboxContext.dispatch(`execution.run_collection_request_response.${id}`,
+                                reqId,
+                                null,
+                                { statusCode: 0, responseTime: 100 },
+                                { responseType: 'grpc' });
+                        });
+
+                    sandboxContext.execute(`
+                        const grpcRequestResponse = await pm.execution.runRequest('sample-request-id');
+
+                        console.log(grpcRequestResponse);`,
+                    { id: executionId, templateName: 'grpc' },
+                    function (err) {
+                        sandboxContext.dispose();
+                        if (err) { done(err); }
+                    });
+                });
             });
         });
     });

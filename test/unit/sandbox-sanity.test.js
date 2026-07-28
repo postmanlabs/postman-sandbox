@@ -35,8 +35,10 @@ const Mocha = require('mocha'),
         'PerformanceObserver',
         'PerformanceObserverEntryList',
         'PerformanceResourceTiming',
+        'QuotaExceededError',
         'Request',
         'Response',
+        'Temporal',
         'WeakRef',
         'WebAssembly',
         'fetch',
@@ -46,6 +48,9 @@ const Mocha = require('mocha'),
         'AsyncDisposableStack',
         'DisposableStack',
         'SuppressedError',
+        'localStorage',
+        'sessionStorage',
+        'Storage',
 
         // No browser support
         'process',
@@ -66,7 +71,10 @@ const Mocha = require('mocha'),
 
         // requires node>=24
         'Float16Array',
-        'URLPattern' // This is experimental in browser at the time of writing this test
+        'URLPattern', // This is experimental in browser at the time of writing this test
+
+        // requires node>=25
+        'ErrorEvent'
     ];
 
 describe('sandbox', function () {
@@ -481,8 +489,343 @@ describe('sandbox', function () {
             const isDiffSubsetOfIgnoredGlobals = diffWithNode
                 .every((v) => ${JSON.stringify(IGNORED_GLOBALS)}.includes(v));
 
+                // log diff between node globals and IGNORED_GLOBALS
+                console.log(diffWithNode.filter((v) => !${JSON.stringify(IGNORED_GLOBALS)}.includes(v)));
             assert.equal(isDiffSubsetOfIgnoredGlobals, true);
             `, done);
+        });
+    });
+
+    it('should work with multiple templates', function (done) {
+        const templatesMap = {
+            graphql: `
+                class Request {
+                    constructor () {
+                        this.type = 'graph-request';
+                    }
+                }
+
+                class Response {
+                    constructor () {
+                        this.type = 'graph-response';
+                    }
+                }
+
+                function initializeExecution () {
+                    return {
+                        request: new Request(),
+                        response: new Response(),
+                    }
+                }
+
+                module.exports = { initializeExecution, Request, Response };
+            `,
+            grpc: `
+                function initializeExecution () {
+                    return {
+                        request: { type: 'grpc-request' },
+                        response: { type: 'grpc-response' },
+                        message: { type: 'grpc-message' }
+                    }
+                }
+
+                module.exports = { initializeExecution };
+            `
+        };
+
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.on('execution.assertion', (_, assertions) => {
+                assertions.forEach((a) => {
+                    expect(a.passed).to.be.true;
+                });
+            });
+
+            ctx.execute({
+                listen: 'graphql:beforeQuery',
+                script: {
+                    type: 'text/javascript',
+                    exec: `
+                        pm.test('Should be graphQL request and response', () => {
+                            pm.expect(pm.request.type).to.be.eql('graph-request');
+                            pm.expect(pm.response.type).to.be.eql('graph-response');
+                        });
+                    `
+                }
+            },
+            { templateName: 'graphql' },
+            function (err) {
+                if (err) { return done(err); }
+
+                ctx.execute({
+                    listen: 'grpc:beforeInvoke',
+                    script: {
+                        type: 'text/javascript',
+                        exec: `
+                            pm.test('Should be graphQL request and response', () => {
+                                pm.expect(pm.request.type).to.be.eql('grpc-request');
+                                pm.expect(pm.response.type).to.be.eql('grpc-response');
+                                pm.expect(pm.message.type).to.be.eql('grpc-message');
+                            });
+                        `
+                    }
+                },
+                { templateName: 'grpc' },
+                function (err) {
+                    done(err);
+                });
+            });
+        });
+    });
+
+    it('should throw an error if multiple templates have been passed but not a template name', function (done) {
+        const templatesMap = {
+            grpc: `
+                function initializeExecution () {
+                    return {
+                        request: { type: 'grpc-request' },
+                        response: { type: 'grpc-response' }
+                    }
+                }
+
+                function chaiPlugin (chai) {
+                }
+
+                module.exports = { initializeExecution, chaiPlugin };
+            `
+        };
+
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', (err) => {
+                expect(err).to.be.ok;
+                expect(err).to.have.property('message', 'sandbox: template name parameter is missing from options');
+                done();
+            });
+
+            ctx.execute({
+                listen: 'grpc:beforeInvoke',
+                script: { type: 'text/javascript', exec: '' }
+            },
+            {},
+            function () {
+                //
+            });
+        });
+    });
+
+    it('should work with multiple templates and an included chai plugin', function (done) {
+        const templatesMap = {
+            grpc: `
+                function initializeExecution () {
+                    return {
+                        request: { type: 'grpc-request' },
+                        response: { type: 'grpc-response' }
+                    }
+                }
+
+                function chaiPlugin (chai) {
+                    const Assertion = chai.Assertion;
+
+                    Assertion.addProperty('grpcResponse', function () {
+                        this.assert(this._obj.type === 'grpc-response',
+                            'expecting a postman request object but got #{this}',
+                            'not expecting a postman request object');
+                    });
+                }
+
+                module.exports = { initializeExecution, chaiPlugin };
+            `
+        };
+
+        Sandbox.createContext({ templates: templatesMap, disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.on('execution.assertion', (_, assertions) => {
+                assertions.forEach((a) => {
+                    expect(a.passed).to.be.true;
+                });
+            });
+
+            ctx.execute({
+                listen: 'grpc:beforeInvoke',
+                script: {
+                    type: 'text/javascript',
+                    exec: `
+                        pm.test('Should be gRPC response', () => {
+                            pm.expect(pm.response).to.be.grpcResponse;
+                        });
+                    `
+                }
+            },
+            { templateName: 'grpc' },
+            function (err) {
+                done(err);
+            });
+        });
+    });
+
+    it('should work with multiple templates and a separately passed chai plugin', function (done) {
+        const templatesMap = {
+                grpc: `
+                    function initializeExecution () {
+                        return {
+                            request: { type: 'grpc-request' },
+                            response: { type: 'grpc-response' }
+                        }
+                    }
+
+                    module.exports = {
+                        initializeExecution,
+                        requestType: 'grpc-request',
+                        responseType: 'grpc-response'
+                    };
+                `
+            },
+            chaiPlugin = `
+            function chaiPluginGenerator (templates) {
+                return function chaiPlugin (chai) {
+                    const Assertion = chai.Assertion;
+
+                    Assertion.addProperty('grpcRequest', function () {
+                        this.assert(this._obj.type === templates.grpc.requestType,
+                            'expecting a postman request object but got #{this}',
+                            'not expecting a postman request object');
+                    });
+
+                    Assertion.addProperty('grpcResponse', function () {
+                        this.assert(this._obj.type === templates.grpc.responseType,
+                            'expecting a postman response object but got #{this}',
+                            'not expecting a postman response object');
+                    });
+                }
+            }
+
+            module.exports = chaiPluginGenerator;
+        `;
+
+        Sandbox.createContext({
+            templates: templatesMap,
+            chaiPlugin: chaiPlugin,
+            disableLegacyAPIs: true
+        }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.on('execution.assertion', (_, assertions) => {
+                assertions.forEach((a) => {
+                    expect(a.passed).to.be.true;
+                });
+            });
+
+            ctx.execute({
+                listen: 'grpc:afterResponse',
+                script: {
+                    type: 'text/javascript',
+                    exec: `
+                        pm.test('Should assert gRPC request and response', () => {
+                            pm.expect(pm.request).to.be.grpcRequest;
+                            pm.expect(pm.request).not.to.be.grpcResponse;
+                        });
+                    `
+                }
+            },
+            { templateName: 'grpc' },
+            function (err) {
+                done(err);
+            });
+        });
+    });
+
+    it('should allow disabling or enabling legacy APIs per execution as well', function (done) {
+        // Legacy APIs disabled at the top level
+        Sandbox.createContext({ disableLegacyAPIs: true }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            const assertions = [];
+
+            ctx.on('execution.assertion', (_, assertionListFromExecution) => {
+                assertionListFromExecution.forEach((a) => {
+                    assertions.push(a);
+                });
+
+                if (assertions.length === 2) {
+                    assertions.forEach((a) => {
+                        expect(a.passed).to.be.true;
+                    });
+
+                    done();
+                }
+            });
+
+            // Legacy APIs enabled for this execution
+            ctx.execute('pm.test("Should be true", () => { pm.expect(typeof tv4).not.to.eql("undefined"); });',
+                { disableLegacyAPIs: false },
+                (err) => {
+                    if (err) { return done(err); }
+                });
+
+            // but disabled for this execution on the same sandbox instance
+            ctx.execute('pm.test("Should be false", () => { pm.expect(typeof tv4).to.eql("undefined"); });',
+                (err) => {
+                    if (err) { return done(err); }
+                });
+        });
+    });
+
+    it('should allow using legacy response APIs without an explicit "test" target', function (done) {
+        const templatesMap = {
+            http: `
+                function initializeExecution () {
+                    const sdk = require('postman-collection');
+                    return { response: new sdk.Response() }
+                }
+
+                module.exports = { initializeExecution };
+            `
+        };
+
+        Sandbox.createContext({
+            templates: templatesMap,
+            disableLegacyAPIs: true,
+            debug: true
+        }, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.on('error', done);
+
+            ctx.on('execution.assertion', (_, assertions) => {
+                assertions.forEach((a) => {
+                    expect(a.passed).to.be.true;
+                });
+            });
+
+            ctx.execute({
+                listen: 'http:afterResponse',
+                script: {
+                    type: 'text/javascript',
+                    exec: `
+                        pm.test('Should assert HTTP response via legacy APIs', () => {
+                            pm.expect(responseHeaders).not.to.be.undefined;
+                            pm.expect(responseCookies).not.to.be.undefined;
+                            pm.expect(responseCode).not.to.be.undefined;
+                        });
+                    `
+                }
+            },
+            { debug: true, disableLegacyAPIs: false, templateName: 'http' },
+            function (err) {
+                done(err);
+            });
         });
     });
 });
