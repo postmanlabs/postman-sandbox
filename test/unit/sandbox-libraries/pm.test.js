@@ -597,9 +597,11 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
-        it('should stream rows via the pull protocol (head frame + __pull batches)', function (done) {
+        it('should stream rows via the pull protocol (head frame + pull batches)', function (done) {
             const executionId = '2',
-                batches = [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }], [{ id: 3, name: 'C' }]];
+                batches = [[{ id: 1, name: 'A' }, { id: 2, name: 'B' }], [{ id: 3, name: 'C' }]],
+                COMMAND_EVENT = 'execution.datasets.' + executionId,
+                STREAM_EVENT = 'execution.datasets.stream.' + executionId;
 
             let pull = 0;
 
@@ -610,23 +612,27 @@ describe('sandbox library - pm api', function () {
                 });
                 done();
             });
-            context.on('execution.datasets.' + executionId, (eventId, cmd, datasetId, streamId) => {
-                const ev = 'execution.datasets.' + executionId;
+            context.on(COMMAND_EVENT, (eventId, cmd, datasetId, sql) => {
+                expect(cmd).to.equal('executeQuery');
+                expect(datasetId).to.equal('ds-123');
+                expect(sql).to.equal('SELECT * FROM t');
 
-                if (cmd === 'executeQuery') {
-                    // Head frame: columns up front + streaming marker; rows follow via __pull.
-                    context.dispatch(ev, eventId, null,
-                        { columns: ['id', 'name'], streaming: true, streamId: 's1' });
-                }
-                else if (cmd === '__pull') {
-                    // streamId now rides in its own arg, not the datasetId slot.
-                    expect(streamId).to.eql('s1');
-                    const idx = pull++,
-                        batch = batches[idx] || [];
+                // Head frame: columns up front + streaming marker; rows follow on the
+                // stream channel. `staleDatasources` rides along like any other field.
+                context.dispatch(COMMAND_EVENT, eventId, null,
+                    { columns: ['id', 'name'], streaming: true, streamId: 's1', staleDatasources: ['ds-9'] });
+            });
+            // Stream control has its own channel and its own `(action, streamId)`
+            // shape — no placeholder for the unused datasetId slot.
+            context.on(STREAM_EVENT, (eventId, action, streamId) => {
+                expect(action).to.equal('pull');
+                expect(streamId).to.equal('s1');
 
-                    // done:true on the frame after the last batch.
-                    context.dispatch(ev, eventId, null, { rows: batch, done: idx >= batches.length });
-                }
+                const idx = pull++,
+                    batch = batches[idx] || [];
+
+                // done:true on the frame after the last batch.
+                context.dispatch(STREAM_EVENT, eventId, null, { rows: batch, done: idx >= batches.length });
             });
             context.execute(`
                 const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
@@ -634,9 +640,80 @@ describe('sandbox library - pm api', function () {
                 for await (const row of result.rows) { collected.push(row); }
                 pm.test('datasets streaming pull', function () {
                     pm.expect(result.columns).to.eql(['id', 'name']);
+                    pm.expect(result.staleDatasources).to.eql(['ds-9']);
                     pm.expect(collected).to.eql([
                         { id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }
                     ]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should cancel the host-side stream when the script stops iterating early', function (done) {
+            const executionId = '2',
+                COMMAND_EVENT = 'execution.datasets.' + executionId,
+                STREAM_EVENT = 'execution.datasets.stream.' + executionId,
+                actions = [];
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // the `break` must have released the host-side cursor
+                expect(actions).to.eql(['pull', 'cancel']);
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId) => {
+                context.dispatch(COMMAND_EVENT, eventId, null,
+                    { columns: ['id'], streaming: true, streamId: 's1' });
+            });
+            context.on(STREAM_EVENT, (eventId, action, streamId) => {
+                actions.push(action);
+                expect(streamId).to.equal('s1');
+
+                // never `done`, so only an explicit cancel can end this stream
+                if (action === 'pull') {
+                    return context.dispatch(STREAM_EVENT, eventId, null,
+                        { rows: [{ id: 1 }, { id: 2 }, { id: 3 }], done: false });
+                }
+
+                context.dispatch(STREAM_EVENT, eventId, null, { ok: true });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                const collected = [];
+                for await (const row of result.rows) {
+                    collected.push(row);
+                    if (collected.length === 2) { break; }
+                }
+                pm.test('datasets streaming early break', function () {
+                    pm.expect(collected).to.eql([{ id: 1 }, { id: 2 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should error when a streaming reply carries no stream id', function (done) {
+            const executionId = '2',
+                COMMAND_EVENT = 'execution.datasets.' + executionId;
+
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId) => {
+                // malformed head frame — streaming, but nothing to pull from
+                context.dispatch(COMMAND_EVENT, eventId, null, { columns: ['id'], streaming: true });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-123').executeQuery('SELECT * FROM t');
+                let message;
+                try { for await (const row of result.rows) { void row; } }
+                catch (e) { message = e.message; }
+                pm.test('datasets streaming without a stream id', function () {
+                    pm.expect(message).to.include('missing a stream id');
                 });
             `, { id: executionId });
         });

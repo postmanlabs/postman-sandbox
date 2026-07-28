@@ -1,5 +1,6 @@
 unreleased:
   chores:
+    - GH-1110 Added support for streaming `pm.datasets` results
     - Updated dependencies
 
 6.7.2:
