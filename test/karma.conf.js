@@ -63,6 +63,20 @@ module.exports = function (config) {
             'karma-mocha-reporter'
         ],
 
+        browserify: {
+            // Browserify does not understand the `node:` protocol prefix and tries to resolve
+            // `node:path` & friends as relative files. Mocha requires its core modules that way,
+            // so alias each one back to the browser shim browserify already ships with.
+            // ref: https://github.com/browserify/browserify/issues/2029
+            configure (bundle) {
+                bundle.on('prebundle', function () {
+                    ['events', 'fs', 'path', 'url', 'util'].forEach(function (mod) {
+                        bundle.require(mod, { expose: 'node:' + mod });
+                    });
+                });
+            }
+        },
+
         // Pass options to the client frameworks.
         client: {
             mocha: {

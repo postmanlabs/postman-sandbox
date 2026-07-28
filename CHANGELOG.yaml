@@ -1,3 +1,9 @@
+6.7.3:
+  date: 2026-07-28
+  chores:
+    - GH-1110 Added support for streaming `pm.datasets` results
+    - Updated dependencies
+
 6.7.2:
   date: 2026-07-21
   chores:
