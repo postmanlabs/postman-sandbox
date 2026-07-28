@@ -27,6 +27,14 @@ module.exports = function (exit) {
             // ref: https://github.com/uuidjs/uuid#getrandomvalues-not-supported
             bundler.require(require.resolve('../lib/vendor/uuid'), { expose: 'uuid' });
 
+            // Browserify does not understand the `node:` protocol prefix and tries to resolve
+            // `node:path` & friends as relative files. Mocha requires its core modules that way,
+            // so alias each one back to the browser shim browserify already ships with.
+            // ref: https://github.com/browserify/browserify/issues/2029
+            ['events', 'fs', 'path', 'url', 'util'].forEach(function (mod) {
+                bundler.require(mod, { expose: 'node:' + mod });
+            });
+
             (specs = files.filter(function (file) { // extract all test files
                 return (file.substr(-8) === '.test.js');
             })).forEach(function (file) {
