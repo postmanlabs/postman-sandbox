@@ -1,3 +1,7 @@
+unreleased:
+  fixed bugs:
+    - Used private class fields for internal state
+
 6.7.3:
   date: 2026-07-28
   chores:

@@ -1114,6 +1114,23 @@ describe('sandbox library - pm api', function () {
                 done();
             });
         });
+
+        it('should not leak the internal bridge/timers/execution-id via `jar.store` or `jar.jar`', function (done) {
+            context.execute(`
+                var assert = require('assert');
+                var jar = pm.cookies.jar();
+
+                assert.strictEqual(jar.store, undefined);
+                assert.strictEqual(jar.jar, undefined);
+
+                var legacyJar = postman.__execution.cookies.jar();
+
+                assert.strictEqual(legacyJar.store, undefined);
+                assert.strictEqual(legacyJar.jar, undefined);
+            `, {
+                context: { cookies: [] }
+            }, done);
+        });
     });
 
     describe('chai', function () {
