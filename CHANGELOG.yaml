@@ -1,3 +1,8 @@
+6.7.4:
+  date: 2026-08-10
+  fixed bugs:
+    - Used private class fields for internal state
+
 6.7.3:
   date: 2026-07-28
   chores:
