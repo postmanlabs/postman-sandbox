@@ -26,6 +26,22 @@ function generateSandboxTypes (node, printer, target) {
     var source = '',
         excludeResponse = target === 'prerequest',
         collectionSDKTypesExtension = '',
+        readonlyTypeNames = new Set(['PerformanceTest', 'PerformanceTestOutput', 'PerformanceTestReport']),
+        markTypePropertiesReadonly = (node) => {
+            if (
+                !typescript.isTypeAliasDeclaration(node) ||
+                !readonlyTypeNames.has(node.name.text) ||
+                !typescript.isTypeLiteralNode(node.type)
+            ) {
+                return;
+            }
+
+            node.type.members.forEach((member) => {
+                member.modifiers = typescript.createNodeArray([
+                    typescript.createToken(typescript.SyntaxKind.ReadonlyKeyword)
+                ]);
+            });
+        },
         shouldExcludeNode = (node, target) => {
             if (!node.jsDoc || node.jsDoc.length === 0) {
                 return false;
@@ -71,6 +87,7 @@ function generateSandboxTypes (node, printer, target) {
         };
 
     node.forEachChild((child) => {
+        markTypePropertiesReadonly(child);
         source = processChild(child, target, source, printer, node);
     });
 

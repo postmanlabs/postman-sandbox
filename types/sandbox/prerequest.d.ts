@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 6.6.1
+// Type definitions for postman-sandbox 6.7.5
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -116,6 +116,10 @@ declare class Postman {
      * The iterationData object contains data from the data file provided during a collection run.
      */
     iterationData: import("postman-collection").VariableScope;
+    /**
+     * Contains performance-test-only APIs supplied for this script execution.
+     */
+    readonly performanceTest: PerformanceTest | undefined;
     /**
      * The request object inside pm is a representation of the request for which this script is being run.
      * For a pre-request script, this is the request that is about to be sent and when in a test script,
@@ -243,6 +247,32 @@ declare interface DatasetHandle {
  * @param datasetId - The dataset ID.
  */
 declare type Datasets = (datasetId: string) => DatasetHandle;
+
+/**
+ * Completed main-workload report wrapper.
+ * @property json - Deeply immutable JSON report, or `null` when unavailable.
+ */
+declare type PerformanceTestReport = {
+    readonly json: {
+        [key: string]: any;
+    } | null;
+};
+
+/**
+ * Completed performance test output.
+ * @property report - Completed main-workload report.
+ */
+declare type PerformanceTestOutput = {
+    readonly report: PerformanceTestReport;
+};
+
+/**
+ * Performance-test-only APIs.
+ * @property output - Completed performance test output.
+ */
+declare type PerformanceTest = {
+    readonly output: PerformanceTestOutput;
+};
 
 declare interface Visualizer {
     /**
