@@ -81,6 +81,74 @@ describe('sandbox library - pm api', function () {
         });
     });
 
+    describe('report', function () {
+        it('should be absent when no report is supplied', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(pm.performanceTest, undefined);
+                assert.strictEqual(Object.hasOwn(pm, 'performanceTest'), false);
+                assert.strictEqual(pm.report, undefined);
+            `, done);
+        });
+
+        it('should expose a supplied JSON report', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(Object.hasOwn(pm, 'performanceTest'), true);
+                assert.strictEqual(pm.report, undefined);
+                assert.deepEqual(pm.performanceTest.output.report.json, {
+                    schemaVersion: '0.1.0-alpha.1',
+                    summary: { requests: { total: 42 } }
+                });
+            `, {
+                context: {
+                    report: {
+                        schemaVersion: '0.1.0-alpha.1',
+                        summary: { requests: { total: 42 } }
+                    }
+                }
+            }, done);
+        });
+
+        it('should expose a null JSON report when report generation was unavailable', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(Object.hasOwn(pm, 'performanceTest'), true);
+                assert.strictEqual(pm.performanceTest.output.report.json, null);
+            `, { context: { report: null } }, done);
+        });
+
+        it('should expose a deeply immutable JSON report', function (done) {
+            context.execute(`
+                var assert = require('assert');
+
+                assert.strictEqual(Object.isFrozen(pm.performanceTest), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output.report), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output.report.json), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output.report.json.summary), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output.report.json.operations), true);
+                assert.strictEqual(Object.isFrozen(pm.performanceTest.output.report.json.operations[0]), true);
+                assert.throws(function () {
+                    pm.performanceTest.output.report.json.operations.push({ name: 'changed' });
+                }, TypeError);
+
+                pm.performanceTest.output.report.json.summary.requests = 0;
+                assert.strictEqual(pm.performanceTest.output.report.json.summary.requests, 42);
+            `, {
+                context: {
+                    report: {
+                        summary: { requests: 42 },
+                        operations: [{ name: 'GET /health' }]
+                    }
+                }
+            }, done);
+        });
+    });
+
     describe('globals', function () {
         it('should be defined as VariableScope', function (done) {
             context.execute(`

@@ -37,4 +37,53 @@ describe('execution', function () {
         expect(json).to.not.have.nested.property('response.to');
         expect(execution).to.have.nested.property('response.to');
     });
+
+    it('does not freeze or reuse the caller report object', function () {
+        var callerReport = { summary: { requests: 42 } },
+            reportExecution = new Execution('id', { listen: 'test' }, { report: callerReport }, {});
+
+        expect(reportExecution.report).to.not.equal(callerReport);
+        expect(Object.isFrozen(reportExecution.report)).to.be.true;
+        expect(Object.isFrozen(reportExecution.report.summary)).to.be.true;
+        expect(Object.isFrozen(callerReport)).to.be.false;
+        expect(Object.isFrozen(callerReport.summary)).to.be.false;
+
+        callerReport.summary.requests = 100;
+        expect(reportExecution.report.summary.requests).to.equal(42);
+    });
+
+    it('does not include the report when serialized', function () {
+        var reportExecution = new Execution('id', { listen: 'test' }, {
+                report: { summary: { requests: 42 } }
+            }, {}),
+            json = reportExecution.toJSON();
+
+        expect(reportExecution).to.have.own.property('report');
+        expect(json).to.not.have.own.property('report');
+    });
+
+    it('rejects report accessors without invoking them', function () {
+        var accessorInvoked = false,
+            callerReport = {};
+
+        Object.defineProperty(callerReport, 'summary', {
+            enumerable: true,
+            get: function () {
+                accessorInvoked = true;
+
+                return {};
+            }
+        });
+
+        expect(function () {
+            new Execution('id', { listen: 'test' }, { report: callerReport }, {}); // eslint-disable-line no-new
+        }).to.throw(TypeError, 'sandbox: report contains an accessor');
+        expect(accessorInvoked).to.be.false;
+    });
+
+    it('rejects a report whose root is not a JSON object or null', function () {
+        expect(function () {
+            new Execution('id', { listen: 'test' }, { report: [] }, {}); // eslint-disable-line no-new
+        }).to.throw(TypeError, 'sandbox: report must be a JSON object or null');
+    });
 });
