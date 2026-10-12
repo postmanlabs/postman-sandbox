@@ -3,6 +3,9 @@ unreleased:
     - >-
       Added an options argument to `pm.datasets().executeQuery` with a `source`
       key to run the query natively against a single datasource
+    - >-
+      Validated the `pm.datasets().executeQuery` options argument so an unusable
+      `source` throws instead of silently falling back to the federated query
 
 6.7.4:
   date: 2026-08-10
