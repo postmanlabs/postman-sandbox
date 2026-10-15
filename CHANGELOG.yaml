@@ -1,3 +1,9 @@
+unreleased:
+  new features:
+    - >-
+      Added `variableMutationsOnly` execute option to send back only mutations
+      for environment, globals and collectionVariables
+
 6.7.4:
   date: 2026-08-10
   fixed bugs:

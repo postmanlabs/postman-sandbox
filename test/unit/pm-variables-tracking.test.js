@@ -125,4 +125,39 @@ describe('pm api variables', function () {
             });
         });
     });
+
+    it('should send only mutations for environment, globals and collectionVariables when asked', function (done) {
+        Sandbox.createContext(function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.execute(`
+                pm.variables.set('foo', '_variable');
+                pm.environment.set('foo', 'environment');
+                pm.globals.set('foo', 'global');
+                pm.collectionVariables.set('foo', 'collectionVariables');
+            `, {
+                variableMutationsOnly: true,
+                context: {
+                    _variables: [{ key: 'v', value: 'v' }],
+                    environment: [{ key: 'e', value: 'e' }],
+                    globals: [{ key: 'g', value: 'g' }],
+                    collectionVariables: [{ key: 'c', value: 'c' }]
+                }
+            }, function (err, result) {
+                if (err) {
+                    return done(err);
+                }
+
+                ['environment', 'globals', 'collectionVariables'].forEach(function (scope) {
+                    expect(result[scope]).to.have.all.keys('mutations');
+                    expect(new sdk.MutationTracker(result[scope].mutations).count()).to.equal(1);
+                });
+
+                // pm.variables still comes back in full
+                expect(result._variables.values).to.have.lengthOf(2);
+                expect(new sdk.MutationTracker(result._variables.mutations).count()).to.equal(1);
+                done();
+            });
+        });
+    });
 });
