@@ -1,3 +1,13 @@
+unreleased:
+  new features:
+    - >-
+      GH-1115 Added an options argument to `pm.datasets().executeQuery` with a
+      `source` key to run the query natively against a single datasource
+  chores:
+    - >-
+      GH-1115 Added `Buffer.stringLength` and `buffer.isLatin1` to the buffer
+      surface as `Not implemented` stubs
+
 6.7.4:
   date: 2026-08-10
   fixed bugs:

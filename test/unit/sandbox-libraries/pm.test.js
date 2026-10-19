@@ -413,6 +413,230 @@ describe('sandbox library - pm api', function () {
             `, { id: executionId });
         });
 
+        it('should forward the executeQuery options argument to the host', function (done) {
+            const executionId = '2',
+                EVENT = 'execution.datasets.' + executionId;
+
+            let wire;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // The tuple every downstream resolver reads: options at `args[2]`.
+                expect(wire).to.eql(['executeQuery', 'ds-1', 'SELECT 1', ['a'], { source: 'prod-mysql' }]);
+                done();
+            });
+            context.on(EVENT, (eventId, ...args) => {
+                wire = args;
+
+                context.dispatch(EVENT, eventId, null, { columns: ['id'], rows: [{ id: 1 }] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-1')
+                    .executeQuery('SELECT 1', ['a'], { source: 'prod-mysql' });
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('native executeQuery', function () {
+                    pm.expect(collected).to.eql([{ id: 1 }]);
+                });
+            `, { id: executionId });
+        });
+
+        it('should leave the tuple unchanged when executeQuery is called without options', function (done) {
+            const executionId = '2',
+                EVENT = 'execution.datasets.' + executionId;
+
+            let wire;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // Back-compat: the first four slots are untouched and no source leaks.
+                // The trailing options slot arrives empty, which every resolver ignores.
+                expect(wire).to.eql(['executeQuery', 'ds-1', 'SELECT 1', null, null]);
+                done();
+            });
+            context.on(EVENT, (eventId, ...args) => {
+                wire = args;
+
+                context.dispatch(EVENT, eventId, null, { columns: ['id'], rows: [] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-1').executeQuery('SELECT 1');
+                for await (const row of result.rows) { void row; }
+                pm.test('back-compat executeQuery', function () {
+                    pm.expect(result.columns).to.eql(['id']);
+                });
+            `, { id: executionId });
+        });
+
+        it('should shift options out of the params slot when params is omitted', function (done) {
+            const executionId = '2',
+                EVENT = 'execution.datasets.' + executionId;
+
+            let wire;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // An options object left in the params slot would be dropped by every
+                // resolver's `Array.isArray(args[1])` check and silently hit SQLite.
+                expect(wire[3]).to.be.null;
+                expect(wire).to.eql(['executeQuery', 'ds-1', 'SELECT 1', null, { source: 'prod-mysql' }]);
+                done();
+            });
+            context.on(EVENT, (eventId, ...args) => {
+                wire = args;
+
+                context.dispatch(EVENT, eventId, null, { columns: ['id'], rows: [] });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-1').executeQuery('SELECT 1', { source: 'prod-mysql' });
+                for await (const row of result.rows) { void row; }
+                pm.test('executeQuery with options and no params', function () {
+                    pm.expect(result.columns).to.eql(['id']);
+                });
+            `, { id: executionId });
+        });
+
+        it('should reject executeQuery options that cannot route the query', function (done) {
+            const executionId = '2',
+                EVENT = 'execution.datasets.' + executionId;
+
+            let dispatched = false;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // Nothing reached the host: an unusable option must not be answered
+                // from the federated SQLite engine.
+                expect(dispatched).to.be.false;
+                done();
+            });
+            context.on(EVENT, (eventId) => {
+                dispatched = true;
+
+                context.dispatch(EVENT, eventId, null, { columns: ['id'], rows: [] });
+            });
+            context.execute(`
+                const errors = [];
+
+                async function attempt (params, options) {
+                    try {
+                        await pm.datasets('ds-1').executeQuery('SELECT 1', params, options);
+                        errors.push(null);
+                    }
+                    catch (err) {
+                        errors.push(err.message);
+                    }
+                }
+
+                await attempt([], { source: '' });
+                await attempt([], { source: 123 });
+                await attempt([], 'prod-mysql');
+                await attempt([], { datasource: 'prod-mysql' });
+
+                pm.test('executeQuery rejects unusable options', function () {
+                    pm.expect(errors).to.have.lengthOf(4);
+                    pm.expect(errors[0]).to.include('source must be a non-empty string');
+                    pm.expect(errors[1]).to.include('source must be a non-empty string');
+                    pm.expect(errors[2]).to.include('options must be an object');
+                    pm.expect(errors[3]).to.include('must have a \`source\`');
+                    pm.expect(errors[3]).to.include('datasource');
+                });
+            `, { id: executionId });
+        });
+
+        it('should keep federating for every executeQuery call shape without a source', function (done) {
+            const executionId = '2',
+                EVENT = 'execution.datasets.' + executionId,
+                wires = [];
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                // The three pre-existing call shapes, byte-identical on the wire:
+                // no source leaks and the trailing slot stays empty, which every
+                // resolver ignores and answers from the federated engine.
+                expect(wires).to.eql([
+                    ['executeQuery', 'ds-1', 'SELECT 1', null, null],
+                    ['executeQuery', 'ds-1', 'SELECT 1', ['a'], null],
+                    ['executeQuery', 'ds-1', 'SELECT 1', ['a'], null]
+                ]);
+                done();
+            });
+            context.on(EVENT, (eventId, ...args) => {
+                wires.push(args);
+
+                context.dispatch(EVENT, eventId, null, { columns: ['id'], rows: [] });
+            });
+            context.execute(`
+                await pm.datasets('ds-1').executeQuery('SELECT 1');
+                await pm.datasets('ds-1').executeQuery('SELECT 1', ['a']);
+                await pm.datasets('ds-1').executeQuery('SELECT 1', ['a'], null);
+
+                pm.test('executeQuery without a source is unchanged', function () {
+                    pm.expect(true).to.be.true;
+                });
+            `, { id: executionId });
+        });
+
+        it('should stream rows from a native query reply', function (done) {
+            const executionId = '2',
+                COMMAND_EVENT = 'execution.datasets.' + executionId,
+                STREAM_EVENT = 'execution.datasets.stream.' + executionId;
+
+            let options;
+
+            context.on('execution.error', done);
+            context.on('execution.assertion', function (cursor, assertion) {
+                assertion.forEach(function (ass) {
+                    expect(ass).to.deep.include({ passed: true, error: null });
+                });
+
+                expect(options).to.eql({ source: 'prod-mysql' });
+                done();
+            });
+            context.on(COMMAND_EVENT, (eventId, cmd, datasetId, sql, params, opts) => {
+                options = opts;
+
+                context.dispatch(COMMAND_EVENT, eventId, null,
+                    { columns: ['id'], streaming: true, streamId: 's1' });
+            });
+            // `streamRows` is agnostic to which engine produced the stream.
+            context.on(STREAM_EVENT, (eventId, action, streamId) => {
+                expect(action).to.equal('pull');
+                expect(streamId).to.equal('s1');
+
+                context.dispatch(STREAM_EVENT, eventId, null, { rows: [{ id: 7 }], done: true });
+            });
+            context.execute(`
+                const result = await pm.datasets('ds-1')
+                    .executeQuery('SELECT 1', { source: 'prod-mysql' });
+                const collected = [];
+                for await (const row of result.rows) { collected.push(row); }
+                pm.test('native streaming executeQuery', function () {
+                    pm.expect(result.columns).to.eql(['id']);
+                    pm.expect(collected).to.eql([{ id: 7 }]);
+                });
+            `, { id: executionId });
+        });
+
         it('should dispatch execution.datasets event when pm.datasets(id).executeView is called', function (done) {
             const executionId = '2';
 
