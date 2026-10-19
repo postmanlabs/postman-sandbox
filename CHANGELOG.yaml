@@ -1,4 +1,5 @@
-unreleased:
+6.8.0:
+  date: 2026-10-19
   new features:
     - >-
       GH-1115 Added an options argument to `pm.datasets().executeQuery` with a
