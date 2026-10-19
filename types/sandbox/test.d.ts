@@ -1,4 +1,4 @@
-// Type definitions for postman-sandbox 6.6.1
+// Type definitions for postman-sandbox 6.7.4
 // Project: https://github.com/postmanlabs/postman-sandbox
 // Definitions by: PostmanLabs
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -257,6 +257,17 @@ declare type DatasetQueryResult = {
 };
 
 /**
+ * Options for an ad-hoc dataset query.
+ * @property [source] - Datasource ID or slug to run the query natively against,
+ *   bypassing the federated SQLite engine. Only database datasources are supported
+ *   (`mysql`, `postgresql`, `sqlserver`, `jdbc`); omit it to query the dataset's
+ *   materialized SQLite tables as usual. Desktop app only.
+ */
+declare type DatasetQueryOptions = {
+    source?: string;
+};
+
+/**
  * Read-only handle for a single dataset, returned by `pm.datasets(datasetId)`.
  */
 declare interface DatasetHandle {
@@ -268,10 +279,18 @@ declare interface DatasetHandle {
     executeView(viewId: string, params?: string[]): Promise;
     /**
      * Run an arbitrary SQL query against the dataset.
+     *
+     * Pass `options.source` to run the query natively against a single datasource instead
+     * of the federated SQLite engine. `params` may be omitted: `executeQuery(sql, options)`
+     * is equivalent to `executeQuery(sql, undefined, options)`.
+     *
+     * `executeView` deliberately takes no such option — a saved view already carries its
+     * own datasource binding.
      * @param sql - SQL query string. `?` placeholders bind to `params` in order.
      * @param [params] - Optional parameter values for `?` placeholders.
+     * @param [options] - Optional query options.
      */
-    executeQuery(sql: string, params?: string[]): Promise;
+    executeQuery(sql: string, params?: string[], options?: DatasetQueryOptions): Promise;
 }
 
 /**
