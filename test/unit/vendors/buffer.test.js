@@ -297,6 +297,9 @@ describe('sandbox vendor - buffer', function () {
 
         // SlowBuffer is discontinued in Node.js v25, but sandbox still exposes it for backward compatibility
         !expectedProps.includes('SlowBuffer') && expectedProps.push('SlowBuffer');
+
+        // isLatin1 was added in Node.js v26.11.0, but sandbox exposes it on older versions too
+        !expectedProps.includes('isLatin1') && expectedProps.push('isLatin1');
         expectedProps.sort();
 
 
@@ -311,9 +314,13 @@ describe('sandbox vendor - buffer', function () {
 
     (isNode ? it : it.skip)('should be in sync with latest available `Buffer` class', function (done) {
         const fnProps = Object.getOwnPropertyNames(function () { return 0; }).sort(),
-            expectedProps = Object.getOwnPropertyNames(Buffer).sort().filter((prop) => {
+            expectedProps = Object.getOwnPropertyNames(Buffer).filter((prop) => {
                 return !fnProps.includes(prop);
             });
+
+        // stringLength was added in Node.js v26.11.0, but sandbox exposes it on older versions too
+        !expectedProps.includes('stringLength') && expectedProps.push('stringLength');
+        expectedProps.sort();
 
         context.execute(`
             const assert = require('assert');

@@ -6,6 +6,10 @@ unreleased:
     - >-
       Validated the `pm.datasets().executeQuery` options argument so an unusable
       `source` throws instead of silently falling back to the federated query
+  chores:
+    - >-
+      Added `Buffer.stringLength` and `buffer.isLatin1` to the buffer surface as
+      `Not implemented` stubs, matching the APIs introduced in Node.js v26.11.0
 
 6.7.4:
   date: 2026-08-10
