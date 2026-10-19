@@ -1,15 +1,12 @@
 unreleased:
   new features:
     - >-
-      Added an options argument to `pm.datasets().executeQuery` with a `source`
-      key to run the query natively against a single datasource
-    - >-
-      Validated the `pm.datasets().executeQuery` options argument so an unusable
-      `source` throws instead of silently falling back to the federated query
+      GH-1115 Added an options argument to `pm.datasets().executeQuery` with a
+      `source` key to run the query natively against a single datasource
   chores:
     - >-
-      Added `Buffer.stringLength` and `buffer.isLatin1` to the buffer surface as
-      `Not implemented` stubs, matching the APIs introduced in Node.js v26.11.0
+      GH-1115 Added `Buffer.stringLength` and `buffer.isLatin1` to the buffer
+      surface as `Not implemented` stubs
 
 6.7.4:
   date: 2026-08-10
