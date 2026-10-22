@@ -126,7 +126,7 @@ describe('pm api variables', function () {
         });
     });
 
-    it('should send only mutations for environment, globals and collectionVariables when asked', function (done) {
+    it('should send only mutations for all variable scopes when asked', function (done) {
         Sandbox.createContext(function (err, ctx) {
             if (err) { return done(err); }
 
@@ -148,14 +148,11 @@ describe('pm api variables', function () {
                     return done(err);
                 }
 
-                ['environment', 'globals', 'collectionVariables'].forEach(function (scope) {
+                ['_variables', 'environment', 'globals', 'collectionVariables'].forEach(function (scope) {
                     expect(result[scope]).to.have.all.keys('mutations');
                     expect(new sdk.MutationTracker(result[scope].mutations).count()).to.equal(1);
                 });
 
-                // pm.variables still comes back in full
-                expect(result._variables.values).to.have.lengthOf(2);
-                expect(new sdk.MutationTracker(result._variables.mutations).count()).to.equal(1);
                 done();
             });
         });
