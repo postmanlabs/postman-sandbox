@@ -1,4 +1,5 @@
-unreleased:
+6.9.0:
+  date: 2026-10-22
   new features:
     - >-
       Added `variableMutationsOnly` execute option to send back only mutations
