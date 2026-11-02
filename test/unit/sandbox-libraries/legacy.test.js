@@ -227,20 +227,80 @@ describe('sandbox library - legacy - skipUnusedResponseBody', function () {
         });
     });
 
-    it('should accept the option per execution', function (done) {
-        Sandbox.createContext({}, function (err, ctx) {
-            if (err) { return done(err); }
+    describe('option wiring', function () {
+        var executePath = require.resolve('../../../lib/sandbox/execute'),
+            executeContextPath = require.resolve('../../../lib/sandbox/execute-context'),
+            executeContext,
+            bridge;
 
-            ctx.execute({
-                listen: 'test',
-                script: `
-                    const assert = require('assert');
-                    assert.strictEqual(responseBody, '${body}');
-                `
-            }, { ...responseContext, skipUnusedResponseBody: true }, function (err) {
-                ctx.dispose();
-                done(err);
-            });
+        // boots the sandbox's execute handler on a fake bridge, with execute-context stubbed to capture its options
+        function boot (initOptions) {
+            executeContext = sinon.stub();
+            delete require.cache[executePath];
+            require.cache[executeContextPath] = {
+                id: executeContextPath, filename: executeContextPath, loaded: true, exports: executeContext
+            };
+
+            bridge = new (require('events'))();
+            bridge.dispatch = sinon.spy();
+            require(executePath)(bridge, {});
+            bridge.emit('initialize', initOptions);
+        }
+
+        function executeOptions (options) {
+            bridge.emit('execute', 'id', { listen: 'test', script: { exec: 'pm.test("x", () => {})' } }, {}, options);
+
+            return executeContext.lastCall.args[7];
+        }
+
+        afterEach(function () {
+            delete require.cache[executeContextPath];
+            delete require.cache[executePath];
+        });
+
+        it('should take the option from init', function () {
+            boot({ skipUnusedResponseBody: true });
+            expect(executeOptions({})).to.have.property('skipUnusedResponseBody', true);
+        });
+
+        it('should let the execution option override the init option', function () {
+            boot({ skipUnusedResponseBody: false });
+            expect(executeOptions({ skipUnusedResponseBody: true })).to.have.property('skipUnusedResponseBody', true);
+
+            boot({ skipUnusedResponseBody: true });
+            expect(executeOptions({ skipUnusedResponseBody: false })).to.have.property('skipUnusedResponseBody', false);
+        });
+    });
+
+    describe('execute context', function () {
+        var executeContext = require('../../../lib/sandbox/execute-context'),
+            noop = function () { /* stub */ },
+            setup;
+
+        function skipFor (code, options) {
+            executeContext({ reset: noop, import: noop, exec: noop }, code, {}, console, {}, {}, noop, options);
+
+            return setup.lastCall.args[3].skipResponseBody;
+        }
+
+        beforeEach(function () {
+            setup = sinon.stub(legacy, 'setup');
+        });
+
+        afterEach(function () {
+            setup.restore();
+        });
+
+        it('should skip the body for a script that cannot reach it', function () {
+            expect(skipFor('pm.test("x", () => {})', { skipUnusedResponseBody: true })).to.be.true;
+        });
+
+        it('should keep the body for a script that names it', function () {
+            expect(skipFor('JSON.parse(responseBody)', { skipUnusedResponseBody: true })).to.be.false;
+        });
+
+        it('should keep the body without the option', function () {
+            expect(skipFor('pm.test("x", () => {})', {})).to.be.false;
         });
     });
 
@@ -294,6 +354,9 @@ describe('sandbox library - legacy - skipUnusedResponseBody', function () {
         it('should be true for scripts that name it or can build the name at runtime', function () {
             [
                 'JSON.parse(responseBody)',
+                'respons\\u0065Body',
+                '\\u{72}esponseBody',
+                '\\u0065val("respon" + "seBody")',
                 'eval("respon" + "seBody")',
                 'new Function("return responseBody")()',
                 'this["respon" + "seBody"]',
