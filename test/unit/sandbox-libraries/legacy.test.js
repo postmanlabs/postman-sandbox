@@ -228,10 +228,20 @@ describe('sandbox library - legacy - skipUnusedResponseBody', function () {
     });
 
     describe('option wiring', function () {
-        var executePath = require.resolve('../../../lib/sandbox/execute'),
-            executeContextPath = require.resolve('../../../lib/sandbox/execute-context'),
+        var executePath,
+            executeContextPath,
             executeContext,
             bridge;
+
+        before(function () {
+            // the require cache is Node only
+            if (typeof window !== 'undefined') {
+                return this.skip();
+            }
+
+            executePath = require.resolve('../../../lib/sandbox/execute');
+            executeContextPath = require.resolve('../../../lib/sandbox/execute-context');
+        });
 
         // boots the sandbox's execute handler on a fake bridge, with execute-context stubbed to capture its options
         function boot (initOptions) {
