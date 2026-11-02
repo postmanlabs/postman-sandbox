@@ -159,3 +159,156 @@ describe('sandbox library - legacy', function () {
         }, done);
     });
 });
+
+describe('sandbox library - legacy - skipUnusedResponseBody', function () {
+    this.timeout(1000 * 60);
+    var Sandbox = require('../../../'),
+        legacy = require('../../../lib/sandbox/postman-legacy-interface'),
+        body = 'a'.repeat(1024),
+        responseContext = {
+            context: {
+                response: { stream: { type: 'Base64', data: Buffer.from(body).toString('base64') } }
+            }
+        },
+        context;
+
+    beforeEach(function (done) {
+        Sandbox.createContext({ skipUnusedResponseBody: true }, function (err, ctx) {
+            context = ctx;
+            done(err);
+        });
+    });
+
+    afterEach(function () {
+        context.dispose();
+        context = null;
+    });
+
+    it('should still provide "responseBody" to scripts that name it', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert');
+                assert.strictEqual(responseBody, '${body}');
+            `
+        }, responseContext, done);
+    });
+
+    it('should still provide "responseBody" to scripts that build its name at runtime', function (done) {
+        context.execute({
+            listen: 'test',
+            script: `
+                const assert = require('assert'),
+                    name = 'respon' + 'seBody';
+                assert.strictEqual(this[name], '${body}');
+                assert.strictEqual(eval(name), '${body}');
+            `
+        }, responseContext, done);
+    });
+
+    it('should keep pm.response and other legacy globals for scripts that skip it', function (done) {
+        const assertions = [];
+
+        context.on('execution.assertion', (_, list) => { assertions.push(...list); });
+        context.execute({
+            listen: 'test',
+            script: `
+                tests['status code is set'] = typeof responseCode === 'object';
+                pm.test('body is readable', () => pm.expect(pm.response.text()).to.have.lengthOf(1024));
+            `
+        }, responseContext, function (err) {
+            if (err) { return done(err); }
+
+            expect(assertions.map((a) => { return [a.name, a.passed]; })).to.have.deep.members([
+                ['body is readable', true],
+                ['status code is set', true]
+            ]);
+            done();
+        });
+    });
+
+    it('should accept the option per execution', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            if (err) { return done(err); }
+
+            ctx.execute({
+                listen: 'test',
+                script: `
+                    const assert = require('assert');
+                    assert.strictEqual(responseBody, '${body}');
+                `
+            }, { ...responseContext, skipUnusedResponseBody: true }, function (err) {
+                ctx.dispose();
+                done(err);
+            });
+        });
+    });
+
+    describe('legacy interface', function () {
+        var execution;
+
+        beforeEach(function () {
+            execution = {
+                globals: { syncVariablesTo: () => { return {}; } },
+                environment: { syncVariablesTo: () => { return {}; } },
+                response: {
+                    responseSize: body.length,
+                    text: sinon.stub().returns(body),
+                    headers: { each: () => { /* no headers */ } }
+                }
+            };
+        });
+
+        it('should not compute "responseBody" when told to skip it', function () {
+            const scope = { import: sinon.spy() };
+
+            legacy.setup(scope, execution, console, { skipResponseBody: true });
+
+            expect(execution.response.text).to.not.be.called;
+            expect(scope.import.firstCall.args[0]).to.have.property('responseBody', undefined);
+        });
+
+        it('should compute "responseBody" by default', function () {
+            const scope = { import: sinon.spy() };
+
+            legacy.setup(scope, execution, console);
+
+            expect(execution.response.text).to.be.calledOnce;
+            expect(scope.import.firstCall.args[0]).to.have.property('responseBody', body);
+        });
+    });
+
+    describe('mayAccessResponseBody', function () {
+        it('should be false for scripts with no way to reach "responseBody"', function () {
+            [
+                'pm.test("ok", () => pm.response.to.have.status(200));',
+                'const data = pm.response.json(); pm.environment.set("token", data.token);',
+                'tests["ok"] = responseCode.code === 200;',
+                'pm.sendRequest("https://example.com", function (err, res) { console.log(res.code); });',
+                'const selfish = 1, thistle = 2, evaluate = () => selfish + thistle;'
+            ].forEach((code) => {
+                expect(legacy.mayAccessResponseBody(code), code).to.be.false;
+            });
+        });
+
+        it('should be true for scripts that name it or can build the name at runtime', function () {
+            [
+                'JSON.parse(responseBody)',
+                'eval("respon" + "seBody")',
+                'new Function("return responseBody")()',
+                'this["respon" + "seBody"]',
+                'arguments[0]',
+                'globalThis[name]',
+                'global[name]',
+                'self[name]',
+                'window[name]'
+            ].forEach((code) => {
+                expect(legacy.mayAccessResponseBody(code), code).to.be.true;
+            });
+        });
+
+        it('should be true when there is no code to inspect', function () {
+            expect(legacy.mayAccessResponseBody(undefined)).to.be.true;
+        });
+    });
+});

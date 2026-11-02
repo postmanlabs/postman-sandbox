@@ -1,3 +1,9 @@
+unreleased:
+  new features:
+    - >-
+      Added `skipUnusedResponseBody` option to skip building the legacy
+      `responseBody` string for scripts that cannot reach it
+
 6.9.0:
   date: 2026-10-22
   new features:
