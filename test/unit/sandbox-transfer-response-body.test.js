@@ -129,6 +129,26 @@ describe('sandbox transferResponseBody', function () {
         });
     });
 
+    it('should fail the execution at once on a disposed context', function (done) {
+        Sandbox.createContext({}, function (err, ctx) {
+            if (err) { return done(err); }
+
+            const start = Date.now();
+
+            ctx.on('error', () => { /* plain dispatches report here */ });
+            ctx.dispose();
+            ctx.execute({ listen: 'test', script: script }, {
+                context: { response: { code: 200, stream: Buffer.alloc(body.length, 'a') } },
+                transferResponseBody: true,
+                timeout: 60000
+            }, function (err) {
+                expect(err).to.have.property('message').that.includes('post disconnection');
+                expect(Date.now() - start).to.be.below(5000);
+                done();
+            });
+        });
+    });
+
     it('should say it supports the option only with a uvm that can transfer', function () {
         expect(context).to.have.property('supportsTransferResponseBody', true);
 
