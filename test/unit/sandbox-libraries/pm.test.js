@@ -79,6 +79,50 @@ describe('sandbox library - pm api', function () {
 
             }, done);
         });
+
+        // postman-runtime under customParallelIterations mode sends
+        // cursor.cycles = -1 as a wire sentinel. The render here is the
+        // matching half of the cross-repo handshake - pm.info.iterationCount
+        // becomes Infinity to communicate "unbounded loops per VU."
+        // -1 was chosen as the wire sentinel because it survives JSON,
+        // structured-clone, and v8 IPC encodings; Infinity would be
+        // clobbered to null by JSON.stringify. See postman-runtime/
+        // lib/runner/extensions/event.command.js (applySandboxCursorSentinel).
+        it('renders cursor.cycles === -1 sentinel as pm.info.iterationCount: Infinity', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                    var assert = require('assert');
+
+                    assert.strictEqual(pm.info.iterationCount, Infinity,
+                        'iterationCount must be Infinity when cursor.cycles is the -1 sentinel');
+                    assert.strictEqual(pm.info.iteration, 7,
+                        'iteration must pass through unchanged');
+                `
+            }, {
+                cursor: {
+                    iteration: 7,
+                    cycles: -1
+                }
+            }, done);
+        });
+
+        it('passes non-sentinel cycles values through unchanged', function (done) {
+            context.execute({
+                listen: 'test',
+                script: `
+                    var assert = require('assert');
+
+                    assert.strictEqual(pm.info.iterationCount, 5,
+                        'iterationCount must pass through');
+                `
+            }, {
+                cursor: {
+                    iteration: 0,
+                    cycles: 5
+                }
+            }, done);
+        });
     });
 
     describe('globals', function () {
